@@ -3,6 +3,7 @@ package com.gliesereum.karma.data.network;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarInfo;
+import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.code.SignupBody;
@@ -42,6 +43,12 @@ public interface APIInterface {
 
     @GET("karma/v1/car/years")
     Call<List<BrandResponse>> getYears();
+
+    @GET("karma/v1/carwash")
+    Call<List<AllCarWashResponse>> getAllCarWash();
+
+    @GET("karma/v1/carwash/{carwashId}")
+    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
     @GET("karma/v1/car/user")
     Call<List<AllCarResponse>> getAllCars(@Header("Authorization") String accessToken);

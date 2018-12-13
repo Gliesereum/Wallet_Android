@@ -93,10 +93,10 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(modelSpinner);
                 } else {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -104,7 +104,7 @@ public class TestActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -112,10 +112,10 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(yearSpinner);
                 } else {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -123,7 +123,7 @@ public class TestActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -131,10 +131,10 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(interiorSpinner);
                 } else {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -142,7 +142,7 @@ public class TestActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -150,10 +150,10 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(carBodySpinner);
                 } else {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -161,7 +161,7 @@ public class TestActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -169,10 +169,10 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(colourSpinner);
                 } else {
-                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -180,7 +180,7 @@ public class TestActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 

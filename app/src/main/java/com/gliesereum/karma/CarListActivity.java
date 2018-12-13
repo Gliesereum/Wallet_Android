@@ -101,6 +101,7 @@ public class CarListActivity extends AppCompatActivity {
         new DrawerBuilder().withActivity(this).build();
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Maps");
         SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName("Car list").withSelectable(false);
+        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(4).withName("Profile").withSelectable(false);
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withIdentifier(3).withName("LogOut").withSelectable(false);
 
         // Create the AccountHeader
@@ -128,6 +129,7 @@ public class CarListActivity extends AppCompatActivity {
                         item1,
                         new DividerDrawerItem(),
                         item2,
+                        item3,
                         new SecondaryDrawerItem().withName("drawer_item_settings_code"),
                         logoutItem
                 )

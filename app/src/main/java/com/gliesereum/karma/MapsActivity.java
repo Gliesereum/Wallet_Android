@@ -18,6 +18,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.data.network.APIClient;
+import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,9 +31,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -41,11 +47,19 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 
@@ -64,6 +78,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private MapView mapView;
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private List<AllCarWashResponse> carsList;
+    private MaterialButton addCarBtn;
+    private APIInterface apiInterface;
+    private ErrorHandler errorHandler;
 
 
     @Override
@@ -93,6 +111,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new DrawerBuilder().withActivity(this).build();
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Maps");
         SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName("Car List").withSelectable(false);
+        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(4).withName("Profile").withSelectable(false);
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withIdentifier(3).withName("LogOut").withSelectable(false);
 
         // Create the AccountHeader
@@ -120,6 +139,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         item1,
                         new DividerDrawerItem(),
                         item2,
+                        item3,
                         new SecondaryDrawerItem().withName("drawer_item_settings_code"),
                         logoutItem
                 )
@@ -183,42 +203,83 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng carWash01 = new LatLng(50.448299, 30.432927);
-        LatLng carWash02 = new LatLng(50.432479, 30.396779);
+        getAllCarWash();
 
-        mMap.addMarker(new MarkerOptions()
-                .position(carWash01)
-                .snippet("snippet")
-                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ic_local_car_wash_black_24dp)))
-                .title("Мойка №1"));
-        mMap.addMarker(new MarkerOptions().position(carWash02).title("Мойка №2"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(carWash01));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+//                Toast.makeText(MapsActivity.this, marker.getSnippet(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MapsActivity.this, CarWashActivity.class);
+                intent.putExtra("carWash_ID", marker.getSnippet());
+                startActivity(intent);
 
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
-        mMap.setMyLocationEnabled(true);
-        mMap.setBuildingsEnabled(true);
-        mMap.getUiSettings().setMapToolbarEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.getUiSettings().setAllGesturesEnabled(true);
-
-        updateLocationUI();
-
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+            }
+        });
 
 
+
+
+
+    }
+
+    private void getAllCarWash() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<List<AllCarWashResponse>> call = apiInterface.getAllCarWash();
+        call.enqueue(new Callback<List<AllCarWashResponse>>() {
+            @Override
+            public void onResponse(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
+                if (response.code() == 200) {
+                    carsList = response.body();
+
+                    List<LatLng> coordinateList = new ArrayList<>();
+                    for (AllCarWashResponse coordinate : carsList) {
+                        coordinateList.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
+                                .snippet(coordinate.getId())
+                                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ic_local_car_wash_black_24dp)))
+                                .title(coordinate.getName()));
+                    }
+
+                    if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+
+                    mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+                    mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this, R.raw.style_json));
+                    mMap.setMyLocationEnabled(true);
+                    mMap.setBuildingsEnabled(true);
+                    mMap.getUiSettings().setMapToolbarEnabled(true);
+                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                    mMap.getUiSettings().setAllGesturesEnabled(true);
+
+                    updateLocationUI();
+
+                    // Get the current location of the device and set the position of the map.
+                    getDeviceLocation();
+
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        errorHandler.showError(jObjError.getInt("code"));
+                    } catch (Exception e) {
+                        errorHandler.showCustomError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AllCarWashResponse>> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
     }
 
     private void getLocationPermission() {
