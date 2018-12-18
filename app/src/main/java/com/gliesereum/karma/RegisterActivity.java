@@ -23,6 +23,8 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.ANDROID_APP;
+import static com.gliesereum.karma.util.Constants.USER_NAME;
+import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -81,6 +83,8 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             if (response.code() == 200) {
+                                FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
+                                FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
                                 startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
                                 finish();
                             } else {

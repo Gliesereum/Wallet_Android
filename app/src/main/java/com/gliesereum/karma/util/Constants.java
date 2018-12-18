@@ -4,9 +4,8 @@ public class Constants {
 
     public static final String ANDROID_APP = "пустое поле";
 
-    public static final String LOGIN_METHOD = "loginMethod";
-    public static final String LOGIN_PHONE = "loginPhone";
-    public static final String LOGIN_EMAIL = "loginEmail";
+    public static final String USER_NAME = "userName";
+    public static final String USER_SECOND_NAME = "userSecondName";
     public static final String IS_LOGIN = "isLogin";
 
     public static final String USER_ID = "userId";

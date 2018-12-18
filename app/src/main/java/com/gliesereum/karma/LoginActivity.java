@@ -70,6 +70,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         FastSave.init(getApplicationContext());
         initView();
+        if (FastSave.getInstance().getString(ACCESS_TOKEN, "").equals("")) {
+            newUserCheckBox.setChecked(true);
+        } else {
+            newUserCheckBox.setChecked(false);
+        }
+
     }
 
     private void initView() {

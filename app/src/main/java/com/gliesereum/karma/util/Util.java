@@ -20,11 +20,12 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import androidx.appcompat.widget.Toolbar;
 
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
+import static com.gliesereum.karma.util.Constants.USER_NAME;
+import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
 public class Util {
     private Activity activity;
@@ -42,25 +43,27 @@ public class Util {
         SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withSelectable(false).withTag("car_list");
         SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withSelectable(false).withTag("profile");
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withSelectable(false).withTag("logout");
+        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход/Регистрация").withSelectable(false).withTag("login");
 
-        // Create the AccountHeader
+        if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            car_listItem.withEnabled(false);
+            profileItem.withEnabled(false);
+        }
+
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(activity)
                 .withHeaderBackground(R.drawable.header)
                 .addProfiles(
-//                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(activity.getResources().getDrawable(R.drawable.profile))
-                        new ProfileDrawerItem().withName("Mike Penz").withIcon(activity.getResources().getDrawable(R.drawable.profile))
+                        new ProfileDrawerItem().withName(FastSave.getInstance().getString(USER_NAME, "") + " " + FastSave.getInstance().getString(USER_SECOND_NAME, "")).withIcon(activity.getResources().getDrawable(R.drawable.profile))
                 )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        return false;
-                    }
-                })
+//                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+//                    @Override
+//                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+//                        return false;
+//                    }
+//                })
                 .build();
 
-
-//create the drawer and remember the `Drawer` result object
         Drawer result = new DrawerBuilder()
                 .withAccountHeader(headerResult)
                 .withActivity(activity)
@@ -69,8 +72,7 @@ public class Util {
                         mapsItem,
                         new DividerDrawerItem(),
                         car_listItem,
-                        profileItem,
-                        logoutItem
+                        profileItem
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -94,12 +96,22 @@ public class Util {
                             case "profile":
                                 activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class));
                                 break;
+                            case "login":
+                                activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class));
+                                break;
                         }
 
                         return true;
                     }
                 })
                 .build();
+
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            result.addItem(logoutItem);
+        } else {
+            result.addItem(loginItem);
+        }
+
     }
 
     public static boolean checkExpirationToken(Long localDateTime) {

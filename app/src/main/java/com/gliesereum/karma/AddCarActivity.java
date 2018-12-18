@@ -15,8 +15,8 @@ import android.widget.Toast;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
-import com.gliesereum.karma.data.network.json.car.CarInfo;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.material.button.MaterialButton;
@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -77,6 +78,8 @@ public class AddCarActivity extends AppCompatActivity {
     private ArrayAdapter<String> colourAdapter;
     private ConstraintLayout constraintLayout;
     private ChipGroup chipGroup;
+    Map<String, String> mapClassServise = new HashMap<>();
+    List<Chip> selectedChip = new ArrayList<>();
 
 
     @Override
@@ -159,16 +162,15 @@ public class AddCarActivity extends AppCompatActivity {
             }
         });
 
-        String[] modelITEMS = {"A100"};
-        modelAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, modelITEMS);
-        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        modelSpinner.setAdapter(modelAdapter);
-
-
-        String[] yearITEMS = {"1990"};
-        ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, yearITEMS);
-        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        yearSpinner.setAdapter(yearAdapter);
+//        String[] modelITEMS = {"A100"};
+//        modelAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, modelITEMS);
+//        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        modelSpinner.setAdapter(modelAdapter);
+//
+//        String[] yearITEMS = {"1990"};
+//        ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, yearITEMS);
+//        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        yearSpinner.setAdapter(yearAdapter);
 
         String[] interiorITEMS = {"SUEDE", "LEATHER", "ARTIFICIAL_LEATHER", "ALCANTARA", "TASKANA", "VELOURS"};
         interiorAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, interiorITEMS);
@@ -214,15 +216,12 @@ public class AddCarActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     classServiceList = response.body();
                     for (int i = 0; i < classServiceList.size(); i++) {
-//                        Chip chip = new Chip(AddCarActivity.this);
-//                        chip.setText(classServiceList.get(i).getName());
+                        mapClassServise.put(classServiceList.get(i).getName(), classServiceList.get(i).getId());
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View rowView = inflater.inflate(R.layout.chip_class_service, null);
                         ((Chip) rowView).setText(classServiceList.get(i).getName());
                         chipGroup.addView(rowView);
-//                        chipGroup.addView(chip);
                     }
-
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -266,32 +265,16 @@ public class AddCarActivity extends AppCompatActivity {
         }
     };
 
-    private void initListValues() {
-        mStrings.add("WHITE");
-        mStrings.add("BLACK");
-        mStrings.add("GRAY");
-        mStrings.add("SILVER");
-        mStrings.add("GOLDEN");
-        mStrings.add("RED");
-        mStrings.add("BLUE");
-        mStrings.add("BEIGE");
-        mStrings.add("YELLOW");
-        mStrings.add("GREEN");
-        mStrings.add("OTHER");
-    }
-
 
     private void initView() {
         errorHandler = new ErrorHandler(this, this);
         brandSpinner = (MaterialSpinner) findViewById(R.id.brandSpinner);
         modelSpinner = (MaterialSpinner) findViewById(R.id.modelSpinner);
-        modelSpinner.setEnabled(false);
         yearSpinner = (MaterialSpinner) findViewById(R.id.yearSpinner);
         interiorSpinner = (MaterialSpinner) findViewById(R.id.interiorSpinner);
         carBodySpinner = (MaterialSpinner) findViewById(R.id.carBodySpinner);
         colourSpinner = (MaterialSpinner) findViewById(R.id.colourSpinner);
         mSearchableSpinner = (SearchableSpinner) findViewById(R.id.SearchableSpinner);
-        initListValues();
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         SearchableSpinner = (SearchableSpinner) findViewById(R.id.SearchableSpinner);
         registrationNumberTextInputLayout = (TextInputLayout) findViewById(R.id.registrationNumberTextInputLayout);
@@ -313,7 +296,7 @@ public class AddCarActivity extends AppCompatActivity {
 
     private void addCar() {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        CarInfo carInfo = new CarInfo(
+        AllCarResponse carInfo = new AllCarResponse(
                 brandHashMap.get(brandSpinner.getSelectedItem().toString()),
                 modelHashMap.get(modelSpinner.getSelectedItem().toString()),
                 yearHashMap.get(yearSpinner.getSelectedItem().toString()),
@@ -323,12 +306,51 @@ public class AddCarActivity extends AppCompatActivity {
                 carBodySpinner.getSelectedItem().toString(),
                 colourSpinner.getSelectedItem().toString()
         );
-        Call<CarInfo> call = apiInterface.addCar("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
-        call.enqueue(new Callback<CarInfo>() {
+
+        Call<AllCarResponse> call = apiInterface.addCar("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
+        call.enqueue(new Callback<AllCarResponse>() {
             @Override
-            public void onResponse(Call<CarInfo> call, Response<CarInfo> response) {
+            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
                 if (response.code() == 200) {
+
+                    for (int j = 0; j < chipGroup.getChildCount(); j++) {
+                        Chip chip = (Chip) chipGroup.getChildAt(j);
+                        if (chip.isChecked()) {
+                            selectedChip.add(chip);
+                        }
+                    }
+
+                    for (int i = 0; i < selectedChip.size(); i++) {
+                        addClassService(response.body().getId(), mapClassServise.get(selectedChip.get(i).getText().toString()));
+                    }
+
+
                     startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        errorHandler.showError(jObjError.getInt("code"));
+                    } catch (Exception e) {
+                        errorHandler.showCustomError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AllCarResponse> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
+    }
+
+    private void addClassService(String idCar, String idService) {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<AllCarResponse> call = apiInterface.addClassService(idCar, idService, "Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        call.enqueue(new Callback<AllCarResponse>() {
+            @Override
+            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+                if (response.code() == 200) {
+
 
                 } else {
                     try {
@@ -341,7 +363,7 @@ public class AddCarActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CarInfo> call, Throwable t) {
+            public void onFailure(Call<AllCarResponse> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
             }
         });
