@@ -22,6 +22,7 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.util.ErrorHandler;
+import com.gliesereum.karma.util.Util;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,22 +31,11 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.json.JSONObject;
 
@@ -78,7 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private MapView mapView;
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
-    private List<AllCarWashResponse> carsList;
+    private List<AllCarWashResponse> carWashList;
     private MaterialButton addCarBtn;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
@@ -88,7 +78,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        FastSave.init(getApplicationContext());
+        errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -97,7 +88,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
 
-        addNavigation();
+        new Util(this, toolbar).addNavigation();
 
         getLocationPermission();
 
@@ -105,69 +96,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.map);
         mapView.onCreate(mapViewBundle);
         mapView.getMapAsync(this);
-    }
-
-    private void addNavigation() {
-        new DrawerBuilder().withActivity(this).build();
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Maps");
-        SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName("Car List").withSelectable(false);
-        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(4).withName("Profile").withSelectable(false);
-        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withIdentifier(3).withName("LogOut").withSelectable(false);
-
-        // Create the AccountHeader
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
-                .addProfiles(
-                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile))
-                )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        return false;
-                    }
-                })
-                .build();
 
 
-//create the drawer and remember the `Drawer` result object
-        Drawer result = new DrawerBuilder()
-                .withAccountHeader(headerResult)
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .addDrawerItems(
-                        item1,
-                        new DividerDrawerItem(),
-                        item2,
-                        item3,
-                        new SecondaryDrawerItem().withName("drawer_item_settings_code"),
-                        logoutItem
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        // do something with the clicked item :D
-                        Toast.makeText(MapsActivity.this, String.valueOf(drawerItem.getIdentifier()), Toast.LENGTH_SHORT).show();
-                        switch ((int) drawerItem.getIdentifier()) {
-                            case 1:
-                                startActivity(new Intent(MapsActivity.this, MapsActivity.class));
-                                finish();
-                                break;
-                            case 2:
-                                startActivity(new Intent(MapsActivity.this, CarListActivity.class));
-                                finish();
-                                break;
-                            case 3:
-                                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                                startActivity(new Intent(MapsActivity.this, LoginActivity.class));
-                                finish();
-                                break;
-                        }
-
-                        return true;
-                    }
-                })
-                .build();
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
@@ -188,17 +118,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         customMarkerView.draw(canvas);
         return returnedBitmap;
     }
-
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -208,10 +127,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-//                Toast.makeText(MapsActivity.this, marker.getSnippet(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MapsActivity.this, CarWashActivity.class);
-                intent.putExtra("carWash_ID", marker.getSnippet());
-                startActivity(intent);
+                if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+                    Intent intent = new Intent(MapsActivity.this, CarWashActivity.class);
+                    intent.putExtra("carWash_ID", marker.getSnippet());
+                    startActivity(intent);
+                } else {
+                    startActivity(new Intent(MapsActivity.this, LoginActivity.class));
+                    finish();
+                }
 
             }
         });
@@ -229,10 +152,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onResponse(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
                 if (response.code() == 200) {
-                    carsList = response.body();
-
+                    carWashList = response.body();
                     List<LatLng> coordinateList = new ArrayList<>();
-                    for (AllCarWashResponse coordinate : carsList) {
+                    for (AllCarWashResponse coordinate : carWashList) {
                         coordinateList.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
@@ -253,7 +175,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-                    mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this, R.raw.style_json));
+//                    mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this, R.raw.style_json));
                     mMap.setMyLocationEnabled(true);
                     mMap.setBuildingsEnabled(true);
                     mMap.getUiSettings().setMapToolbarEnabled(true);

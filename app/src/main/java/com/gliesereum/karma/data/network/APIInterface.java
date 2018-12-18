@@ -4,9 +4,11 @@ import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarInfo;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.code.SignupBody;
+import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.User;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
 
@@ -32,6 +34,9 @@ public interface APIInterface {
     @POST("account/v1/auth/signup")
     Call<UserResponse> signUp(@Body SignupBody signinBody);
 
+    @GET("account/v1/user/me")
+    Call<User> getUser(@Header("Authorization") String accessToken);
+
     @PUT("account/v1/user")
     Call<User> updateUser(@Header("Authorization") String accessToken, @Body User user);
 
@@ -55,6 +60,17 @@ public interface APIInterface {
 
     @POST("karma/v1/car")
     Call<CarInfo> addCar(@Header("Authorization") String accessToken, @Body CarInfo object);
+
+    @POST("account/v1/auth/refresh")
+    Call<TokenInfo> refreshAccessToken(@Query("accessToken") String accessToken, @Query("refreshToken") String refreshToken);
+
+    @POST("account/v1/auth/revoke")
+    Call<CarInfo> deleteAccessToken(@Header("Authorization") String accessToken, @Body CarInfo object);
+
+    @GET("karma/v1/class")
+    Call<List<ClassServiceResponse>> getAllClassService();
+
+
 
 
 }

@@ -8,71 +8,71 @@ import javax.annotation.Generated;
 public class User {
 
     @SerializedName("lastName")
-    private Object lastName;
+    private String lastName;
 
     @SerializedName("country")
-    private Object country;
+    private String country;
 
     @SerializedName("address")
-    private Object address;
+    private String address;
 
     @SerializedName("gender")
     private Object gender;
 
     @SerializedName("city")
-    private Object city;
+    private String city;
 
     @SerializedName("avatarUrl")
-    private Object avatarUrl;
+    private String avatarUrl;
 
     @SerializedName("banStatus")
     private String banStatus;
 
     @SerializedName("addAddress")
-    private Object addAddress;
+    private String addAddress;
 
     @SerializedName("coverUrl")
-    private Object coverUrl;
+    private String coverUrl;
 
     @SerializedName("firstName")
-    private Object firstName;
+    private String firstName;
 
     @SerializedName("verifiedStatus")
     private String verifiedStatus;
 
     @SerializedName("middleName")
-    private Object middleName;
+    private String middleName;
 
     @SerializedName("id")
     private String id;
 
     @SerializedName("position")
-    private Object position;
+    private String position;
 
     @SerializedName("userType")
     private String userType;
 
-    public void setLastName(Object lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public Object getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setCountry(Object country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public Object getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setAddress(Object address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    public Object getAddress() {
+    public String getAddress() {
         return address;
     }
 
@@ -84,19 +84,19 @@ public class User {
         return gender;
     }
 
-    public void setCity(Object city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public Object getCity() {
+    public String getCity() {
         return city;
     }
 
-    public void setAvatarUrl(Object avatarUrl) {
+    public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 
-    public Object getAvatarUrl() {
+    public String getAvatarUrl() {
         return avatarUrl;
     }
 
@@ -108,27 +108,27 @@ public class User {
         return banStatus;
     }
 
-    public void setAddAddress(Object addAddress) {
+    public void setAddAddress(String addAddress) {
         this.addAddress = addAddress;
     }
 
-    public Object getAddAddress() {
+    public String getAddAddress() {
         return addAddress;
     }
 
-    public void setCoverUrl(Object coverUrl) {
+    public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
     }
 
-    public Object getCoverUrl() {
+    public String getCoverUrl() {
         return coverUrl;
     }
 
-    public void setFirstName(Object firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public Object getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
@@ -140,11 +140,11 @@ public class User {
         return verifiedStatus;
     }
 
-    public void setMiddleName(Object middleName) {
+    public void setMiddleName(String middleName) {
         this.middleName = middleName;
     }
 
-    public Object getMiddleName() {
+    public String getMiddleName() {
         return middleName;
     }
 
@@ -156,11 +156,11 @@ public class User {
         return id;
     }
 
-    public void setPosition(Object position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 
-    public Object getPosition() {
+    public String getPosition() {
         return position;
     }
 

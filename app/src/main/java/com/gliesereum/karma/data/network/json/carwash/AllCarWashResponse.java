@@ -13,7 +13,7 @@ public class AllCarWashResponse {
     private String address;
 
     @SerializedName("workTimes")
-    private List<Object> workTimes;
+    private List<WorkTimesItem> workTimes;
 
     @SerializedName("latitude")
     private double latitude;
@@ -44,11 +44,11 @@ public class AllCarWashResponse {
         return address;
     }
 
-    public void setWorkTimes(List<Object> workTimes) {
+    public void setWorkTimes(List<WorkTimesItem> workTimes) {
         this.workTimes = workTimes;
     }
 
-    public List<Object> getWorkTimes() {
+    public List<WorkTimesItem> getWorkTimes() {
         return workTimes;
     }
 

@@ -59,7 +59,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewHol
         // и ищет все дочерние компоненты
         public TweetViewHolder(View itemView) {
             super(itemView);
-            button2 = itemView.findViewById(R.id.button2);
             brandId = itemView.findViewById(R.id.brandId);
             modelId = itemView.findViewById(R.id.modelId);
             yearId = itemView.findViewById(R.id.yearId);

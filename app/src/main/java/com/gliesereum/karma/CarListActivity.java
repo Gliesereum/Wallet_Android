@@ -11,17 +11,8 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.util.ErrorHandler;
+import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.json.JSONObject;
 
@@ -36,7 +27,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
-import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 
 public class CarListActivity extends AppCompatActivity {
 
@@ -98,66 +88,7 @@ public class CarListActivity extends AppCompatActivity {
         tweetAdapter = new TweetAdapter();
         recyclerView.setAdapter(tweetAdapter);
 
-        new DrawerBuilder().withActivity(this).build();
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Maps");
-        SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName("Car list").withSelectable(false);
-        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(4).withName("Profile").withSelectable(false);
-        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withIdentifier(3).withName("LogOut").withSelectable(false);
-
-        // Create the AccountHeader
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
-                .addProfiles(
-                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile))
-                )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        return false;
-                    }
-                })
-                .build();
-
-
-//create the drawer and remember the `Drawer` result object
-        Drawer result = new DrawerBuilder()
-                .withAccountHeader(headerResult)
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .addDrawerItems(
-                        item1,
-                        new DividerDrawerItem(),
-                        item2,
-                        item3,
-                        new SecondaryDrawerItem().withName("drawer_item_settings_code"),
-                        logoutItem
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        // do something with the clicked item :D
-                        Toast.makeText(CarListActivity.this, String.valueOf(drawerItem.getIdentifier()), Toast.LENGTH_SHORT).show();
-                        switch ((int) drawerItem.getIdentifier()) {
-                            case 1:
-                                startActivity(new Intent(CarListActivity.this, MapsActivity.class));
-                                finish();
-                                break;
-                            case 2:
-                                startActivity(new Intent(CarListActivity.this, CarListActivity.class));
-                                finish();
-                                break;
-                            case 3:
-                                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                                startActivity(new Intent(CarListActivity.this, LoginActivity.class));
-                                finish();
-                                break;
-                        }
-
-                        return true;
-                    }
-                })
-                .build();
+        new Util(this, toolbar).addNavigation();
 //modify an item of the drawer
 //notify the drawer about the updated element. it will take care about everything else
         //to update only the name, badge, icon you can also use one of the quick methods
@@ -165,7 +96,7 @@ public class CarListActivity extends AppCompatActivity {
         addCarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CarListActivity.this, TestActivity.class));
+                startActivity(new Intent(CarListActivity.this, AddCarActivity.class));
             }
         });
     }

@@ -55,11 +55,15 @@ dependencies {
     //https://github.com/michaelprimez/searchablespinner?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=5120
     implementation 'com.andrognito.flashbar:flashbar:1.0.3'
     //https://android-arsenal.com/details/1/6933
+    implementation 'de.ehsun.coloredtimebar:coloredtimebar:1.0'
+//https://android-arsenal.com/details/1/6634
+    implementation 'com.github.hakobast:dropdown-textview:0.2'
+    //https://android-arsenal.com/details/1/6765
 
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1-alpha01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-alpha01'
+    androidTestImplementation 'androidx.test:runner:1.1.1-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 }

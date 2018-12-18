@@ -38,21 +38,23 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".LoginActivity">
+        <activity android:name=".MapsActivity" />
+        <activity android:name=".MarkerDemoActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity
+            android:name=".AddCarActivity"
+            android:parentActivityName=".CarListActivity" />
+        <activity android:name=".CarListActivity" />
+        <activity android:name=".CarWashActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MarkerDemoActivity" />
-        <activity android:name=".MapsActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity
-            android:name=".TestActivity"
-            android:parentActivityName=".CarListActivity" />
-        <activity android:name=".CarListActivity" />
-        <activity android:name=".CarWashActivity"></activity>
     </application>
 
 </manifest>

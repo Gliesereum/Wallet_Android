@@ -2,7 +2,7 @@ package com.gliesereum.karma.util;
 
 public class Constants {
 
-    public static final String ANDROID_APP = "[ANDROID_APP]";
+    public static final String ANDROID_APP = "пустое поле";
 
     public static final String LOGIN_METHOD = "loginMethod";
     public static final String LOGIN_PHONE = "loginPhone";

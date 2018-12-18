@@ -2,16 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <!--<item name="colorAccent">@color/colorAccent</item>-->
-
         <item name="colorPrimary">@color/material_drawer_primary</item>
-        <item name="colorPrimaryDark">@color/material_drawer_background</item>
-        <item name="colorAccent">@color/material_drawer_selected_text</item>
+        <item name="colorPrimaryDark">@color/material_drawer_primary_dark</item>
+        <item name="colorAccent">@color/material_drawer_accent</item>
 
-        <!-- MaterialDrawer specific values -->
         <item name="material_drawer_background">@color/material_drawer_background</item>
         <item name="material_drawer_primary_text">@color/material_drawer_primary_text</item>
         <item name="material_drawer_primary_icon">@color/material_drawer_primary_icon</item>
@@ -32,14 +26,6 @@
         <item name="material_drawer_legacy_style">false
         </item> <!-- Enables legacy Material 1 style -->
 
-    </style>
-
-    <style name="Toolbar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:textColorPrimary">@color/material_drawer_dark_primary_text</item>
-        <item name="android:textColorSecondary">@color/material_drawer_dark_primary_text</item>
-        <item name="actionMenuTextColor">@color/material_drawer_dark_primary_text</item>
     </style>
 
 

@@ -1,8 +1,10 @@
 package com.gliesereum.karma;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,8 +17,11 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarInfo;
+import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -28,6 +33,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
@@ -38,7 +44,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 
-public class TestActivity extends AppCompatActivity {
+public class AddCarActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private MaterialSpinner brandSpinner;
@@ -57,7 +63,7 @@ public class TestActivity extends AppCompatActivity {
     private TextInputLayout descriptionNumberTextInputLayout;
     private TextInputEditText descriptionNumberTextView;
     private MaterialButton addCarBtn;
-    private List<CarInfo> carsList;
+    private List<ClassServiceResponse> classServiceList;
     private ArrayAdapter<String> modelAdapter;
     private ProgressDialog progressDialog;
     private APIInterface apiInterface;
@@ -69,12 +75,14 @@ public class TestActivity extends AppCompatActivity {
     ArrayAdapter<String> interiorAdapter;
     private ArrayAdapter<String> carBodyAdapter;
     private ArrayAdapter<String> colourAdapter;
+    private ConstraintLayout constraintLayout;
+    private ChipGroup chipGroup;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_add_car);
         FastSave.init(getApplicationContext());
 
         toolbar = findViewById(R.id.toolbar);
@@ -84,27 +92,18 @@ public class TestActivity extends AppCompatActivity {
 
         initView();
         enableSpinner(brandSpinner);
+        getAllClassService();
 
-//        String[] brandITEMS = {};
-//        ArrayAdapter<String> brandAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, brandITEMS);
-//        brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        brandSpinner.setAdapter(brandAdapter);
         brandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(modelSpinner);
-                } else {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
-
                 }
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -112,18 +111,12 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(yearSpinner);
-                } else {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
-
                 }
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -131,18 +124,12 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(interiorSpinner);
-                } else {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
-
                 }
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -150,18 +137,12 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(carBodySpinner);
-                } else {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
-
                 }
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -169,28 +150,22 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
                     enableSpinner(colourSpinner);
-                } else {
-//                    Toast.makeText(TestActivity.this, "id " + id + "| " + parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
-
                 }
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-//                Toast.makeText(TestActivity.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
             }
         });
 
-        String[] modelITEMS = {"A100", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300", "A200", "A300"};
+        String[] modelITEMS = {"A100"};
         modelAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, modelITEMS);
         modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modelSpinner.setAdapter(modelAdapter);
 
 
-        String[] yearITEMS = {"1990", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010", "2000", "2010"};
+        String[] yearITEMS = {"1990"};
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, yearITEMS);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
@@ -230,6 +205,41 @@ public class TestActivity extends AppCompatActivity {
 
     }
 
+    private void getAllClassService() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<List<ClassServiceResponse>> call = apiInterface.getAllClassService();
+        call.enqueue(new Callback<List<ClassServiceResponse>>() {
+            @Override
+            public void onResponse(Call<List<ClassServiceResponse>> call, Response<List<ClassServiceResponse>> response) {
+                if (response.code() == 200) {
+                    classServiceList = response.body();
+                    for (int i = 0; i < classServiceList.size(); i++) {
+//                        Chip chip = new Chip(AddCarActivity.this);
+//                        chip.setText(classServiceList.get(i).getName());
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View rowView = inflater.inflate(R.layout.chip_class_service, null);
+                        ((Chip) rowView).setText(classServiceList.get(i).getName());
+                        chipGroup.addView(rowView);
+//                        chipGroup.addView(chip);
+                    }
+
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        errorHandler.showError(jObjError.getInt("code"));
+                    } catch (Exception e) {
+                        errorHandler.showCustomError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ClassServiceResponse>> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!mSearchableSpinner.isInsideSearchEditText(event)) {
@@ -247,36 +257,18 @@ public class TestActivity extends AppCompatActivity {
     private OnItemSelectedListener mOnItemSelectedListener = new OnItemSelectedListener() {
         @Override
         public void onItemSelected(View view, int position, long id) {
-            Toast.makeText(TestActivity.this, "Item on position " + position + " : " + " Selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddCarActivity.this, "Item on position " + position + " : " + " Selected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onNothingSelected() {
-            Toast.makeText(TestActivity.this, "Nothing Selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddCarActivity.this, "Nothing Selected", Toast.LENGTH_SHORT).show();
         }
     };
 
     private void initListValues() {
         mStrings.add("WHITE");
         mStrings.add("BLACK");
-        mStrings.add("GRAY");
-        mStrings.add("SILVER");
-        mStrings.add("GOLDEN");
-        mStrings.add("RED");
-        mStrings.add("BLUE");
-        mStrings.add("BEIGE");
-        mStrings.add("YELLOW");
-        mStrings.add("GREEN");
-        mStrings.add("OTHER");
-        mStrings.add("GRAY");
-        mStrings.add("SILVER");
-        mStrings.add("GOLDEN");
-        mStrings.add("RED");
-        mStrings.add("BLUE");
-        mStrings.add("BEIGE");
-        mStrings.add("YELLOW");
-        mStrings.add("GREEN");
-        mStrings.add("OTHER");
         mStrings.add("GRAY");
         mStrings.add("SILVER");
         mStrings.add("GOLDEN");
@@ -310,27 +302,13 @@ public class TestActivity extends AppCompatActivity {
         addCarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 addCar();
-//                carsList = new ArrayList<>();
-//                carsList = FastSave.getInstance().getObjectsList("carsList", CarInfo.class);
-//                carsList.add(new CarInfo(
-//                       brandSpinner.getSelectedItem().toString(),
-//                       modelSpinner.getSelectedItem().toString(),
-//                       yearSpinner.getSelectedItem().toString(),
-//                        registrationNumberTextView.getText().toString(),
-//                        descriptionNumberTextView.getText().toString(),
-//                        interiorSpinner.getSelectedItem().toString(),
-//                        carBodySpinner.getSelectedItem().toString(),
-//                        colourSpinner.getSelectedItem().toString()
-//                ));
-//                FastSave.getInstance().saveObjectsList("carsList",carsList); // For Saving Custom Object
-//                startActivity(new Intent(TestActivity.this, CarListActivity.class));
-//                finish();
             }
         });
 
 
+        constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
+        chipGroup = (ChipGroup) findViewById(R.id.chipGroup);
     }
 
     private void addCar() {
@@ -350,7 +328,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CarInfo> call, Response<CarInfo> response) {
                 if (response.code() == 200) {
-                    startActivity(new Intent(TestActivity.this, CarListActivity.class));
+                    startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
 
                 } else {
                     try {
@@ -443,7 +421,7 @@ public class TestActivity extends AppCompatActivity {
                         modelITEMS.add(response.body().get(i).getName());
                         brandHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
                     }
-                    modelAdapter = new ArrayAdapter<String>(TestActivity.this, R.layout.car_hint_item_layout, modelITEMS);
+                    modelAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, modelITEMS);
                     modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     brandSpinner.setAdapter(modelAdapter);
                     closeProgressDialog();
@@ -481,7 +459,7 @@ public class TestActivity extends AppCompatActivity {
                         modelHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
 
                     }
-                    modelAdapter = new ArrayAdapter<String>(TestActivity.this, R.layout.car_hint_item_layout, modelITEMS);
+                    modelAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, modelITEMS);
                     modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     modelSpinner.setAdapter(modelAdapter);
                     closeProgressDialog();
@@ -519,7 +497,7 @@ public class TestActivity extends AppCompatActivity {
                         yearHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
 
                     }
-                    modelAdapter = new ArrayAdapter<String>(TestActivity.this, R.layout.car_hint_item_layout, modelITEMS);
+                    modelAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, modelITEMS);
                     modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     yearSpinner.setAdapter(modelAdapter);
                     closeProgressDialog();

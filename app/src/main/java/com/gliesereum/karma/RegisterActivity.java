@@ -2,7 +2,6 @@ package com.gliesereum.karma;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -46,7 +45,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         FastSave.init(getApplicationContext());
         user = FastSave.getInstance().getObject("userInfo", User.class);
-        Log.d("TOKEN", FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         initView();
     }
 

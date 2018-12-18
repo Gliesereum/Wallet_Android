@@ -69,11 +69,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         FastSave.init(getApplicationContext());
-
-        if (FastSave.getInstance().getBoolean(IS_LOGIN, true)) {
-            startActivity(new Intent(LoginActivity.this, MapsActivity.class));
-            finish();
-        }
         initView();
     }
 
@@ -277,6 +272,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void showValueBlock() {
+        newUserCheckBox.setVisibility(View.VISIBLE);
         codeLabel1.setVisibility(View.GONE);
         codeLabel2.setVisibility(View.GONE);
         timerLabel.setVisibility(View.GONE);
@@ -295,6 +291,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         codeLabel2.setVisibility(View.VISIBLE);
         timerLabel.setVisibility(View.VISIBLE);
         codeView.setVisibility(View.VISIBLE);
+        newUserCheckBox.setVisibility(View.GONE);
         loginBtn.setEnabled(false);
         codeView.requestFocus();
     }
