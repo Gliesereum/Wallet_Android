@@ -227,7 +227,7 @@
                     android:layout_height="match_parent"
                     android:focusableInTouchMode="true"
                     android:hint="registrationNumber"
-                    android:inputType="numberSigned"
+                    android:inputType="text"
                     android:singleLine="true"
                     android:textColor="#959CBB"
                     android:textColorHint="#959CBB" />

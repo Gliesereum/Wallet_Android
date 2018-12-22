@@ -59,6 +59,9 @@ dependencies {
 //https://android-arsenal.com/details/1/6634
     implementation 'com.github.hakobast:dropdown-textview:0.2'
     //https://android-arsenal.com/details/1/6765
+    implementation 'com.github.shrikanth7698:Collapsible-Calendar-View-Android:v1.0.0' //https://android-arsenal.com/details/1/6829
+    implementation 'com.github.Haegon:EasyNativeDialog-for-Android:0.3.0'//https://android-arsenal.com/details/1/6525
+    implementation 'com.github.iammert:ExpandableLayout:1.4.1' //https://android-arsenal.com/details/1/6128
 
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

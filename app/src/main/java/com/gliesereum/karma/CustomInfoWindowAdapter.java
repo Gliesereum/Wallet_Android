@@ -9,22 +9,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
-import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
-import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private final View mWindow;
@@ -78,41 +66,6 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 //        getCarWash(marker.getSnippet(), view);
 
 
-    }
-
-    private void getCarWash(String id, View view) {
-        showProgressDialog();
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<AllCarWashResponse> call = apiInterface.getCarWash(id);
-        call.enqueue(new Callback<AllCarWashResponse>() {
-            @Override
-            public void onResponse(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
-                if (response.code() == 200) {
-
-                    Map<String, WorkTimesItem> workTimeMap = new HashMap<>();
-                    for (int i = 0; i < response.body().getWorkTimes().size(); i++) {
-                        workTimeMap.put(response.body().getWorkTimes().get(i).getDayOfWeek(), response.body().getWorkTimes().get(i));
-                    }
-
-
-                    closeProgressDialog();
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                        closeProgressDialog();
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                        closeProgressDialog();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
     }
 
     public void showProgressDialog() {

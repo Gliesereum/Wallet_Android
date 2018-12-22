@@ -162,15 +162,15 @@ public class AddCarActivity extends AppCompatActivity {
             }
         });
 
-//        String[] modelITEMS = {"A100"};
-//        modelAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, modelITEMS);
-//        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        modelSpinner.setAdapter(modelAdapter);
-//
-//        String[] yearITEMS = {"1990"};
-//        ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, yearITEMS);
-//        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        yearSpinner.setAdapter(yearAdapter);
+        String[] modelITEMS = {"A100"};
+        modelAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, modelITEMS);
+        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        modelSpinner.setAdapter(modelAdapter);
+
+        String[] yearITEMS = {"1990"};
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, yearITEMS);
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        yearSpinner.setAdapter(yearAdapter);
 
         String[] interiorITEMS = {"SUEDE", "LEATHER", "ARTIFICIAL_LEATHER", "ALCANTARA", "TASKANA", "VELOURS"};
         interiorAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, interiorITEMS);

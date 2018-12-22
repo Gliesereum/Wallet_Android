@@ -13,16 +13,26 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
+import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
+import com.gohn.nativedialog.ButtonClickListener;
+import com.gohn.nativedialog.ButtonType;
+import com.gohn.nativedialog.NDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,7 +50,11 @@ import com.google.android.material.button.MaterialButton;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -51,9 +65,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.gliesereum.karma.util.Constants.CAR_BRAND;
+import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1101;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -72,6 +89,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MaterialButton addCarBtn;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
+    private List<ServiceResponse> serviceList = new ArrayList<>();
+    private Map<String, String> mapServise = new HashMap<>();
+    private Set<String> serviceIdList = new HashSet<>();
 
 
     @Override
@@ -81,6 +101,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
+        if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") && FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
+            toolbar.setTitle("KARMA");
+        } else {
+            toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
+            toolbar.setSubtitle("Выбранный автомобиль");
+        }
         setSupportActionBar(toolbar);
 
         Bundle mapViewBundle = null;
@@ -89,7 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         new Util(this, toolbar).addNavigation();
-
+        getAllService();
         getLocationPermission();
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -122,7 +148,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        getAllCarWash();
+        getAllCarWash(new FilterCarWashBody());
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -145,14 +171,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    private void getAllCarWash() {
+    private void getAllCarWash(FilterCarWashBody filterCarWashBody) {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<List<AllCarWashResponse>> call = apiInterface.getAllCarWash();
+        Call<List<AllCarWashResponse>> call = apiInterface.getAllCarWash(filterCarWashBody);
         call.enqueue(new Callback<List<AllCarWashResponse>>() {
             @Override
             public void onResponse(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
                 if (response.code() == 200) {
                     carWashList = response.body();
+                    mMap.clear();
                     List<LatLng> coordinateList = new ArrayList<>();
                     for (AllCarWashResponse coordinate : carWashList) {
                         coordinateList.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
@@ -323,5 +350,110 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onLowMemory();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.filter_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.filter_menu:
+                NDialog nDialog = new NDialog(MapsActivity.this, ButtonType.ONE_BUTTON);
+                nDialog.setTitle("This is title");
+                nDialog.setMessage("This is Content Message");
+                ButtonClickListener buttonClickListener = new ButtonClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        switch (button) {
+                            case NDialog.BUTTON_POSITIVE:
+                                FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
+                                filterCarWashBody.setCarId(FastSave.getInstance().getString(CAR_ID, ""));
+                                filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
+                                getAllCarWash(filterCarWashBody);
+                                break;
+                        }
+                    }
+                };
+                nDialog.setPositiveButtonText("Применить фильтр");
+                nDialog.setPositiveButtonTextColor(Color.BLUE);
+                nDialog.setPositiveButtonOnClickDismiss(true); // default : true
+                nDialog.setPositiveButtonClickListener(buttonClickListener);
+
+                nDialog.isCancelable(true);
+
+                nDialog.setCustomView(R.layout.service_chip_view);
+
+                List<View> childViews = nDialog.getCustomViewChildren();
+                for (View childView : childViews) {
+                    switch (childView.getId()) {
+                        case R.id.serviceGroup:
+                            LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
+                            for (int i = 0; i < mapServise.size(); i++) {
+                                CheckBox checkBox = new CheckBox(MapsActivity.this);
+                                checkBox.setText(serviceList.get(i).getName());
+                                checkBox.setOnCheckedChangeListener(this);
+                                if (serviceIdList.contains(mapServise.get(serviceList.get(i).getName()))) {
+                                    checkBox.setChecked(true);
+                                }
+                                checkGroup.addView(checkBox);
+                            }
+                            break;
+                    }
+                }
+
+// SHOW DIALOG
+                nDialog.show();
+
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void getAllService() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<List<ServiceResponse>> call = apiInterface.getAllService();
+        call.enqueue(new Callback<List<ServiceResponse>>() {
+            @Override
+            public void onResponse(Call<List<ServiceResponse>> call, Response<List<ServiceResponse>> response) {
+                if (response.code() == 200) {
+                    serviceList = response.body();
+                    for (int i = 0; i < serviceList.size(); i++) {
+                        mapServise.put(serviceList.get(i).getName(), serviceList.get(i).getId());
+                    }
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        errorHandler.showError(jObjError.getInt("code"));
+                    } catch (Exception e) {
+                        errorHandler.showCustomError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ServiceResponse>> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
+    }
+
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            Log.d(TAG, "onCheckedChanged: TRUE");
+            serviceIdList.add(mapServise.get(buttonView.getText().toString()));
+            Log.d(TAG, "onCheckedChanged: " + serviceIdList.size());
+        } else {
+            Log.d(TAG, "onCheckedChanged: FALSE");
+            serviceIdList.remove(mapServise.get(buttonView.getText().toString()));
+            Log.d(TAG, "onCheckedChanged: " + serviceIdList.size());
+        }
+    }
 }

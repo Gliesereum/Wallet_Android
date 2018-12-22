@@ -27,12 +27,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CAR_BRAND;
+import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 
 public class CarListActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private RecyclerView recyclerView;
-    private TweetAdapter tweetAdapter;
+    private CarListAdapter carListAdapter;
     private List<AllCarResponse> carsList;
     private MaterialButton addCarBtn;
     private APIInterface apiInterface;
@@ -58,16 +61,25 @@ public class CarListActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     carsList = response.body();
                     if (carsList != null && carsList.size() > 0) {
-                        tweetAdapter.setItems(carsList);
+                        if (carsList.size() == 1) {
+                            FastSave.getInstance().saveString(CAR_ID, carsList.get(0).getId());
+                            FastSave.getInstance().saveString(CAR_BRAND, carsList.get(0).getBrand().getName());
+                            FastSave.getInstance().saveString(CAR_MODEL, carsList.get(0).getModel().getName());
+                        }
+                        carListAdapter.setItems(carsList);
                     } else {
                         Toast.makeText(CarListActivity.this, "Please add car", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
+                    if (response.code() == 204) {
+                        Toast.makeText(CarListActivity.this, "Пусто", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
                     }
                 }
             }
@@ -85,8 +97,14 @@ public class CarListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tweetAdapter = new TweetAdapter();
-        recyclerView.setAdapter(tweetAdapter);
+        carListAdapter = new CarListAdapter();
+        recyclerView.setAdapter(carListAdapter);
+        recyclerView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
 
         new Util(this, toolbar).addNavigation();
 //modify an item of the drawer

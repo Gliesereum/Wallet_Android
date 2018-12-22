@@ -3,10 +3,12 @@ package com.gliesereum.karma.data.network;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.code.SignupBody;
+import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.User;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
@@ -48,10 +50,10 @@ public interface APIInterface {
     @GET("karma/v1/car/years")
     Call<List<BrandResponse>> getYears();
 
-    @GET("karma/v1/carwash")
-    Call<List<AllCarWashResponse>> getAllCarWash();
+    @POST("karma/v1/carwash/search")
+    Call<List<AllCarWashResponse>> getAllCarWash(@Body FilterCarWashBody filterCarWashBody);
 
-    @GET("karma/v1/carwash/{carwashId}")
+    @GET("karma/v1/carwash/full/model/{carwashId}")
     Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
     @GET("karma/v1/car/user")
@@ -71,6 +73,9 @@ public interface APIInterface {
 
     @POST("karma/v1/car/add/service/{idCar}/{idService}")
     Call<AllCarResponse> addClassService(@Path("idCar") String idCar, @Path("idService") String idService, @Header("Authorization") String accessToken);
+
+    @GET("karma/v1/service")
+    Call<List<ServiceResponse>> getAllService();
 
 
 

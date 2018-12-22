@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:focusableInTouchMode="true"
             android:hint="secondNameTextView"
-            android:inputType="numberSigned"
+            android:inputType="text"
             android:singleLine="true"
             android:textColor="#959CBB"
             android:textColorHint="#959CBB" />
@@ -56,7 +56,7 @@
             android:layout_height="match_parent"
             android:focusableInTouchMode="true"
             android:hint="nameTextView"
-            android:inputType="numberSigned"
+            android:inputType="text"
             android:singleLine="true"
             android:textColor="#959CBB"
             android:textColorHint="#959CBB" />
@@ -85,7 +85,7 @@
             android:layout_height="match_parent"
             android:focusableInTouchMode="true"
             android:hint="thirdNameTextView"
-            android:inputType="numberSigned"
+            android:inputType="text"
             android:singleLine="true"
             android:textColor="#959CBB"
             android:textColorHint="#959CBB" />

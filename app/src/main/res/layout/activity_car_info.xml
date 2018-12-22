@@ -54,7 +54,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/modelId" />
 
             <TextView
-                android:id="@+id/userId"
+                android:id="@+id/carId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="180dp"
@@ -219,6 +219,18 @@
                 android:text="Год:"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/brandId"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/chooseCar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Выбрать авто"
+                app:layout_constraintBottom_toBottomOf="@+id/registrationNumber"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

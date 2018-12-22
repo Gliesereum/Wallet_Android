@@ -2,11 +2,18 @@ package com.gliesereum.karma.util;
 
 public class Constants {
 
-    public static final String ANDROID_APP = "пустое поле";
+    public static final String ANDROID_APP = "Не заполенно";
 
     public static final String USER_NAME = "userName";
     public static final String USER_SECOND_NAME = "userSecondName";
     public static final String IS_LOGIN = "isLogin";
+
+    public static final String CAR_ID = "carId";
+    public static final String CAR_BRAND = "carBrand";
+    public static final String CAR_MODEL = "carModel";
+    public static final String CAR_INTERIOR = "carInterior";
+    public static final String CAR_BODY = "carBody";
+    public static final String CAR_COLOR = "carColor";
 
     public static final String USER_ID = "userId";
     public static final String ACCESS_TOKEN = "accessToken";
