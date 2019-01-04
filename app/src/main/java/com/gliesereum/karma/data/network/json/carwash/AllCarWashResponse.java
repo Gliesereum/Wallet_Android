@@ -21,6 +21,9 @@ public class AllCarWashResponse {
     @SerializedName("servicePrices")
     private List<ServicePricesItem> servicePrices;
 
+    @SerializedName("records")
+    private List<RecordsItem> records;
+
     @SerializedName("latitude")
     private double latitude;
 
@@ -87,6 +90,14 @@ public class AllCarWashResponse {
 
     public List<ServicePricesItem> getServicePrices() {
         return servicePrices;
+    }
+
+    public void setRecords(List<RecordsItem> records) {
+        this.records = records;
+    }
+
+    public List<RecordsItem> getRecords() {
+        return records;
     }
 
     public void setLatitude(double latitude) {

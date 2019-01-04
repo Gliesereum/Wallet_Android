@@ -155,7 +155,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onInfoWindowClick(Marker marker) {
                 if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
                     Intent intent = new Intent(MapsActivity.this, CarWashActivity.class);
-                    intent.putExtra("carWash_ID", marker.getSnippet());
+                    intent.putExtra("carWashId", marker.getSnippet());
                     startActivity(intent);
                 } else {
                     startActivity(new Intent(MapsActivity.this, LoginActivity.class));
@@ -215,11 +215,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     getDeviceLocation();
 
                 } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
+                    if (response.code() == 204) {
+//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
                     }
                 }
             }
@@ -427,11 +431,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         mapServise.put(serviceList.get(i).getName(), serviceList.get(i).getId());
                     }
                 } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
+                    if (response.code() == 204) {
+//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
                     }
                 }
             }

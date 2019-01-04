@@ -21,6 +21,9 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import androidx.appcompat.widget.Toolbar;
 
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
@@ -120,5 +123,13 @@ public class Util {
         } else {
             return false;
         }
+    }
+
+    public static String getStringTime(Long millisecond) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millisecond);
+        return format.format(calendar.getTime());
+
     }
 }

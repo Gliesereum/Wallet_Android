@@ -53,7 +53,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/valueBlock"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:animateLayoutChanges="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -77,9 +77,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
                     android:focusableInTouchMode="true"
                     android:textColorHint="#959CBB"
                     app:boxStrokeColor="#2A2B30"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/ccp"
                     app:layout_constraintTop_toTopOf="parent">
@@ -89,7 +91,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:focusableInTouchMode="true"
-                        android:hint="@string/enter_phone_hint"
+                        android:hint="Номер телефона"
                         android:inputType="numberSigned"
                         android:singleLine="true"
                         android:textColor="#959CBB"
@@ -169,20 +171,6 @@
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/codeView" />
-
-            <CheckBox
-                android:id="@+id/newUserCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="Новый пользователь"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/valueBlock" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

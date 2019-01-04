@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
@@ -67,12 +66,10 @@ public class CarListActivity extends AppCompatActivity {
                             FastSave.getInstance().saveString(CAR_MODEL, carsList.get(0).getModel().getName());
                         }
                         carListAdapter.setItems(carsList);
-                    } else {
-                        Toast.makeText(CarListActivity.this, "Please add car", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     if (response.code() == 204) {
-                        Toast.makeText(CarListActivity.this, "Пусто", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());

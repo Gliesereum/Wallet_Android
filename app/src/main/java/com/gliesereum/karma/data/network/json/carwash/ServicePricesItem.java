@@ -12,9 +12,6 @@ public class ServicePricesItem {
     @SerializedName("duration")
     private int duration;
 
-    @SerializedName("carBody")
-    private Object carBody;
-
     @SerializedName("serviceClass")
     private List<ServiceClassItem> serviceClass;
 
@@ -23,6 +20,9 @@ public class ServicePricesItem {
 
     @SerializedName("businessServiceId")
     private String businessServiceId;
+
+    @SerializedName("service")
+    private Service service;
 
     @SerializedName("name")
     private String name;
@@ -33,8 +33,11 @@ public class ServicePricesItem {
     @SerializedName("serviceId")
     private String serviceId;
 
-    @SerializedName("interiorType")
-    private Object interiorType;
+    @SerializedName("carBodies")
+    private List<Object> carBodies;
+
+    @SerializedName("interiorTypes")
+    private List<Object> interiorTypes;
 
     public void setDuration(int duration) {
         this.duration = duration;
@@ -42,14 +45,6 @@ public class ServicePricesItem {
 
     public int getDuration() {
         return duration;
-    }
-
-    public void setCarBody(Object carBody) {
-        this.carBody = carBody;
-    }
-
-    public Object getCarBody() {
-        return carBody;
     }
 
     public void setServiceClass(List<ServiceClassItem> serviceClass) {
@@ -76,6 +71,14 @@ public class ServicePricesItem {
         return businessServiceId;
     }
 
+    public void setService(Service service) {
+        this.service = service;
+    }
+
+    public Service getService() {
+        return service;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -100,11 +103,19 @@ public class ServicePricesItem {
         return serviceId;
     }
 
-    public void setInteriorType(Object interiorType) {
-        this.interiorType = interiorType;
+    public void setCarBodies(List<Object> carBodies) {
+        this.carBodies = carBodies;
     }
 
-    public Object getInteriorType() {
-        return interiorType;
+    public List<Object> getCarBodies() {
+        return carBodies;
+    }
+
+    public void setInteriorTypes(List<Object> interiorTypes) {
+        this.interiorTypes = interiorTypes;
+    }
+
+    public List<Object> getInteriorTypes() {
+        return interiorTypes;
     }
 }

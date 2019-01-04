@@ -7,7 +7,8 @@ import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
-import com.gliesereum.karma.data.network.json.code.SignupBody;
+import com.gliesereum.karma.data.network.json.order.OrderBody;
+import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.User;
@@ -27,13 +28,10 @@ import retrofit2.http.Query;
 public interface APIInterface {
 
     @GET("account/v1/phone/code")
-    Call<CodeResponse> getPhoneCode(@Query("phone") String phone, @Query("isNew") String isNew);
+    Call<CodeResponse> getPhoneCode(@Query("phone") String phone);
 
     @POST("account/v1/auth/signin")
     Call<UserResponse> signIn(@Body SigninBody signinBody);
-
-    @POST("account/v1/auth/signup")
-    Call<UserResponse> signUp(@Body SignupBody signinBody);
 
     @GET("account/v1/user/me")
     Call<User> getUser(@Header("Authorization") String accessToken);
@@ -44,7 +42,7 @@ public interface APIInterface {
     @GET("karma/v1/car/brands")
     Call<List<BrandResponse>> getBrands();
 
-    @GET("karma/v1/car/models/by/brand/{brandId}")
+    @GET("karma/v1/car/models/by-brand/{brandId}")
     Call<List<BrandResponse>> getModels(@Path("brandId") String id);
 
     @GET("karma/v1/car/years")
@@ -53,7 +51,7 @@ public interface APIInterface {
     @POST("karma/v1/carwash/search")
     Call<List<AllCarWashResponse>> getAllCarWash(@Body FilterCarWashBody filterCarWashBody);
 
-    @GET("karma/v1/carwash/full/model/{carwashId}")
+    @GET("karma/v1/carwash/{carwashId}/full-model")
     Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
     @GET("karma/v1/car/user")
@@ -71,11 +69,17 @@ public interface APIInterface {
     @GET("karma/v1/class")
     Call<List<ClassServiceResponse>> getAllClassService();
 
-    @POST("karma/v1/car/add/service/{idCar}/{idService}")
+    @POST("karma/v1/car/service/{idCar}/{idService}")
     Call<AllCarResponse> addClassService(@Path("idCar") String idCar, @Path("idService") String idService, @Header("Authorization") String accessToken);
 
     @GET("karma/v1/service")
     Call<List<ServiceResponse>> getAllService();
+
+    @POST("karma/v1/record/free-time")
+    Call<OrderResponse> preOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
+
+    @POST("karma/v1/record")
+    Call<OrderResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
 
 

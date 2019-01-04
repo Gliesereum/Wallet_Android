@@ -6,7 +6,6 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
@@ -15,7 +14,6 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
-import com.gliesereum.karma.data.network.json.code.SignupBody;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.material.button.MaterialButton;
@@ -60,7 +58,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ErrorHandler errorHandler;
     private MaterialButton registerBtn;
     private CardView cardView;
-    private CheckBox newUserCheckBox;
     private TextView textView2;
 
 
@@ -70,12 +67,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         FastSave.init(getApplicationContext());
         initView();
-        if (FastSave.getInstance().getString(ACCESS_TOKEN, "").equals("")) {
-            newUserCheckBox.setChecked(true);
-        } else {
-            newUserCheckBox.setChecked(false);
-        }
-
     }
 
     private void initView() {
@@ -134,7 +125,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         timerLabel = findViewById(R.id.timerLabel);
         registerBtn = (MaterialButton) findViewById(R.id.registerBtn);
         cardView = (CardView) findViewById(R.id.cardView);
-        newUserCheckBox = (CheckBox) findViewById(R.id.newUserCheckBox);
         textView2 = (TextView) findViewById(R.id.textView2);
     }
 
@@ -142,18 +132,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.registerBtn:
-                if (newUserCheckBox.isChecked()) {
-                    getPhoneCode(ccp.getFullNumber() + phoneTextView.getText().toString(), "true");
-                } else {
-                    getPhoneCode(ccp.getFullNumber() + phoneTextView.getText().toString(), "false");
-                }
+                getPhoneCode(ccp.getFullNumber() + phoneTextView.getText().toString());
                 break;
             case R.id.loginBtn:
-                if (newUserCheckBox.isChecked()) {
-                    signUp(new SignupBody(ccp.getFullNumber() + phoneTextView.getText().toString(), code, "PHONE", "INDIVIDUAL"));
-                } else {
                     signIn(new SigninBody(ccp.getFullNumber() + phoneTextView.getText().toString(), code, "PHONE"));
-                }
                 break;
         }
 
@@ -215,44 +197,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    public void signUp(SignupBody signupBody) {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<UserResponse> call = apiInterface.signUp(signupBody);
-        call.enqueue(new Callback<UserResponse>() {
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.code() == 200) {
-                    FastSave.getInstance().saveObject("userInfo", response.body().getUser());
-                    countDownTimer.cancel();
-                    saveUserInfo(response);
-                    if (response.body().getUser().getFirstName() == null ||
-                            response.body().getUser().getLastName() == null ||
-                            response.body().getUser().getMiddleName() == null) {
-                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                    } else {
-                        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
-                    }
-                    finish();
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                    }
-                }
-            }
+//    public void signUp(SignupBody signupBody) {
+//        apiInterface = APIClient.getClient().create(APIInterface.class);
+//        Call<UserResponse> call = apiInterface.signUp(signupBody);
+//        call.enqueue(new Callback<UserResponse>() {
+//            @Override
+//            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+//                if (response.code() == 200) {
+//                    FastSave.getInstance().saveObject("userInfo", response.body().getUser());
+//                    countDownTimer.cancel();
+//                    saveUserInfo(response);
+//                    if (response.body().getUser().getFirstName() == null ||
+//                            response.body().getUser().getLastName() == null ||
+//                            response.body().getUser().getMiddleName() == null) {
+//                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+//                    } else {
+//                        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+//                    }
+//                    finish();
+//                } else {
+//                    try {
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                        errorHandler.showError(jObjError.getInt("code"));
+//                    } catch (Exception e) {
+//                        errorHandler.showCustomError(e.getMessage());
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UserResponse> call, Throwable t) {
+//                errorHandler.showCustomError(t.getMessage());
+//            }
+//        });
+//    }
 
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
-    }
-
-    public void getPhoneCode(String phone, String isNew) {
+    public void getPhoneCode(String phone) {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<CodeResponse> call = apiInterface.getPhoneCode(phone, isNew);
+        Call<CodeResponse> call = apiInterface.getPhoneCode(phone);
         call.enqueue(new Callback<CodeResponse>() {
             @Override
             public void onResponse(Call<CodeResponse> call, Response<CodeResponse> response) {
@@ -278,7 +260,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void showValueBlock() {
-        newUserCheckBox.setVisibility(View.VISIBLE);
         codeLabel1.setVisibility(View.GONE);
         codeLabel2.setVisibility(View.GONE);
         timerLabel.setVisibility(View.GONE);
@@ -297,7 +278,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         codeLabel2.setVisibility(View.VISIBLE);
         timerLabel.setVisibility(View.VISIBLE);
         codeView.setVisibility(View.VISIBLE);
-        newUserCheckBox.setVisibility(View.GONE);
         loginBtn.setEnabled(false);
         codeView.requestFocus();
     }

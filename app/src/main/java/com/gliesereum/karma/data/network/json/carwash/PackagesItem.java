@@ -25,7 +25,7 @@ public class PackagesItem {
     private String id;
 
     @SerializedName("services")
-    private List<Object> services;
+    private List<ServicesItem> services;
 
     public void setDuration(int duration) {
         this.duration = duration;
@@ -67,11 +67,11 @@ public class PackagesItem {
         return id;
     }
 
-    public void setServices(List<Object> services) {
+    public void setServices(List<ServicesItem> services) {
         this.services = services;
     }
 
-    public List<Object> getServices() {
+    public List<ServicesItem> getServices() {
         return services;
     }
 }

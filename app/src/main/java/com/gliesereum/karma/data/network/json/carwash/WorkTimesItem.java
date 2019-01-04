@@ -20,13 +20,13 @@ public class WorkTimesItem {
     private String businessServiceId;
 
     @SerializedName("from")
-    private String from;
+    private Long from;
 
     @SerializedName("id")
     private String id;
 
     @SerializedName("to")
-    private String to;
+    private Long to;
 
     public void setIsWork(boolean isWork) {
         this.isWork = isWork;
@@ -60,11 +60,11 @@ public class WorkTimesItem {
         return businessServiceId;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(Long from) {
         this.from = from;
     }
 
-    public String getFrom() {
+    public Long getFrom() {
         return from;
     }
 
@@ -76,11 +76,11 @@ public class WorkTimesItem {
         return id;
     }
 
-    public void setTo(String to) {
+    public void setTo(Long to) {
         this.to = to;
     }
 
-    public String getTo() {
+    public Long getTo() {
         return to;
     }
 }

@@ -140,7 +140,7 @@ public class MarkerDemoActivity extends AppCompatActivity implements
             String title = marker.getTitle();
             TextView titleUi = ((TextView) view.findViewById(R.id.title));
             if (title != null) {
-                // Spannable string allows us to edit the formatting of the text.
+                // Spannable carWashId allows us to edit the formatting of the text.
                 SpannableString titleText = new SpannableString(title);
                 titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
                 titleUi.setText(titleText);
@@ -251,7 +251,7 @@ public class MarkerDemoActivity extends AppCompatActivity implements
         mMap.setOnInfoWindowLongClickListener(this);
 
         // Override the default content description on the view, for accessibility mode.
-        // Ideally this string would be localised.
+        // Ideally this carWashId would be localised.
         mMap.setContentDescription("Map with lots of markers.");
 
         LatLngBounds bounds = new LatLngBounds.Builder()

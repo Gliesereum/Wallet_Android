@@ -172,17 +172,17 @@ public class AddCarActivity extends AppCompatActivity {
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
 
-        String[] interiorITEMS = {"SUEDE", "LEATHER", "ARTIFICIAL_LEATHER", "ALCANTARA", "TASKANA", "VELOURS"};
+        String[] interiorITEMS = getResources().getStringArray(R.array.interiorStringList);
         interiorAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, interiorITEMS);
         interiorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         interiorSpinner.setAdapter(interiorAdapter);
 
-        String[] carBodyITEMS = {"SEDAN", "WAGON", "HATCHBACK", "LIFTBACK", "LIMOUSINE", "MINIVAN", "COUPE", "CABRIOLET", "CROSSOVER", "SUV"};
+        String[] carBodyITEMS = getResources().getStringArray(R.array.carBodyStringList);
         carBodyAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, carBodyITEMS);
         carBodyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         carBodySpinner.setAdapter(carBodyAdapter);
 
-        String[] colourITEMS = {"WHITE", "BLACK", "GRAY", "SILVER", "GOLDEN", "RED", "BLUE", "BROWN", "BEIGE", "YELLOW", "GREEN", "OTHER"};
+        String[] colourITEMS = getResources().getStringArray(R.array.colorStringList);
         colourAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, colourITEMS);
         colourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colourSpinner.setAdapter(colourAdapter);
@@ -223,11 +223,15 @@ public class AddCarActivity extends AppCompatActivity {
                         chipGroup.addView(rowView);
                     }
                 } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
+                    if (response.code() == 204) {
+//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
                     }
                 }
             }
@@ -294,6 +298,82 @@ public class AddCarActivity extends AppCompatActivity {
         chipGroup = (ChipGroup) findViewById(R.id.chipGroup);
     }
 
+    private String setInterior(String string) {
+        String interior = "";
+        if (string.equals(getString(R.string.textile))) {
+            interior = "TEXTILE";
+        } else if (string.equals(getString(R.string.suede))) {
+            interior = "SUEDE";
+        } else if (string.equals(getString(R.string.leather))) {
+            interior = "LEATHER";
+        } else if (string.equals(getString(R.string.artificial_leather))) {
+            interior = "ARTIFICIAL_LEATHER";
+        } else if (string.equals(getString(R.string.alcantara))) {
+            interior = "ALCANTARA";
+        } else if (string.equals(getString(R.string.taskana))) {
+            interior = "TASKANA";
+        } else if (string.equals(getString(R.string.velours))) {
+            interior = "VELOURS";
+        }
+        return interior;
+    }
+
+    private String setCarBody(String string) {
+        String carBody = "";
+        if (string.equals(getString(R.string.sedan))) {
+            carBody = "SEDAN";
+        } else if (string.equals(getString(R.string.wagon))) {
+            carBody = "WAGON";
+        } else if (string.equals(getString(R.string.hatchback))) {
+            carBody = "HATCHBACK";
+        } else if (string.equals(getString(R.string.liftback))) {
+            carBody = "LIFTBACK";
+        } else if (string.equals(getString(R.string.limousine))) {
+            carBody = "LIMOUSINE";
+        } else if (string.equals(getString(R.string.minivan))) {
+            carBody = "MINIVAN";
+        } else if (string.equals(getString(R.string.coupe))) {
+            carBody = "COUPE";
+        } else if (string.equals(getString(R.string.cabriolet))) {
+            carBody = "CABRIOLET";
+        } else if (string.equals(getString(R.string.crossover))) {
+            carBody = "CROSSOVER";
+        } else if (string.equals(getString(R.string.suv))) {
+            carBody = "SUV";
+        }
+        return carBody;
+    }
+
+    private String setColor(String string) {
+        String color = "";
+        if (string.equals(getString(R.string.white))) {
+            color = "WHITE";
+        } else if (string.equals(getString(R.string.black))) {
+            color = "BLACK";
+        } else if (string.equals(getString(R.string.gray))) {
+            color = "GRAY";
+        } else if (string.equals(getString(R.string.silver))) {
+            color = "SILVER";
+        } else if (string.equals(getString(R.string.golden))) {
+            color = "GOLDEN";
+        } else if (string.equals(getString(R.string.red))) {
+            color = "RED";
+        } else if (string.equals(getString(R.string.blue))) {
+            color = "BLUE";
+        } else if (string.equals(getString(R.string.brown))) {
+            color = "BROWN";
+        } else if (string.equals(getString(R.string.beige))) {
+            color = "BEIGE";
+        } else if (string.equals(getString(R.string.yellow))) {
+            color = "YELLOW";
+        } else if (string.equals(getString(R.string.green))) {
+            color = "GREEN";
+        } else if (string.equals(getString(R.string.other))) {
+            color = "OTHER";
+        }
+        return color;
+    }
+
     private void addCar() {
         apiInterface = APIClient.getClient().create(APIInterface.class);
         AllCarResponse carInfo = new AllCarResponse(
@@ -302,9 +382,9 @@ public class AddCarActivity extends AppCompatActivity {
                 yearHashMap.get(yearSpinner.getSelectedItem().toString()),
                 registrationNumberTextView.getText().toString(),
                 descriptionNumberTextView.getText().toString(),
-                interiorSpinner.getSelectedItem().toString(),
-                carBodySpinner.getSelectedItem().toString(),
-                colourSpinner.getSelectedItem().toString()
+                setInterior(interiorSpinner.getSelectedItem().toString()),
+                setCarBody(carBodySpinner.getSelectedItem().toString()),
+                setColor(colourSpinner.getSelectedItem().toString())
         );
 
         Call<AllCarResponse> call = apiInterface.addCar("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
@@ -353,11 +433,15 @@ public class AddCarActivity extends AppCompatActivity {
 
 
                 } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
+                    if (response.code() == 204) {
+//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
                     }
                 }
             }
