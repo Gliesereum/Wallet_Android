@@ -272,7 +272,7 @@ public class AddCarActivity extends AppCompatActivity {
 
     private void initView() {
         errorHandler = new ErrorHandler(this, this);
-        brandSpinner = (MaterialSpinner) findViewById(R.id.brandSpinner);
+        brandSpinner = findViewById(R.id.brandSpinner);
         modelSpinner = (MaterialSpinner) findViewById(R.id.modelSpinner);
         yearSpinner = (MaterialSpinner) findViewById(R.id.yearSpinner);
         interiorSpinner = (MaterialSpinner) findViewById(R.id.interiorSpinner);

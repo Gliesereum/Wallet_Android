@@ -39,13 +39,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+
+import net.sharewire.googlemapsclustering.Cluster;
+import net.sharewire.googlemapsclustering.ClusterManager;
 
 import org.json.JSONObject;
 
@@ -114,14 +115,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
 
-        new Util(this, toolbar).addNavigation();
-        getAllService();
-        getLocationPermission();
+        mapView = findViewById(R.id.map);
+        mapView.getMapAsync(this);
+        mapView.onCreate(mapViewBundle);
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        mapView = findViewById(R.id.map);
-        mapView.onCreate(mapViewBundle);
-        mapView.getMapAsync(this);
+        getLocationPermission();
+        new Util(this, toolbar).addNavigation();
+
+        getAllService();
+
+//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+//        mapView = findViewById(R.id.map);
+//        mapView.onCreate(mapViewBundle);
+//        mapView.getMapAsync(this);
 
 
     }
@@ -144,12 +151,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         customMarkerView.draw(canvas);
         return returnedBitmap;
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "onMapReady: ");
         mMap = googleMap;
-
         getAllCarWash(new FilterCarWashBody());
-
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -165,10 +172,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
-
-
-
     }
 
     private void getAllCarWash(FilterCarWashBody filterCarWashBody) {
@@ -181,29 +184,58 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     carWashList = response.body();
                     mMap.clear();
                     List<LatLng> coordinateList = new ArrayList<>();
+                    List<SampleClusterItem> clusterItems = new ArrayList<>();
+
+                    ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+                    mMap.setOnCameraIdleListener(clusterManager);
+                    clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
+                        @Override
+                        public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
+                            Log.d(TAG, "onClusterClick");
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
+                            Log.d(TAG, "onClusterItemClick");
+                            return false;
+                        }
+                    });
+
+
+
                     for (AllCarWashResponse coordinate : carWashList) {
-                        coordinateList.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
-                        mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
-                                .snippet(coordinate.getId())
-                                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ic_local_car_wash_black_24dp)))
-                                .title(coordinate.getName()));
+//                        coordinateList.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
+                        clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
+//                        mMap.addMarker(new MarkerOptions()
+//                                .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
+//                                .snippet(coordinate.getId())
+//                                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ic_local_car_wash_black_24dp)))
+//                                .title(coordinate.getName()));
                     }
 
-                    if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
+
+//                    for (int i = 0; i < coordinateList.size(); i++) {
+//                        clusterItems.add(new SampleClusterItem(coordinateList.get(i)));
+//                    }
+
+                    clusterManager.setItems(clusterItems);
+
+
+//                    if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                        // TODO: Consider calling
+//                        //    ActivityCompat#requestPermissions
+//                        // here to request the missing permissions, and then overriding
+//                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                        //                                          int[] grantResults)
+//                        // to handle the case where the user grants the permission. See the documentation
+//                        // for ActivityCompat#requestPermissions for more details.
+//                        return;
+//                    }
 
                     mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
 //                    mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this, R.raw.style_json));
-                    mMap.setMyLocationEnabled(true);
+//                    mMap.setMyLocationEnabled(true);
                     mMap.setBuildingsEnabled(true);
                     mMap.getUiSettings().setMapToolbarEnabled(true);
                     mMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -235,7 +267,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+
     private void getLocationPermission() {
+        Log.d(TAG, "getLocationPermission: ");
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -245,6 +279,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             Log.d(TAG, "getLocation: permissions granted");
             mLocationPermissionGranted = true;
+//            updateLocationUI();
+//            getDeviceLocation();
+
         }
     }
 
@@ -259,6 +296,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     updateLocationUI();
+                    getDeviceLocation();
                 } else {
                     Toast.makeText(this,
                             "FAIL",
@@ -269,6 +307,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void updateLocationUI() {
+        Log.d(TAG, "updateLocationUI: ");
         if (mMap == null) {
             return;
         }
@@ -287,6 +326,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getDeviceLocation() {
+        Log.d(TAG, "getDeviceLocation: ");
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
@@ -294,7 +334,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         try {
             if (mLocationPermissionGranted) {
                 Task locationResult = mFusedLocationProviderClient.getLastLocation();
-
                 locationResult.addOnCompleteListener(this, new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
@@ -420,6 +459,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getAllService() {
+        Log.d(TAG, "getAllService: ");
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<List<ServiceResponse>> call = apiInterface.getAllService();
         call.enqueue(new Callback<List<ServiceResponse>>() {
