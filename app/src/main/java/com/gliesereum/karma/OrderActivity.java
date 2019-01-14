@@ -21,6 +21,7 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
+import com.gliesereum.karma.data.network.json.carwash.ServiceClassItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicesItem;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
@@ -47,7 +48,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CAR_BODY;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_INTERIOR;
+import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -98,15 +102,29 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     private void setServicePrices(AllCarWashResponse carWash) {
         servicePriceBlock.removeAllViews();
+        List<ServiceClassItem> serviceClassItemList = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
+        String carBody = FastSave.getInstance().getString(CAR_BODY, "");
+        String carInterior = FastSave.getInstance().getString(CAR_INTERIOR, "");
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
             if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                 CheckBox checkBox = new CheckBox(OrderActivity.this);
-                checkBox.setText(carWash.getServicePrices().get(i).getName());
+                checkBox.setText(carWash.getServicePrices().get(i).getName() + " | +" + carWash.getServicePrices().get(i).getDuration() + "мин | +" + carWash.getServicePrices().get(i).getPrice() + "грн");
                 checkBox.setTag(carWash.getServicePrices().get(i).getId());
+
+                checkCarParametr(carWash, carBody, carInterior, serviceClassItemList);
+
                 servicePriceBlock.addView(checkBox);
             }
         }
 
+    }
+
+    private void checkCarParametr(AllCarWashResponse carWash, String carBody, String carInterior, List<ServiceClassItem> serviceClassItemList) {
+        for (int i = 0; i < carWash.getServicePrices().size(); i++) {
+            if (carWash.getServicePrices().get(i).getCarBodies().contains(FastSave.getInstance().getString(CAR_BODY, ""))) {
+
+            }
+        }
     }
 
     private void setPackages(AllCarWashResponse carWash) {

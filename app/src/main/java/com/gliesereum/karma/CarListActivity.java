@@ -26,9 +26,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CAR_BODY;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
+import static com.gliesereum.karma.util.Constants.CAR_COLOR;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_INTERIOR;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
+import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 
 public class CarListActivity extends AppCompatActivity {
 
@@ -64,6 +68,10 @@ public class CarListActivity extends AppCompatActivity {
                             FastSave.getInstance().saveString(CAR_ID, carsList.get(0).getId());
                             FastSave.getInstance().saveString(CAR_BRAND, carsList.get(0).getBrand().getName());
                             FastSave.getInstance().saveString(CAR_MODEL, carsList.get(0).getModel().getName());
+                            FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carsList.get(0).getServices());
+                            FastSave.getInstance().saveObject(CAR_BODY, carsList.get(0).getCarBody());
+                            FastSave.getInstance().saveObject(CAR_INTERIOR, carsList.get(0).getInterior());
+                            FastSave.getInstance().saveObject(CAR_COLOR, carsList.get(0).getColour());
                         }
                         carListAdapter.setItems(carsList);
                     }

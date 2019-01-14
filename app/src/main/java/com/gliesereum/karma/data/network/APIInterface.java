@@ -57,6 +57,9 @@ public interface APIInterface {
     @GET("karma/v1/car/user")
     Call<List<AllCarResponse>> getAllCars(@Header("Authorization") String accessToken);
 
+    @GET("karma/v1/car/{carId}")
+    Call<AllCarResponse> getCarById(@Header("Authorization") String accessToken, @Path("carId") String id);
+
     @POST("karma/v1/car")
     Call<AllCarResponse> addCar(@Header("Authorization") String accessToken, @Body AllCarResponse object);
 

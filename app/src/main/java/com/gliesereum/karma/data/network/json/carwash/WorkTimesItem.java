@@ -16,17 +16,17 @@ public class WorkTimesItem {
     @SerializedName("carServiceType")
     private String carServiceType;
 
-    @SerializedName("businessServiceId")
-    private String businessServiceId;
+    @SerializedName("corporationServiceId")
+    private String corporationServiceId;
 
     @SerializedName("from")
-    private Long from;
+    private long from;
 
     @SerializedName("id")
     private String id;
 
     @SerializedName("to")
-    private Long to;
+    private long to;
 
     public void setIsWork(boolean isWork) {
         this.isWork = isWork;
@@ -52,19 +52,19 @@ public class WorkTimesItem {
         return carServiceType;
     }
 
-    public void setBusinessServiceId(String businessServiceId) {
-        this.businessServiceId = businessServiceId;
+    public void setCorporationServiceId(String corporationServiceId) {
+        this.corporationServiceId = corporationServiceId;
     }
 
-    public String getBusinessServiceId() {
-        return businessServiceId;
+    public String getCorporationServiceId() {
+        return corporationServiceId;
     }
 
-    public void setFrom(Long from) {
+    public void setFrom(long from) {
         this.from = from;
     }
 
-    public Long getFrom() {
+    public long getFrom() {
         return from;
     }
 
@@ -76,11 +76,11 @@ public class WorkTimesItem {
         return id;
     }
 
-    public void setTo(Long to) {
+    public void setTo(long to) {
         this.to = to;
     }
 
-    public Long getTo() {
+    public long getTo() {
         return to;
     }
 }

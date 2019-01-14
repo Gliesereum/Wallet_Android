@@ -57,6 +57,9 @@ public class AllCarWashResponse {
     @SerializedName("spaces")
     private List<SpacesItem> spaces;
 
+    @SerializedName("carWashId")
+    private String carWashId;
+
     @SerializedName("longitude")
     private double longitude;
 
@@ -186,6 +189,14 @@ public class AllCarWashResponse {
 
     public List<SpacesItem> getSpaces() {
         return spaces;
+    }
+
+    public void setCarWashId(String carWashId) {
+        this.carWashId = carWashId;
+    }
+
+    public String getCarWashId() {
+        return carWashId;
     }
 
     public void setLongitude(double longitude) {

@@ -143,7 +143,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 //                            customServiceMap.put(carWash.getServicePrices().get(i).getOriginalName(), carWash.getServicePrices().get(i).getServiceId());
                         }
 
-                        if (idSet.contains(carWash.getServicePrices().get(i).getBusinessServiceId())) {
+                        if (idSet.contains(carWash.getServicePrices().get(i).getCorporationServiceId())) {
                             //set checked
                         } else {
 

@@ -8,22 +8,37 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.data.network.APIClient;
+import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
+import com.gliesereum.karma.util.ErrorHandler;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CAR_BODY;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
+import static com.gliesereum.karma.util.Constants.CAR_COLOR;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_INTERIOR;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
+import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 
 public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetViewHolder> {
 
     private List<AllCarResponse> allCarsList = new ArrayList<>();
-
+    private APIInterface apiInterface;
+    private ErrorHandler errorHandler;
+    private String TAG = "TAG";
 
     @NonNull
     @Override
@@ -83,6 +98,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetVie
             carBody.setText(carInfo.getCarBody());
             colour.setText(carInfo.getCarBody());
             carId.setText(carInfo.getId());
+            chooseCar.setTag(carInfo.getId());
             if (carInfo.getId().equals(FastSave.getInstance().getString(CAR_ID, ""))) {
                 chooseCar.setVisibility(View.GONE);
             } else {
@@ -91,11 +107,41 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetVie
             chooseCar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FastSave.getInstance().saveString(CAR_ID, carId.getText().toString());
-                    FastSave.getInstance().saveString(CAR_BRAND, brandId.getText().toString());
-                    FastSave.getInstance().saveString(CAR_MODEL, modelId.getText().toString());
-                    Log.d("TAG", "onClick: " + FastSave.getInstance().getString(CAR_ID, ""));
-                    notifyDataSetChanged();
+                    apiInterface = APIClient.getClient().create(APIInterface.class);
+                    Call<AllCarResponse> call = apiInterface.getCarById("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), (String) v.getTag());
+                    call.enqueue(new Callback<AllCarResponse>() {
+                        @Override
+                        public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+                            AllCarResponse carById = response.body();
+                            if (response.code() == 200) {
+                                FastSave.getInstance().saveString(CAR_ID, carById.getId());
+                                FastSave.getInstance().saveString(CAR_BRAND, carById.getBrand().getName());
+                                FastSave.getInstance().saveString(CAR_MODEL, carById.getModel().getName());
+                                FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carById.getServices());
+                                FastSave.getInstance().saveObject(CAR_BODY, carById.getCarBody());
+                                FastSave.getInstance().saveObject(CAR_INTERIOR, carById.getInterior());
+                                FastSave.getInstance().saveObject(CAR_COLOR, carById.getColour());
+                                notifyDataSetChanged();
+                                Log.d(TAG, "onResponse: Choose " + carById.getBrand().getName());
+                            } else {
+                                if (response.code() == 204) {
+//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        errorHandler.showError(jObjError.getInt("code"));
+                                    } catch (Exception e) {
+                                        errorHandler.showCustomError(e.getMessage());
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<AllCarResponse> call, Throwable t) {
+                            errorHandler.showCustomError(t.getMessage());
+                        }
+                    });
                 }
             });
         }

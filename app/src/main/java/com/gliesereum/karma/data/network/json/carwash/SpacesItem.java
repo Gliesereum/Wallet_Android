@@ -16,8 +16,8 @@ public class SpacesItem {
     @SerializedName("carServiceType")
     private String carServiceType;
 
-    @SerializedName("businessServiceId")
-    private String businessServiceId;
+    @SerializedName("corporationServiceId")
+    private String corporationServiceId;
 
     @SerializedName("id")
     private String id;
@@ -49,12 +49,12 @@ public class SpacesItem {
         return carServiceType;
     }
 
-    public void setBusinessServiceId(String businessServiceId) {
-        this.businessServiceId = businessServiceId;
+    public void setCorporationServiceId(String corporationServiceId) {
+        this.corporationServiceId = corporationServiceId;
     }
 
-    public String getBusinessServiceId() {
-        return businessServiceId;
+    public String getCorporationServiceId() {
+        return corporationServiceId;
     }
 
     public void setId(String id) {
