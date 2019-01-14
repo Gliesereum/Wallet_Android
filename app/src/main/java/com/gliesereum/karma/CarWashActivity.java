@@ -45,7 +45,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import de.ehsun.coloredtimebar.TimelinePickerView;
 import de.ehsun.coloredtimebar.TimelineView;
 import iammert.com.expandablelib.ExpandableLayout;
-import iammert.com.expandablelib.Section;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -84,7 +83,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout linearLayout;
     private LinearLayout linearLayout2;
     private LinearLayout servicePricesBlock;
-    private ExpandableLayout expandablePackage;
+    //    private ExpandableLayout expandablePackage;
     private ExpandableLayout expandableWorkTime;
     private ExpandableLayout expandableBoxBlock;
     private Map<String, WorkTimesItem> workTimeMap = new HashMap<>();
@@ -132,7 +131,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     description.setText(carWash.getDescription());
                     setWorkTime(carWash);
                     setBoxTime(carWash);
-                    setPackageBlock(carWash);
+//                    setPackageBlock(carWash);
                     setPackages(carWash);
 //                    setServicePricesBlock(carWash);
 
@@ -248,16 +247,16 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void setPackageBlock(AllCarWashResponse carWash) {
-        Section<String, PackagesItem> section = new Section<>();
-        section.parent = "Пакеты услуг";
-        for (int i = 0; i < carWash.getPackages().size(); i++) {
-            section.children.add(carWash.getPackages().get(i));
-        }
-        expandablePackage.addSection(section);
-
-
-    }
+//    private void setPackageBlock(AllCarWashResponse carWash) {
+//        Section<String, PackagesItem> section = new Section<>();
+//        section.parent = "Пакеты услуг";
+//        for (int i = 0; i < carWash.getPackages().size(); i++) {
+//            section.children.add(carWash.getPackages().get(i));
+//        }
+//        expandablePackage.addSection(section);
+//
+//
+//    }
 
     private void setBoxTime(AllCarWashResponse carWash) {
         for (int i = 0; i < carWash.getSpaces().size(); i++) {
@@ -305,14 +304,51 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setWorkTime(AllCarWashResponse carWash) {
+        String monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+        if (workTimeMap.get("MONDAY").isIsWork()) {
+            monday = "Пн: " + Util.getStringTime(workTimeMap.get("MONDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("MONDAY").getTo());
+        } else {
+            monday = "Пн: Не работает";
+        }
+        if (workTimeMap.get("TUESDAY").isIsWork()) {
+            tuesday = "Вт: " + Util.getStringTime(workTimeMap.get("TUESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("TUESDAY").getTo());
+        } else {
+            tuesday = "Вт: Не работает";
+        }
+        if (workTimeMap.get("WEDNESDAY").isIsWork()) {
+            wednesday = "Ср: " + Util.getStringTime(workTimeMap.get("WEDNESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("WEDNESDAY").getTo());
+        } else {
+            wednesday = "Ср: Не работает";
+        }
+        if (workTimeMap.get("THURSDAY").isIsWork()) {
+            thursday = "Чт: " + Util.getStringTime(workTimeMap.get("THURSDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("THURSDAY").getTo());
+        } else {
+            thursday = "Чт: Не THURSDAY";
+        }
+        if (workTimeMap.get("FRIDAY").isIsWork()) {
+            friday = "Пт: " + Util.getStringTime(workTimeMap.get("FRIDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("FRIDAY").getTo());
+        } else {
+            friday = "Пт: Не работает";
+        }
+        if (workTimeMap.get("SATURDAY").isIsWork()) {
+            saturday = "Сб: " + Util.getStringTime(workTimeMap.get("SATURDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SATURDAY").getTo());
+        } else {
+            saturday = "Сб: Не работает";
+        }
+        if (workTimeMap.get("SUNDAY").isIsWork()) {
+            sunday = "Вс: " + Util.getStringTime(workTimeMap.get("SUNDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SUNDAY").getTo());
+        } else {
+            sunday = "Вс: Не работает";
+        }
+
         powerMenu1 = new PowerMenu.Builder(CarWashActivity.this)
-                .addItem(new PowerMenuItem("Пн: " + Util.getStringTime(workTimeMap.get("MONDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("MONDAY").getTo()), false))
-                .addItem(new PowerMenuItem("Вт: " + Util.getStringTime(workTimeMap.get("TUESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("TUESDAY").getTo()), false))
-                .addItem(new PowerMenuItem("Ср: " + Util.getStringTime(workTimeMap.get("WEDNESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("WEDNESDAY").getTo()), false))
-                .addItem(new PowerMenuItem("Чт: " + Util.getStringTime(workTimeMap.get("THURSDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("THURSDAY").getTo()), false))
-                .addItem(new PowerMenuItem("Пт: " + Util.getStringTime(workTimeMap.get("FRIDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("FRIDAY").getTo()), false))
-                .addItem(new PowerMenuItem("Сб: " + Util.getStringTime(workTimeMap.get("SATURDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SATURDAY").getTo()), false))
-                .addItem(new PowerMenuItem("Вс: " + Util.getStringTime(workTimeMap.get("SUNDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SUNDAY").getTo()), false))
+                .addItem(new PowerMenuItem(monday, false))
+                .addItem(new PowerMenuItem(tuesday, false))
+                .addItem(new PowerMenuItem(wednesday, false))
+                .addItem(new PowerMenuItem(thursday, false))
+                .addItem(new PowerMenuItem(friday, false))
+                .addItem(new PowerMenuItem(saturday, false))
+                .addItem(new PowerMenuItem(sunday, false))
                 .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT) // Animation start point (TOP | LEFT)
                 .setMenuRadius(10f)
                 .setMenuShadow(10f)
@@ -320,17 +356,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 //                .setTextColor(context.getResources().getColor(R.color.md_grey_800))
                 .setSelectedTextColor(Color.WHITE)
                 .setMenuColor(Color.WHITE)
-//                .setSelectedMenuColor(context.getResources().getColor(R.color.colorPrimary))
-//                .setOnMenuItemClickListener(onMenuItemClickListener)
                 .build();
-
-
-//        Section<String, WorkTimesItem> section = new Section<>();
-//        section.parent = "Рабочее время";
-//        for (int i = 0; i < carWash.getWorkTimes().size(); i++) {
-//            section.children.add(carWash.getWorkTimes().get(i));
-//        }
-//        expandableWorkTime.addSection(section);
     }
 
     private void initView() {
@@ -360,21 +386,21 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         });
 
 
-        expandablePackage = (ExpandableLayout) findViewById(R.id.expandablePackage);
-
-        expandablePackage = findViewById(R.id.expandablePackage);
-        expandablePackage.setRenderer(new ExpandableLayout.Renderer<String, PackagesItem>() {
-            @Override
-            public void renderParent(View view, String model, boolean isExpanded, int parentPosition) {
-                ((TextView) view.findViewById(R.id.parent)).setText(model);
-                view.findViewById(R.id.arrow).setBackgroundResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
-            }
-
-            @Override
-            public void renderChild(View view, PackagesItem model, int parentPosition, int childPosition) {
-                ((TextView) view.findViewById(R.id.child)).setText(model.getName());
-            }
-        });
+//        expandablePackage = (ExpandableLayout) findViewById(R.id.expandablePackage);
+//
+//        expandablePackage = findViewById(R.id.expandablePackage);
+//        expandablePackage.setRenderer(new ExpandableLayout.Renderer<String, PackagesItem>() {
+//            @Override
+//            public void renderParent(View view, String model, boolean isExpanded, int parentPosition) {
+//                ((TextView) view.findViewById(R.id.parent)).setText(model);
+//                view.findViewById(R.id.arrow).setBackgroundResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
+//            }
+//
+//            @Override
+//            public void renderChild(View view, PackagesItem model, int parentPosition, int childPosition) {
+//                ((TextView) view.findViewById(R.id.child)).setText(model.getName());
+//            }
+//        });
 
 //        expandableWorkTime = findViewById(R.id.expandableWorkTime);
 //        expandableWorkTime.setRenderer(new ExpandableLayout.Renderer<String, WorkTimesItem>() {

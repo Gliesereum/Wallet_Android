@@ -128,16 +128,68 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void setPackages(AllCarWashResponse carWash) {
+        View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
+        MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
+        packageBtn.setText("Не выбран");
+        packageBtn.setTag("default");
+        packageBtn.setCornerRadius(50);
+
+        packageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(OrderActivity.this, "Test Defaul", Toast.LENGTH_SHORT).show();
+                for (int j = 0; j < packageScroll.getChildCount(); j++) {
+                    ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
+                    if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(5);
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeColorResource(R.color.primary);
+                    } else {
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(0);
+                    }
+                }
+//                serviceMap.clear();
+//                nameOfServiceList.clear();
+//                orderBody.setPackageId((String) v.getTag());
+//
+//                for (int j = 0; j < packageScroll.getChildCount(); j++) {
+//                    ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
+//                    if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
+//                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(5);
+//                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeColorResource(R.color.primary);
+//                    } else {
+//                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(0);
+//                    }
+//                }
+//
+////                    for (int j = 0; j < packageScroll.getChildCount(); j++) {
+////                        if (packageScroll.getChildAt(j).getTag().equals(v.getTag())){
+////                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeWidth(5);
+////                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeColorResource(R.color.primary);
+////                        }else {
+////                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeWidth(0);
+////                        }
+////                    }
+//
+//                Toast.makeText(OrderActivity.this, packageMap.get(v.getTag()).getId(), Toast.LENGTH_SHORT).show();
+//                for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+//                    nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
+//                    serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
+//                }
+//                String string = "Скидка = " + packageMap.get(v.getTag()).getDiscount() + ", " + nameOfServiceList.toString();
+//                packagesDescription.setText(string);
+//                setServicePrices(carWash);
+            }
+        });
+
+        packageScroll.addView(layout2);
+
         for (int i = 0; i < carWash.getPackages().size(); i++) {
-            View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
-//            TextView packageId = layout2.findViewById(R.id.packageId);
-            MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
-//            MaterialButton packageBtn = new MaterialButton(CarWashActivity.this);
-//            packageId.setText(carWash.getPackages().get(i).getId());
+            layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
+            packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
             packageBtn.setCornerRadius(50);
-
 
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -178,7 +230,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
             packageScroll.addView(layout2);
         }
-//        packageScroll.getChildAt(0).performClick();
+        packageScroll.getChildAt(0).performClick();
         setServicePrices(carWash);
 
     }
