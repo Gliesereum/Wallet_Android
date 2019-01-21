@@ -118,9 +118,9 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
                                 FastSave.getInstance().saveString(CAR_BRAND, carById.getBrand().getName());
                                 FastSave.getInstance().saveString(CAR_MODEL, carById.getModel().getName());
                                 FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carById.getServices());
-                                FastSave.getInstance().saveObject(CAR_BODY, carById.getCarBody());
-                                FastSave.getInstance().saveObject(CAR_INTERIOR, carById.getInterior());
-                                FastSave.getInstance().saveObject(CAR_COLOR, carById.getColour());
+                                FastSave.getInstance().saveString(CAR_BODY, carById.getCarBody());
+                                FastSave.getInstance().saveString(CAR_INTERIOR, carById.getInterior());
+                                FastSave.getInstance().saveString(CAR_COLOR, carById.getColour());
                                 notifyDataSetChanged();
                                 Log.d(TAG, "onResponse: Choose " + carById.getBrand().getName());
                             } else {

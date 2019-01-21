@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -105,27 +106,53 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         List<ServiceClassItem> serviceClassItemList = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
         String carBody = FastSave.getInstance().getString(CAR_BODY, "");
         String carInterior = FastSave.getInstance().getString(CAR_INTERIOR, "");
+
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
+            if (checkCarInterior(carWash.getServicePrices().get(i), carInterior) && checkCarBody(carWash.getServicePrices().get(i), carBody) && !serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                 CheckBox checkBox = new CheckBox(OrderActivity.this);
                 checkBox.setText(carWash.getServicePrices().get(i).getName() + " | +" + carWash.getServicePrices().get(i).getDuration() + "мин | +" + carWash.getServicePrices().get(i).getPrice() + "грн");
                 checkBox.setTag(carWash.getServicePrices().get(i).getId());
-
-                checkCarParametr(carWash, carBody, carInterior, serviceClassItemList);
-
                 servicePriceBlock.addView(checkBox);
             }
         }
 
     }
 
-    private void checkCarParametr(AllCarWashResponse carWash, String carBody, String carInterior, List<ServiceClassItem> serviceClassItemList) {
-        for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            if (carWash.getServicePrices().get(i).getCarBodies().contains(FastSave.getInstance().getString(CAR_BODY, ""))) {
-
-            }
+    private boolean checkCarBody(ServicePricesItem servicePricesItem, String carBody) {
+        if (servicePricesItem.getCarBodies().size() == 0) {
+            Log.d(TAG, "servicePricesItem.getCarBodies().size()==0");
+            return true;
+        } else {
+            Log.d(TAG, "contains(carBody): " + servicePricesItem.getCarBodies().contains(carBody) + " " + servicePricesItem.getCarBodies().toString() + " " + FastSave.getInstance().getString(CAR_BODY, ""));
+            return servicePricesItem.getCarBodies().contains(carBody);
         }
     }
+
+    private boolean checkCarInterior(ServicePricesItem servicePricesItem, String carInterior) {
+        if (servicePricesItem.getInteriorTypes().size() == 0) {
+            Log.d(TAG, "servicePricesItem.getInteriorTypes().size()==0");
+            return true;
+        } else {
+            Log.d(TAG, "contains(carInterior): " + servicePricesItem.getInteriorTypes().contains(carInterior) + " " + servicePricesItem.getInteriorTypes().toString() + " " + FastSave.getInstance().getString(CAR_INTERIOR, ""));
+            return servicePricesItem.getInteriorTypes().contains(carInterior);
+        }
+    }
+
+//    private boolean checkCarParametr(List<ServicePricesItem> servicePricesItemList, String carBody, String carInterior) {
+//        boolean result = false;
+//
+//        if (servicePricesItemList.size()!=0){
+//            for (int i = 0; i < servicePricesItemList.size(); i++) {
+//                if (servicePricesItemList.get(i).getCarBodies().size()==0 || servicePricesItemList.get(i).getCarBodies().contains(carBody)){
+//                    if ()
+//                }
+//            }
+//        }else {
+//            result = false;
+//        }
+//        return result;
+//
+//    }
 
     private void setPackages(AllCarWashResponse carWash) {
         View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
@@ -148,8 +175,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(0);
                     }
                 }
-//                serviceMap.clear();
-//                nameOfServiceList.clear();
+                serviceMap.clear();
+                nameOfServiceList.clear();
+                packagesDescription.setText("");
+                setServicePrices(carWash);
 //                orderBody.setPackageId((String) v.getTag());
 //
 //                for (int j = 0; j < packageScroll.getChildCount(); j++) {
@@ -230,8 +259,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
             packageScroll.addView(layout2);
         }
-        packageScroll.getChildAt(0).performClick();
         setServicePrices(carWash);
+        Log.d(TAG, "setPackages: do");
+        packageScroll.getChildAt(1).performClick();
+        Log.d(TAG, "setPackages: out");
 
     }
 

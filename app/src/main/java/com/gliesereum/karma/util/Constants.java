@@ -16,6 +16,10 @@ public class Constants {
     public static final String CAR_BODY = "carBody";
     public static final String CAR_COLOR = "carColor";
 
+    public static final String CAR_BODY_VALUE = "carColorValue";
+    public static final String CAR_INTERIOR_VALUE = "carColorValue";
+    public static final String CAR_SERVICE_CLASS_VALUE = "carColorValue";
+
     public static final String USER_ID = "userId";
     public static final String ACCESS_TOKEN = "accessToken";
     public static final String ACCESS_TOKEN_WITHOUT_BEARER = "accessTokenWithoutBearer";
