@@ -34,6 +34,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
@@ -156,10 +157,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void saveUserInfo(Response<UserResponse> user) {
         FastSave.getInstance().saveBoolean(IS_LOGIN, true);
         FastSave.getInstance().saveString(USER_ID, user.body().getTokenInfo().getUserId());
-        FastSave.getInstance().saveString(ACCESS_TOKEN, user.body().getTokenInfo().getAccessToken());
+        FastSave.getInstance().saveString(ACCESS_TOKEN, "Bearer " + user.body().getTokenInfo().getAccessToken());
+        FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, user.body().getTokenInfo().getAccessToken());
         FastSave.getInstance().saveString(REFRESH_TOKEN, user.body().getTokenInfo().getRefreshToken());
         FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, user.body().getTokenInfo().getAccessExpirationDate());
         FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, user.body().getTokenInfo().getRefreshExpirationDate());
+        FastSave.getInstance().saveObject("userInfo", user);
     }
 
     public void signIn(SigninBody signinBody) {
@@ -171,7 +174,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (response.code() == 200) {
                     countDownTimer.cancel();
                     saveUserInfo(response);
-                    FastSave.getInstance().saveObject("userInfo", response.body().getUser());
                     if (response.body().getUser().getFirstName() == null ||
                             response.body().getUser().getLastName() == null ||
                             response.body().getUser().getMiddleName() == null) {

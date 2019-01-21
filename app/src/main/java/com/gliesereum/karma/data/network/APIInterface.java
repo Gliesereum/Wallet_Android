@@ -9,6 +9,7 @@ import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
+import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.User;
@@ -83,6 +84,9 @@ public interface APIInterface {
 
     @POST("karma/v1/record")
     Call<OrderResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
+
+    @GET("karma/v1/record/client/all")
+    Call<List<AllRecordResponse>> getAllRecord();
 
 
 

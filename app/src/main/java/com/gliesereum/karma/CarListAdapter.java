@@ -108,7 +108,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetVie
                 @Override
                 public void onClick(View v) {
                     apiInterface = APIClient.getClient().create(APIInterface.class);
-                    Call<AllCarResponse> call = apiInterface.getCarById("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), (String) v.getTag());
+                    Call<AllCarResponse> call = apiInterface.getCarById(FastSave.getInstance().getString(ACCESS_TOKEN, ""), (String) v.getTag());
                     call.enqueue(new Callback<AllCarResponse>() {
                         @Override
                         public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {

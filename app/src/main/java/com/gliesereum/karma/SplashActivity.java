@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
@@ -23,6 +24,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
@@ -62,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             } else {
                 if (Util.checkExpirationToken(refreshExpirationDate)) {
-                    refreshToken(FastSave.getInstance().getString(ACCESS_TOKEN, ""), FastSave.getInstance().getString(REFRESH_TOKEN, ""));
+                    refreshToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""), FastSave.getInstance().getString(REFRESH_TOKEN, ""));
                 } else {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, false);
                     startActivity(new Intent(SplashActivity.this, MapsActivity.class));
@@ -116,7 +118,9 @@ public class SplashActivity extends AppCompatActivity {
 
     private void setTokenInfo(Response<TokenInfo> response) {
         FastSave.getInstance().saveBoolean(IS_LOGIN, true);
-        FastSave.getInstance().saveString(ACCESS_TOKEN, response.body().getAccessToken());
+        FastSave.getInstance().saveString(ACCESS_TOKEN, "Bearer " + response.body().getAccessToken());
+        Log.e("TAG", "ACCESS_TOKEN: " + FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, response.body().getAccessToken());
         FastSave.getInstance().saveString(REFRESH_TOKEN, response.body().getRefreshToken());
         FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, response.body().getAccessExpirationDate());
         FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, response.body().getRefreshExpirationDate());

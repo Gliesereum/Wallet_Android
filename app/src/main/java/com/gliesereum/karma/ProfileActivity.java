@@ -96,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private void getUser() {
         showProgressDialog();
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<User> call = apiInterface.getUser("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        Call<User> call = apiInterface.getUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -143,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         user.setLastName(secondNameTextView.getText().toString());
         user.setMiddleName(thirdNameTextView.getText().toString());
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<User> call = apiInterface.updateUser("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
+        Call<User> call = apiInterface.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

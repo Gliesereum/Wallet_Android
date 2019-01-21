@@ -387,7 +387,7 @@ public class AddCarActivity extends AppCompatActivity {
                 setColor(colourSpinner.getSelectedItem().toString())
         );
 
-        Call<AllCarResponse> call = apiInterface.addCar("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
+        Call<AllCarResponse> call = apiInterface.addCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
         call.enqueue(new Callback<AllCarResponse>() {
             @Override
             public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
@@ -425,7 +425,7 @@ public class AddCarActivity extends AppCompatActivity {
 
     private void addClassService(String idCar, String idService) {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<AllCarResponse> call = apiInterface.addClassService(idCar, idService, "Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        Call<AllCarResponse> call = apiInterface.addClassService(idCar, idService, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         call.enqueue(new Callback<AllCarResponse>() {
             @Override
             public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {

@@ -17,7 +17,6 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
@@ -27,8 +26,6 @@ import java.util.Calendar;
 import androidx.appcompat.widget.Toolbar;
 
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
-import static com.gliesereum.karma.util.Constants.USER_NAME;
-import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
 public class Util {
     private Activity activity;
@@ -44,21 +41,24 @@ public class Util {
         new DrawerBuilder().withActivity(activity).build();
         PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта").withSelectable(false).withTag("maps").withIcon(R.drawable.ic_map_black_24dp);
         SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withSelectable(false).withTag("car_list");
+        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withSelectable(false).withTag("record_list");
         SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withSelectable(false).withTag("profile");
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withSelectable(false).withTag("logout");
-        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход/Регистрация").withSelectable(false).withTag("login");
+        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withSelectable(false).withTag("login");
 
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             car_listItem.withEnabled(false);
+            record_listItem.withEnabled(false);
             profileItem.withEnabled(false);
         }
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(activity)
                 .withHeaderBackground(R.drawable.header)
-                .addProfiles(
-                        new ProfileDrawerItem().withName(FastSave.getInstance().getString(USER_NAME, "") + " " + FastSave.getInstance().getString(USER_SECOND_NAME, "")).withIcon(activity.getResources().getDrawable(R.drawable.profile))
-                )
+//                .addProfiles(
+//                        new ProfileDrawerItem().withName(FastSave.getInstance().getString(USER_NAME, "") + " " + FastSave.getInstance().getString(USER_SECOND_NAME, ""))
+//                                .withIcon(activity.getResources().getDrawable(R.drawable.logo))
+//                )
 //                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
 //                    @Override
 //                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
@@ -75,6 +75,7 @@ public class Util {
                         mapsItem,
                         new DividerDrawerItem(),
                         car_listItem,
+                        record_listItem,
                         profileItem
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -90,6 +91,11 @@ public class Util {
                             case "car_list":
                                 activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity.class));
                                 activity.finish();
+                                break;
+                            case "record_list":
+//                                activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity.class));
+//                                activity.finish();
+                                Toast.makeText(activity, "Open List", Toast.LENGTH_SHORT).show();
                                 break;
                             case "logout":
                                 FastSave.getInstance().saveBoolean(IS_LOGIN, false);

@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                     apiInterface = APIClient.getClient().create(APIInterface.class);
-                    Call<User> call = apiInterface.updateUser("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
+                    Call<User> call = apiInterface.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
                     call.enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {

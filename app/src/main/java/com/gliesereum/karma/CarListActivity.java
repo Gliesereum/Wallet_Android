@@ -2,7 +2,6 @@ package com.gliesereum.karma;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.appizona.yehiahd.fastsave.FastSave;
@@ -50,14 +49,13 @@ public class CarListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_list);
         FastSave.init(getApplicationContext());
-        Log.d("TOKEN", FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         initView();
         getAllCars();
     }
 
     private void getAllCars() {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<List<AllCarResponse>> call = apiInterface.getAllCars("Bearer " + FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        Call<List<AllCarResponse>> call = apiInterface.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         call.enqueue(new Callback<List<AllCarResponse>>() {
             @Override
             public void onResponse(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
