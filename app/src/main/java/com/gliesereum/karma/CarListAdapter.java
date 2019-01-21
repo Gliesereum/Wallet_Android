@@ -33,7 +33,7 @@ import static com.gliesereum.karma.util.Constants.CAR_INTERIOR;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 
-public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetViewHolder> {
+public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHolder> {
 
     private List<AllCarResponse> allCarsList = new ArrayList<>();
     private APIInterface apiInterface;
@@ -42,14 +42,14 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetVie
 
     @NonNull
     @Override
-    public TweetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_car_info, parent, false);
-        return new TweetViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TweetViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(allCarsList.get(position));
     }
 
@@ -60,7 +60,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetVie
 
     // Предоставляет прямую ссылку на каждый View-компонент
     // Используется для кэширования View-компонентов и последующего быстрого доступа к ним
-    class TweetViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         private TextView brandId;
         private TextView yearId;
         private TextView modelId;
@@ -72,7 +72,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetVie
         private TextView colour;
         private Button chooseCar;
 
-        public TweetViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             brandId = itemView.findViewById(R.id.brandId);
             modelId = itemView.findViewById(R.id.modelId);
@@ -96,7 +96,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.TweetVie
             description.setText(carInfo.getDescription());
             interior.setText(carInfo.getInterior());
             carBody.setText(carInfo.getCarBody());
-            colour.setText(carInfo.getCarBody());
+            colour.setText(carInfo.getColour());
             carId.setText(carInfo.getId());
             chooseCar.setTag(carInfo.getId());
             if (carInfo.getId().equals(FastSave.getInstance().getString(CAR_ID, ""))) {

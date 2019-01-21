@@ -86,7 +86,7 @@ public interface APIInterface {
     Call<OrderResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @GET("karma/v1/record/client/all")
-    Call<List<AllRecordResponse>> getAllRecord();
+    Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken);
 
 
 

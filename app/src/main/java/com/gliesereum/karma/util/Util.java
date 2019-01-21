@@ -11,6 +11,7 @@ import com.gliesereum.karma.LoginActivity;
 import com.gliesereum.karma.MapsActivity;
 import com.gliesereum.karma.ProfileActivity;
 import com.gliesereum.karma.R;
+import com.gliesereum.karma.RecordListActivity;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -93,9 +94,9 @@ public class Util {
                                 activity.finish();
                                 break;
                             case "record_list":
-//                                activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity.class));
-//                                activity.finish();
-                                Toast.makeText(activity, "Open List", Toast.LENGTH_SHORT).show();
+                                activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class));
+                                activity.finish();
+//                                Toast.makeText(activity, "Open List", Toast.LENGTH_SHORT).show();
                                 break;
                             case "logout":
                                 FastSave.getInstance().saveBoolean(IS_LOGIN, false);
