@@ -96,7 +96,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         }
         initView();
         nowOrderBtn.performClick();
-
         setPackages(carWash);
 
     }
@@ -160,11 +159,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         packageBtn.setText("Не выбран");
         packageBtn.setTag("default");
         packageBtn.setCornerRadius(50);
-
+        packageBtn.performClick();
         packageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.d(TAG, "onClick: ");
                 Toast.makeText(OrderActivity.this, "Test Defaul", Toast.LENGTH_SHORT).show();
                 for (int j = 0; j < packageScroll.getChildCount(); j++) {
                     ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
@@ -210,16 +209,14 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 //                setServicePrices(carWash);
             }
         });
-
         packageScroll.addView(layout2);
-
+        packageBtn.performClick();
         for (int i = 0; i < carWash.getPackages().size(); i++) {
             layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
             packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
             packageBtn.setCornerRadius(50);
-
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -256,13 +253,13 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     setServicePrices(carWash);
                 }
             });
-
             packageScroll.addView(layout2);
         }
         setServicePrices(carWash);
-        Log.d(TAG, "setPackages: do");
-        packageScroll.getChildAt(1).performClick();
-        Log.d(TAG, "setPackages: out");
+//        Log.d(TAG, "setPackages: do");
+//        packageScroll.getChildAt(0).performClick();
+//        ((View)packageScroll.getChildAt(0)).get
+//        Log.d(TAG, "setPackages: out");
 
     }
 
@@ -295,7 +292,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         } else {
             orderBody.setBegin(begin);
         }
-
         orderBody.setDescription("Android");
         List<String> list = new ArrayList<>();
         for (int i = 0; i < servicePriceBlock.getChildCount(); i++) {
@@ -309,67 +305,72 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
                 if (response.code() == 200) {
-                    Toast.makeText(OrderActivity.this, "Ok", Toast.LENGTH_SHORT).show();
-                    orderBody.setWorkingSpaceId(response.body().getWorkingSpaceId());
-                    orderBody.setBegin(response.body().getBegin());
-                    NDialog nDialog = new NDialog(OrderActivity.this, ButtonType.ONE_BUTTON);
-                    ButtonClickListener buttonClickListener = new ButtonClickListener() {
-                        @Override
-                        public void onClick(int button) {
-                            switch (button) {
-                                case NDialog.BUTTON_POSITIVE:
-                                    showProgressDialog();
-                                    apiInterface = APIClient.getClient().create(APIInterface.class);
-                                    Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
-                                    call.enqueue(new Callback<OrderResponse>() {
-                                        @Override
-                                        public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
-                                            if (response.code() == 200) {
-                                                Toast.makeText(OrderActivity.this, "Ok", Toast.LENGTH_SHORT).show();
-                                                closeProgressDialog();
-                                            } else {
-                                                try {
-                                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                                    errorHandler.showError(jObjError.getInt("code"));
+                    if (response.body().getBegin() != null && response.body().getWorkingSpaceId() != null) {
+                        orderBody.setWorkingSpaceId(response.body().getWorkingSpaceId());
+                        orderBody.setBegin(response.body().getBegin());
+                        NDialog nDialog = new NDialog(OrderActivity.this, ButtonType.ONE_BUTTON);
+                        ButtonClickListener buttonClickListener = new ButtonClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                switch (button) {
+                                    case NDialog.BUTTON_POSITIVE:
+                                        showProgressDialog();
+                                        apiInterface = APIClient.getClient().create(APIInterface.class);
+                                        Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
+                                        call.enqueue(new Callback<OrderResponse>() {
+                                            @Override
+                                            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+                                                if (response.code() == 200) {
+                                                    Toast.makeText(OrderActivity.this, "Ok", Toast.LENGTH_SHORT).show();
                                                     closeProgressDialog();
-                                                } catch (Exception e) {
-                                                    errorHandler.showCustomError(e.getMessage());
-                                                    closeProgressDialog();
+                                                } else {
+                                                    try {
+                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                        errorHandler.showError(jObjError.getInt("code"));
+                                                        closeProgressDialog();
+                                                    } catch (Exception e) {
+                                                        errorHandler.showCustomError(e.getMessage());
+                                                        closeProgressDialog();
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onFailure(Call<OrderResponse> call, Throwable t) {
-                                            errorHandler.showCustomError(t.getMessage());
-                                            closeProgressDialog();
-                                        }
-                                    });
+                                            @Override
+                                            public void onFailure(Call<OrderResponse> call, Throwable t) {
+                                                errorHandler.showCustomError(t.getMessage());
+                                                closeProgressDialog();
+                                            }
+                                        });
+                                        break;
+                                }
+                            }
+                        };
+                        nDialog.setPositiveButtonText("Заказать");
+                        nDialog.setPositiveButtonTextColor(Color.BLUE);
+                        nDialog.setPositiveButtonOnClickDismiss(true); // default : true
+                        nDialog.setPositiveButtonClickListener(buttonClickListener);
+
+                        nDialog.isCancelable(true);
+
+                        nDialog.setCustomView(R.layout.order_view);
+
+                        List<View> childViews = nDialog.getCustomViewChildren();
+                        for (View childView : childViews) {
+                            switch (childView.getId()) {
+                                case R.id.time:
+                                    LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
+                                    TextView textView = childView.findViewById(R.id.time);
+                                    textView.setText("Ближайщее время: " + getStringTime(response.body().getBegin()));
                                     break;
                             }
                         }
-                    };
-                    nDialog.setPositiveButtonText("Заказать");
-                    nDialog.setPositiveButtonTextColor(Color.BLUE);
-                    nDialog.setPositiveButtonOnClickDismiss(true); // default : true
-                    nDialog.setPositiveButtonClickListener(buttonClickListener);
-
-                    nDialog.isCancelable(true);
-
-                    nDialog.setCustomView(R.layout.order_view);
-
-                    List<View> childViews = nDialog.getCustomViewChildren();
-                    for (View childView : childViews) {
-                        switch (childView.getId()) {
-                            case R.id.time:
-                                LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
-                                TextView textView = childView.findViewById(R.id.time);
-                                textView.setText("Ближайщее время: " + getStringTime(response.body().getBegin()));
-                                break;
-                        }
+                        nDialog.show();
+                        closeProgressDialog();
+                    } else {
+                        Toast.makeText(OrderActivity.this, "Что то пошло не так", Toast.LENGTH_SHORT).show();
+                        closeProgressDialog();
                     }
-                    nDialog.show();
-                    closeProgressDialog();
+
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -391,11 +392,13 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public static String getStringTime(Long millisecond) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(millisecond);
-        return format.format(calendar.getTime());
-
+        if (millisecond != null) {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(millisecond);
+            return format.format(calendar.getTime());
+        }
+        return "";
     }
 
     public void showProgressDialog() {

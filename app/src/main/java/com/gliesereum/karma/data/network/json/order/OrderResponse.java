@@ -40,13 +40,13 @@ public class OrderResponse {
     private int price;
 
     @SerializedName("finish")
-    private long finish;
+    private Long finish;
 
     @SerializedName("id")
     private Object id;
 
     @SerializedName("begin")
-    private long begin;
+    private Long begin;
 
     @SerializedName("carWashId")
     private String carWashId;
@@ -131,11 +131,11 @@ public class OrderResponse {
         return price;
     }
 
-    public void setFinish(long finish) {
+    public void setFinish(Long finish) {
         this.finish = finish;
     }
 
-    public long getFinish() {
+    public Long getFinish() {
         return finish;
     }
 
@@ -147,11 +147,11 @@ public class OrderResponse {
         return id;
     }
 
-    public void setBegin(long begin) {
+    public void setBegin(Long begin) {
         this.begin = begin;
     }
 
-    public long getBegin() {
+    public Long getBegin() {
         return begin;
     }
 
