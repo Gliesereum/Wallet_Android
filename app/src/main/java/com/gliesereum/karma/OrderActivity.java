@@ -3,7 +3,6 @@ package com.gliesereum.karma;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +27,6 @@ import com.gliesereum.karma.data.network.json.carwash.ServicesItem;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.util.ErrorHandler;
-import com.gohn.nativedialog.ButtonClickListener;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
 import com.google.android.material.button.MaterialButton;
@@ -308,13 +306,65 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     if (response.body().getBegin() != null && response.body().getWorkingSpaceId() != null) {
                         orderBody.setWorkingSpaceId(response.body().getWorkingSpaceId());
                         orderBody.setBegin(response.body().getBegin());
-                        NDialog nDialog = new NDialog(OrderActivity.this, ButtonType.ONE_BUTTON);
-                        ButtonClickListener buttonClickListener = new ButtonClickListener() {
-                            @Override
-                            public void onClick(int button) {
-                                switch (button) {
-                                    case NDialog.BUTTON_POSITIVE:
-                                        showProgressDialog();
+                        NDialog nDialog = new NDialog(OrderActivity.this, ButtonType.NO_BUTTON);
+//                        ButtonClickListener buttonClickListener = new ButtonClickListener() {
+//                            @Override
+//                            public void onClick(int button) {
+//                                switch (button) {
+//                                    case NDialog.BUTTON_POSITIVE:
+//                                        showProgressDialog();
+//                                        apiInterface = APIClient.getClient().create(APIInterface.class);
+//                                        Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
+//                                        call.enqueue(new Callback<OrderResponse>() {
+//                                            @Override
+//                                            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+//                                                if (response.code() == 200) {
+//                                                    Toast.makeText(OrderActivity.this, "Ok", Toast.LENGTH_SHORT).show();
+//                                                    closeProgressDialog();
+//                                                } else {
+//                                                    try {
+//                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                                        errorHandler.showError(jObjError.getInt("code"));
+//                                                        closeProgressDialog();
+//                                                    } catch (Exception e) {
+//                                                        errorHandler.showCustomError(e.getMessage());
+//                                                        closeProgressDialog();
+//                                                    }
+//                                                }
+//                                            }
+//
+//                                            @Override
+//                                            public void onFailure(Call<OrderResponse> call, Throwable t) {
+//                                                errorHandler.showCustomError(t.getMessage());
+//                                                closeProgressDialog();
+//                                            }
+//                                        });
+//                                        break;
+//                                }
+//                            }
+//                        };
+//                        nDialog.setPositiveButtonText("Заказать");
+//                        nDialog.setPositiveButtonTextColor(Color.RED);
+//                        nDialog.setPositiveButtonOnClickDismiss(true); // default : true
+//                        nDialog.setPositiveButtonClickListener(buttonClickListener);
+//
+//                        nDialog.setNeutralButtonText("Назад");
+//                        nDialog.setNeutralButtonTextColor(Color.RED);
+                        nDialog.isCancelable(false);
+                        nDialog.setCustomView(R.layout.order_view);
+                        List<View> childViews = nDialog.getCustomViewChildren();
+                        for (View childView : childViews) {
+                            switch (childView.getId()) {
+                                case R.id.time:
+                                    TextView time = childView.findViewById(R.id.time);
+                                    time.setText(getStringTime(response.body().getBegin()));
+                                    break;
+                                case R.id.okBtn:
+                                    Button okBtn = childView.findViewById(R.id.okBtn);
+                                    okBtn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            showProgressDialog();
                                         apiInterface = APIClient.getClient().create(APIInterface.class);
                                         Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
                                         call.enqueue(new Callback<OrderResponse>() {
@@ -341,27 +391,17 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                                 closeProgressDialog();
                                             }
                                         });
-                                        break;
-                                }
-                            }
-                        };
-                        nDialog.setPositiveButtonText("Заказать");
-                        nDialog.setPositiveButtonTextColor(Color.BLUE);
-                        nDialog.setPositiveButtonOnClickDismiss(true); // default : true
-                        nDialog.setPositiveButtonClickListener(buttonClickListener);
-
-                        nDialog.isCancelable(true);
-
-                        nDialog.setCustomView(R.layout.order_view);
-
-                        List<View> childViews = nDialog.getCustomViewChildren();
-                        for (View childView : childViews) {
-                            switch (childView.getId()) {
-                                case R.id.time:
-                                    LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
-                                    TextView textView = childView.findViewById(R.id.time);
-                                    textView.setText("Ближайщее время: " + getStringTime(response.body().getBegin()));
+                                        }
+                                    });
                                     break;
+                                case R.id.backBtn:
+                                    Button backBtn = childView.findViewById(R.id.backBtn);
+                                    backBtn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nDialog.dismiss();
+                                        }
+                                    });
                             }
                         }
                         nDialog.show();
@@ -370,7 +410,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         Toast.makeText(OrderActivity.this, "Что то пошло не так", Toast.LENGTH_SHORT).show();
                         closeProgressDialog();
                     }
-
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());

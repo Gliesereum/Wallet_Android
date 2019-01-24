@@ -323,7 +323,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         if (workTimeMap.get("THURSDAY").isIsWork()) {
             thursday = "Чт: " + Util.getStringTime(workTimeMap.get("THURSDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("THURSDAY").getTo());
         } else {
-            thursday = "Чт: Не THURSDAY";
+            thursday = "Чт: Не работает";
         }
         if (workTimeMap.get("FRIDAY").isIsWork()) {
             friday = "Пт: " + Util.getStringTime(workTimeMap.get("FRIDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("FRIDAY").getTo());
