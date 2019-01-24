@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "370533033382",
+    "firebase_url": "https://karma-c9d57.firebaseio.com",
+    "project_id": "karma-c9d57",
+    "storage_bucket": "karma-c9d57.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370533033382:android:e8b5732d1ebe5e3b",
+        "android_client_info": {
+          "package_name": "com.gliesereum.karma"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "370533033382-cogsd6i88g9g1nvqob19kajuh1b5pm62.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gliesereum.karma",
+            "certificate_hash": "062b7704d2ae16ed9fedbf686146005c816c99fb"
+          }
+        },
+        {
+          "client_id": "370533033382-opanhe4fbs4odqmp09v2etnkih844dd5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP2W2He4kOoxY2e9Il29EC5SenKKW5jrY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "370533033382-opanhe4fbs4odqmp09v2etnkih844dd5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
