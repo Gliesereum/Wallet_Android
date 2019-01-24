@@ -4,10 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,6 +42,7 @@ import java.util.Set;
 import androidx.appcompat.app.AppCompatActivity;
 import de.ehsun.coloredtimebar.TimelinePickerView;
 import de.ehsun.coloredtimebar.TimelineView;
+import hakobastvatsatryan.DropdownTextView;
 import iammert.com.expandablelib.ExpandableLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,7 +66,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private TextView description;
     private TextView workTimes;
     private LinearLayout boxBlock;
-    //    private DropdownTextView workTimesDropdown;
+    private DropdownTextView descriptionDropdown;
     private MaterialButton materialButton;
     private MaterialButton orderButton;
     //    private CollapsibleCalendar collapsibleCalendar;
@@ -78,6 +77,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private CollapsibleCalendar calendarView;
     private LinearLayout packagesBlock;
     private ImageView imageView2;
+    private ImageView imageView3;
     private ScrollView scrollView2;
     private HorizontalScrollView horizontalScrollView;
     private LinearLayout linearLayout;
@@ -104,6 +104,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         initView();
         getCarWash();
 
+        GlideApp.with(this).load(R.drawable.header).circleCrop().into(imageView3);
+
     }
 
     private void getCarWash() {
@@ -128,7 +130,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     name.setText(carWash.getName());
                     adres.setText(carWash.getAddress());
-                    description.setText(carWash.getDescription());
+//                    description.setText(carWash.getDescription());
+                    descriptionDropdown.setContentText(carWash.getDescription());
                     setWorkTime(carWash);
                     setBoxTime(carWash);
 //                    setPackageBlock(carWash);
@@ -238,15 +241,14 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    private void setServicePricesBlock(AllCarWashResponse carWash) {
-//        for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-        for (int i = 0; i < 10; i++) {
-            CheckBox checkBox = new CheckBox(CarWashActivity.this);
-            checkBox.setText("Услуга №" + i);
-            servicePricesBlock.addView(checkBox);
-        }
-    }
-
+//    private void setServicePricesBlock(AllCarWashResponse carWash) {
+////        for (int i = 0; i < carWash.getServicePrices().size(); i++) {
+//        for (int i = 0; i < 10; i++) {
+//            CheckBox checkBox = new CheckBox(CarWashActivity.this);
+//            checkBox.setText("Услуга №" + i);
+//            servicePricesBlock.addView(checkBox);
+//        }
+//    }
 //    private void setPackageBlock(AllCarWashResponse carWash) {
 //        Section<String, PackagesItem> section = new Section<>();
 //        section.parent = "Пакеты услуг";
@@ -262,7 +264,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         for (int i = 0; i < carWash.getSpaces().size(); i++) {
             View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_boxline, boxLinearLayout, false);
             TimelineView timelineBox = layout2.findViewById(R.id.timelineView);
-            Log.d(TAG, "setBoxTime: " + i);
             Calendar calendar = Calendar.getInstance();
             int intDay = calendar.get(Calendar.DAY_OF_WEEK);
             timelineBox.setTimeRange(Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo()));
@@ -271,8 +272,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             timelineBox.setId(i);
             timelineBox.setBarWidth(75);
             timelineBox.setFractionLineLength(20);
-            timelineBox.setBarColorAvailable(Color.parseColor("#FF0000"));
-            timelineBox.setBarColorNotAvailable(Color.parseColor("#00FF00"));
+            timelineBox.setBarColorAvailable(Color.parseColor("#282828"));
+            timelineBox.setBarColorNotAvailable(Color.parseColor("#F5A623"));
             timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), carWash.getSpaces().get(i).getId()));
             boxLinearLayout.addView(layout2);
         }
@@ -378,6 +379,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         calendarView = (CollapsibleCalendar) findViewById(R.id.calendarView);
         packagesBlock = (LinearLayout) findViewById(R.id.packagesBlock);
         imageView2 = (ImageView) findViewById(R.id.imageView2);
+        imageView3 = (ImageView) findViewById(R.id.imageView3);
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -469,6 +471,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 //            }
 //        });
         packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
+        descriptionDropdown = findViewById(R.id.descriptionDropdown);
     }
 
     private String getCurrentDayOfWeek(int intDay) {
@@ -545,16 +548,11 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setPackages(AllCarWashResponse carWash) {
         for (int i = 0; i < carWash.getPackages().size(); i++) {
-            View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
-//            TextView packageId = layout2.findViewById(R.id.packageId);
+            View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn, packageScroll, false);
             MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
-//            MaterialButton packageBtn = new MaterialButton(CarWashActivity.this);
-//            packageId.setText(carWash.getPackages().get(i).getId());
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
-            packageBtn.setCornerRadius(50);
-
-
+            packageBtn.setCornerRadius(25);
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

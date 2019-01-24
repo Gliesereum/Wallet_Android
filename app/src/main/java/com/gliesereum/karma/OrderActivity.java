@@ -152,7 +152,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 //    }
 
     private void setPackages(AllCarWashResponse carWash) {
-        View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
+        View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn, packageScroll, false);
         MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
         packageBtn.setText("Не выбран");
         packageBtn.setTag("default");
@@ -210,7 +210,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         packageScroll.addView(layout2);
         packageBtn.performClick();
         for (int i = 0; i < carWash.getPackages().size(); i++) {
-            layout2 = LayoutInflater.from(this).inflate(R.layout.layout_package, packageScroll, false);
+            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn, packageScroll, false);
             packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
