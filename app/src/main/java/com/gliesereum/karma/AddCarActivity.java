@@ -18,6 +18,7 @@ import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
+import com.gliesereum.karma.data.network.json.filter.FilterResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -73,6 +74,9 @@ public class AddCarActivity extends AppCompatActivity {
     HashMap<String, String> brandHashMap = new HashMap<>();
     HashMap<String, String> modelHashMap = new HashMap<>();
     HashMap<String, String> yearHashMap = new HashMap<>();
+    HashMap<String, String> interiorHashMap = new HashMap<>();
+    HashMap<String, String> carBodyHashMap = new HashMap<>();
+    HashMap<String, String> colorHashMap = new HashMap<>();
     ArrayAdapter<String> interiorAdapter;
     private ArrayAdapter<String> carBodyAdapter;
     private ArrayAdapter<String> colourAdapter;
@@ -80,6 +84,9 @@ public class AddCarActivity extends AppCompatActivity {
     private ChipGroup chipGroup;
     Map<String, String> mapClassServise = new HashMap<>();
     List<Chip> selectedChip = new ArrayList<>();
+    private List<FilterResponse> allFilterList = new ArrayList<>();
+    private Map<String, FilterResponse> filterMap = new HashMap<>();
+    private String TAG = "TAG";
 
 
     @Override
@@ -90,12 +97,14 @@ public class AddCarActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle("Добавление авто");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         initView();
         enableSpinner(brandSpinner);
         getAllClassService();
+        getAllFilter();
 
         brandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -162,30 +171,40 @@ public class AddCarActivity extends AppCompatActivity {
             }
         });
 
-        String[] modelITEMS = {"A100"};
+        String[] modelITEMS = {""};
         modelAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, modelITEMS);
         modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modelSpinner.setAdapter(modelAdapter);
 
-        String[] yearITEMS = {"1990"};
+        String[] yearITEMS = {""};
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, yearITEMS);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
 
-        String[] interiorITEMS = getResources().getStringArray(R.array.interiorStringList);
-        interiorAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, interiorITEMS);
+        String[] interiorITEMS = {""};
+        ArrayAdapter<String> interiorAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, interiorITEMS);
         interiorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         interiorSpinner.setAdapter(interiorAdapter);
 
-        String[] carBodyITEMS = getResources().getStringArray(R.array.carBodyStringList);
-        carBodyAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, carBodyITEMS);
+        String[] carBodyITEMS = {""};
+        ArrayAdapter<String> carBodyAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, carBodyITEMS);
         carBodyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         carBodySpinner.setAdapter(carBodyAdapter);
 
-        String[] colourITEMS = getResources().getStringArray(R.array.colorStringList);
-        colourAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, colourITEMS);
+        String[] colourITEMS = {""};
+        ArrayAdapter<String> colourAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, colourITEMS);
         colourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colourSpinner.setAdapter(colourAdapter);
+
+//        String[] carBodyITEMS = getResources().getStringArray(R.array.carBodyStringList);
+//        carBodyAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, carBodyITEMS);
+//        carBodyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        carBodySpinner.setAdapter(carBodyAdapter);
+
+//        String[] colourITEMS = getResources().getStringArray(R.array.colorStringList);
+//        colourAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, colourITEMS);
+//        colourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        colourSpinner.setAdapter(colourAdapter);
 
 
         mSimpleArrayListAdapter = new SimpleArrayListAdapter(this, mStrings);
@@ -381,10 +400,10 @@ public class AddCarActivity extends AppCompatActivity {
                 modelHashMap.get(modelSpinner.getSelectedItem().toString()),
                 yearHashMap.get(yearSpinner.getSelectedItem().toString()),
                 registrationNumberTextView.getText().toString(),
-                descriptionNumberTextView.getText().toString(),
-                setInterior(interiorSpinner.getSelectedItem().toString()),
-                setCarBody(carBodySpinner.getSelectedItem().toString()),
-                setColor(colourSpinner.getSelectedItem().toString())
+                descriptionNumberTextView.getText().toString()
+//                setInterior(interiorSpinner.getSelectedItem().toString()),
+//                setCarBody(carBodySpinner.getSelectedItem().toString()),
+//                setColor(colourSpinner.getSelectedItem().toString())
         );
 
         Call<AllCarResponse> call = apiInterface.addCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
@@ -404,8 +423,11 @@ public class AddCarActivity extends AppCompatActivity {
                         addClassService(response.body().getId(), mapClassServise.get(selectedChip.get(i).getText().toString()));
                     }
 
-
+                    addCarFilter(response.body().getId(), interiorHashMap.get(interiorSpinner.getSelectedItem().toString()));
+                    addCarFilter(response.body().getId(), carBodyHashMap.get(carBodySpinner.getSelectedItem().toString()));
+                    addCarFilter(response.body().getId(), colorHashMap.get(colourSpinner.getSelectedItem().toString()));
                     startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
+                    Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -426,6 +448,36 @@ public class AddCarActivity extends AppCompatActivity {
     private void addClassService(String idCar, String idService) {
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<AllCarResponse> call = apiInterface.addClassService(idCar, idService, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        call.enqueue(new Callback<AllCarResponse>() {
+            @Override
+            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+                if (response.code() == 200) {
+
+
+                } else {
+                    if (response.code() == 204) {
+//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AllCarResponse> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
+    }
+
+    private void addCarFilter(String idCar, String idAttribute) {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<AllCarResponse> call = apiInterface.addCarFilter(idCar, idAttribute, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         call.enqueue(new Callback<AllCarResponse>() {
             @Override
             public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
@@ -628,26 +680,93 @@ public class AddCarActivity extends AppCompatActivity {
     }
 
     public void getInterior() {
+        ArrayList<String> interiorITEMS = new ArrayList<>();
+        for (int i = 0; i < filterMap.get("CAR_INTERIOR").getAttributes().size(); i++) {
+            interiorITEMS.add(filterMap.get("CAR_INTERIOR").getAttributes().get(i).getTitle());
+            interiorHashMap.put(filterMap.get("CAR_INTERIOR").getAttributes().get(i).getTitle(), filterMap.get("CAR_INTERIOR").getAttributes().get(i).getId());
+        }
+
+        interiorAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, interiorITEMS);
+        interiorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         interiorSpinner.setAdapter(interiorAdapter);
     }
 
     public void getCarBody() {
+//        carBodySpinner.setAdapter(carBodyAdapter);
+        ArrayList<String> carBodyITEMS = new ArrayList<>();
+        for (int i = 0; i < filterMap.get("CAR_BODY").getAttributes().size(); i++) {
+            carBodyITEMS.add(filterMap.get("CAR_BODY").getAttributes().get(i).getTitle());
+            carBodyHashMap.put(filterMap.get("CAR_BODY").getAttributes().get(i).getTitle(), filterMap.get("CAR_BODY").getAttributes().get(i).getId());
+        }
+
+        carBodyAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, carBodyITEMS);
+        carBodyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         carBodySpinner.setAdapter(carBodyAdapter);
     }
 
+    public void getAllFilter() {
+//        showProgressDialog();
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<List<FilterResponse>> call = apiInterface.getFilters("CAR_WASH");
+        call.enqueue(new Callback<List<FilterResponse>>() {
+            @Override
+            public void onResponse(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {
+                if (response.code() == 200) {
+                    for (int i = 0; i < response.body().size(); i++) {
+                        filterMap.put(response.body().get(i).getValue(), response.body().get(i));
+                    }
+//                    closeProgressDialog();
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        errorHandler.showError(jObjError.getInt("code"));
+//                        closeProgressDialog();
+                    } catch (Exception e) {
+                        errorHandler.showCustomError(e.getMessage());
+//                        closeProgressDialog();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<FilterResponse>> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+//                closeProgressDialog();
+            }
+        });
+    }
+
     public void getColor() {
-        colourSpinner.setAdapter(colourAdapter);
+//        colourSpinner.setAdapter(colourAdapter);
+        ArrayList<String> colorITEMS = new ArrayList<>();
+        for (int i = 0; i < filterMap.get("CAR_COLOR").getAttributes().size(); i++) {
+            colorITEMS.add(filterMap.get("CAR_COLOR").getAttributes().get(i).getTitle());
+            colorHashMap.put(filterMap.get("CAR_COLOR").getAttributes().get(i).getTitle(), filterMap.get("CAR_COLOR").getAttributes().get(i).getId());
+        }
+
+        carBodyAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, colorITEMS);
+        carBodyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        colourSpinner.setAdapter(carBodyAdapter);
     }
 
     public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "title", "message");
+//        Log.d(TAG, "showProgressDialog: ");
+        progressDialog = ProgressDialog.show(this, "Загрузка данных", "Пожайлуста, подоэжите...");
 
     }
 
     public void closeProgressDialog() {
+//        Log.d(TAG, "closeProgressDialog: ");
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
+//        finish();
+//        Toast.makeText(this, "11111111", Toast.LENGTH_SHORT).show();
+//    }
 }

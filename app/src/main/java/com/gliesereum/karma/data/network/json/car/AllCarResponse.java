@@ -184,4 +184,12 @@ public class AllCarResponse {
 		this.carBody = carBody;
 		this.colour = colour;
 	}
+
+    public AllCarResponse(String brandId, String modelId, String yearId, String registrationNumber, String description) {
+        this.brandId = brandId;
+        this.modelId = modelId;
+        this.yearId = yearId;
+        this.registrationNumber = registrationNumber;
+        this.description = description;
+    }
 }

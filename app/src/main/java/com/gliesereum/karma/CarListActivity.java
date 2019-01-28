@@ -3,6 +3,7 @@ package com.gliesereum.karma;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
@@ -42,6 +43,8 @@ public class CarListActivity extends AppCompatActivity {
     private MaterialButton addCarBtn;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
+    private TextView splashTextView;
+
 
 
     @Override
@@ -75,7 +78,8 @@ public class CarListActivity extends AppCompatActivity {
                     }
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                        splashTextView.setVisibility(View.VISIBLE);
+//                        Toast.makeText(CarListActivity.this, "Добавте свой первый автомобиль", Toast.LENGTH_LONG).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -97,6 +101,8 @@ public class CarListActivity extends AppCompatActivity {
     private void initView() {
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Список авто");
+        splashTextView = findViewById(R.id.splashTextView);
         setSupportActionBar(toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -110,9 +116,6 @@ public class CarListActivity extends AppCompatActivity {
         });
 
         new Util(this, toolbar).addNavigation();
-//modify an item of the drawer
-//notify the drawer about the updated element. it will take care about everything else
-        //to update only the name, badge, icon you can also use one of the quick methods
         addCarBtn = (MaterialButton) findViewById(R.id.addCarBtn);
         addCarBtn.setOnClickListener(new View.OnClickListener() {
             @Override

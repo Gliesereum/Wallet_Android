@@ -7,6 +7,7 @@ import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
+import com.gliesereum.karma.data.network.json.filter.FilterResponse;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
@@ -43,16 +44,22 @@ public interface APIInterface {
     @GET("karma/v1/car/brands")
     Call<List<BrandResponse>> getBrands();
 
+    @GET("karma/v1/filter/by-service-type")
+    Call<List<FilterResponse>> getFilters(@Query("serviceType") String serviceType);
+
     @GET("karma/v1/car/models/by-brand/{brandId}")
     Call<List<BrandResponse>> getModels(@Path("brandId") String id);
 
     @GET("karma/v1/car/years")
     Call<List<BrandResponse>> getYears();
 
-    @POST("karma/v1/carwash/search")
+    @POST("karma/v1/business/search")
     Call<List<AllCarWashResponse>> getAllCarWash(@Body FilterCarWashBody filterCarWashBody);
 
-    @GET("karma/v1/carwash/{carwashId}/full-model")
+    @GET("karma/v1/business/{carwashId}/full-model")
+    Call<AllCarWashResponse> getCarWashFull(@Path("carwashId") String id);
+
+    @GET("karma/v1/business/{carwashId}")
     Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
     @GET("karma/v1/car/user")
@@ -75,6 +82,9 @@ public interface APIInterface {
 
     @POST("karma/v1/car/service/{idCar}/{idService}")
     Call<AllCarResponse> addClassService(@Path("idCar") String idCar, @Path("idService") String idService, @Header("Authorization") String accessToken);
+
+    @POST("karma/v1/filter-attribute/{idCar}/{idAttribute}")
+    Call<AllCarResponse> addCarFilter(@Path("idCar") String idCar, @Path("idAttribute") String idAttribute, @Header("Authorization") String accessToken);
 
     @GET("karma/v1/service")
     Call<List<ServiceResponse>> getAllService();

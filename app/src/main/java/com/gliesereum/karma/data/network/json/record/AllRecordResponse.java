@@ -51,6 +51,16 @@ public class AllRecordResponse {
     @SerializedName("carWashId")
     private String carWashId;
 
+    private String carWashName;
+
+    public String getCarWashName() {
+        return carWashName;
+    }
+
+    public void setCarWashName(String carWashName) {
+        this.carWashName = carWashName;
+    }
+
     public void setStatusRecord(String statusRecord) {
         this.statusRecord = statusRecord;
     }

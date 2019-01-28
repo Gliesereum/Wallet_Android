@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 
+import net.fitken.rose.Rose;
 import net.sharewire.googlemapsclustering.Cluster;
 import net.sharewire.googlemapsclustering.ClusterManager;
 
@@ -100,6 +101,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         FastSave.init(getApplicationContext());
+        Rose.INSTANCE.debugEnabled(BuildConfig.DEBUG);
+        Rose.INSTANCE.debug("this is the very first log");
+        Rose.INSTANCE.error("this is the very first log");
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
         if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") && FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {

@@ -18,8 +18,10 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,6 +29,8 @@ import java.util.Calendar;
 import androidx.appcompat.widget.Toolbar;
 
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
+import static com.gliesereum.karma.util.Constants.USER_NAME;
+import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
 public class Util {
     private Activity activity;
@@ -56,16 +60,16 @@ public class Util {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(activity)
                 .withHeaderBackground(R.drawable.header)
-//                .addProfiles(
-//                        new ProfileDrawerItem().withName(FastSave.getInstance().getString(USER_NAME, "") + " " + FastSave.getInstance().getString(USER_SECOND_NAME, ""))
-//                                .withIcon(activity.getResources().getDrawable(R.drawable.logo))
-//                )
-//                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-//                    @Override
-//                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-//                        return false;
-//                    }
-//                })
+                .addProfiles(
+                        new ProfileDrawerItem().withName(FastSave.getInstance().getString(USER_NAME, "") + " " + FastSave.getInstance().getString(USER_SECOND_NAME, ""))
+                                .withIcon(activity.getResources().getDrawable(R.drawable.logo))
+                )
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+                        return false;
+                    }
+                })
                 .build();
 
         Drawer result = new DrawerBuilder()
@@ -95,7 +99,7 @@ public class Util {
                                 break;
                             case "record_list":
                                 activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class));
-                                activity.finish();
+//                                activity.finish();
 //                                Toast.makeText(activity, "Open List", Toast.LENGTH_SHORT).show();
                                 break;
                             case "logout":
@@ -137,6 +141,12 @@ public class Util {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millisecond);
         return format.format(calendar.getTime());
+    }
 
+    public static String getStringDate(Long millisecond) {
+        SimpleDateFormat format = new SimpleDateFormat("DD.MM");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millisecond);
+        return format.format(calendar.getTime());
     }
 }

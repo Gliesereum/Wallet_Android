@@ -63,7 +63,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             snippetUi.setText("");
         }
 
-//        getCarWash(marker.getSnippet(), view);
+//        getCarWashFull(marker.getSnippet(), view);
 
 
     }

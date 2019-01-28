@@ -3,6 +3,7 @@ package com.gliesereum.karma;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -152,69 +153,40 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 //    }
 
     private void setPackages(AllCarWashResponse carWash) {
-        View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn, packageScroll, false);
+        View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
         MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
         packageBtn.setText("Не выбран");
         packageBtn.setTag("default");
-        packageBtn.setCornerRadius(50);
-        packageBtn.performClick();
+        packageBtn.setCornerRadius(25);
         packageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: ");
-                Toast.makeText(OrderActivity.this, "Test Defaul", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onClick: NOW");
                 for (int j = 0; j < packageScroll.getChildCount(); j++) {
                     ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                     if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(5);
-                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeColorResource(R.color.primary);
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.black));
                     } else {
-                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(0);
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
                     }
                 }
                 serviceMap.clear();
                 nameOfServiceList.clear();
                 packagesDescription.setText("");
+                packagesDescription.setVisibility(View.GONE);
+                textView12.setVisibility(View.GONE);
                 setServicePrices(carWash);
-//                orderBody.setPackageId((String) v.getTag());
-//
-//                for (int j = 0; j < packageScroll.getChildCount(); j++) {
-//                    ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
-//                    if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-//                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(5);
-//                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeColorResource(R.color.primary);
-//                    } else {
-//                        ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(0);
-//                    }
-//                }
-//
-////                    for (int j = 0; j < packageScroll.getChildCount(); j++) {
-////                        if (packageScroll.getChildAt(j).getTag().equals(v.getTag())){
-////                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeWidth(5);
-////                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeColorResource(R.color.primary);
-////                        }else {
-////                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeWidth(0);
-////                        }
-////                    }
-//
-//                Toast.makeText(OrderActivity.this, packageMap.get(v.getTag()).getId(), Toast.LENGTH_SHORT).show();
-//                for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-//                    nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
-//                    serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
-//                }
-//                String string = "Скидка = " + packageMap.get(v.getTag()).getDiscount() + ", " + nameOfServiceList.toString();
-//                packagesDescription.setText(string);
-//                setServicePrices(carWash);
             }
         });
-        packageScroll.addView(layout2);
         packageBtn.performClick();
+        packageScroll.addView(layout2);
+//        packageBtn.performClick();
         for (int i = 0; i < carWash.getPackages().size(); i++) {
-            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn, packageScroll, false);
+            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
             packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
-            packageBtn.setCornerRadius(50);
+            packageBtn.setCornerRadius(25);
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -225,22 +197,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     for (int j = 0; j < packageScroll.getChildCount(); j++) {
                         ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                         if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(5);
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeColorResource(R.color.primary);
+                            ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.black));
                         } else {
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setStrokeWidth(0);
+                            ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
                         }
                     }
-
-//                    for (int j = 0; j < packageScroll.getChildCount(); j++) {
-//                        if (packageScroll.getChildAt(j).getTag().equals(v.getTag())){
-//                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeWidth(5);
-//                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeColorResource(R.color.primary);
-//                        }else {
-//                            ((MaterialButton)packageScroll.getChildAt(j)).setStrokeWidth(0);
-//                        }
-//                    }
-
                     Toast.makeText(OrderActivity.this, packageMap.get(v.getTag()).getId(), Toast.LENGTH_SHORT).show();
                     for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
                         nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
@@ -248,6 +209,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     }
                     String string = "Скидка = " + packageMap.get(v.getTag()).getDiscount() + ", " + nameOfServiceList.toString();
                     packagesDescription.setText(string);
+                    packagesDescription.setVisibility(View.VISIBLE);
+                    textView12.setVisibility(View.VISIBLE);
                     setServicePrices(carWash);
                 }
             });
@@ -266,8 +229,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         orderButton = findViewById(R.id.orderButton);
         nowOrderBtn = findViewById(R.id.nowOrderBtn);
         timeOrderBtn = findViewById(R.id.timeOrderBtn);
+        timeOrderBtn.setCornerRadius(25);
         orderButton.setOnClickListener(this);
         nowOrderBtn.setOnClickListener(this);
+        nowOrderBtn.setCornerRadius(25);
         timeOrderBtn.setOnClickListener(this);
         horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
         packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
@@ -371,16 +336,20 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                             @Override
                                             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
                                                 if (response.code() == 200) {
-                                                    Toast.makeText(OrderActivity.this, "Ok", Toast.LENGTH_SHORT).show();
                                                     closeProgressDialog();
+                                                    nDialog.dismiss();
+                                                    startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
+                                                    finish();
                                                 } else {
                                                     try {
                                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                                                         errorHandler.showError(jObjError.getInt("code"));
                                                         closeProgressDialog();
+                                                        nDialog.dismiss();
                                                     } catch (Exception e) {
                                                         errorHandler.showCustomError(e.getMessage());
                                                         closeProgressDialog();
+                                                        nDialog.dismiss();
                                                     }
                                                 }
                                             }
@@ -389,6 +358,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                             public void onFailure(Call<OrderResponse> call, Throwable t) {
                                                 errorHandler.showCustomError(t.getMessage());
                                                 closeProgressDialog();
+                                                nDialog.dismiss();
                                             }
                                         });
                                         }
@@ -402,6 +372,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                             nDialog.dismiss();
                                         }
                                     });
+                                    break;
                             }
                         }
                         nDialog.show();
@@ -478,14 +449,13 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             case R.id.timeOrderBtn:
                 nowFlag = false;
                 showDateTimePicker();
-                timeOrderBtn.setStrokeWidth(5);
-                nowOrderBtn.setStrokeWidth(0);
+                timeOrderBtn.setTextColor(getResources().getColor(R.color.black));
+                nowOrderBtn.setTextColor(getResources().getColor(R.color.white));
                 break;
             case R.id.nowOrderBtn:
                 nowFlag = true;
-                Toast.makeText(this, "Now Btn", Toast.LENGTH_SHORT).show();
-                nowOrderBtn.setStrokeWidth(5);
-                timeOrderBtn.setStrokeWidth(0);
+                timeOrderBtn.setTextColor(getResources().getColor(R.color.white));
+                nowOrderBtn.setTextColor(getResources().getColor(R.color.black));
                 break;
             case R.id.orderButton:
                 perOrder();

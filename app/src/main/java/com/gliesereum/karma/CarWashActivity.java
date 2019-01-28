@@ -111,7 +111,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private void getCarWash() {
         showProgressDialog();
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<AllCarWashResponse> call = apiInterface.getCarWash(carWashId);
+        Call<AllCarWashResponse> call = apiInterface.getCarWashFull(carWashId);
         call.enqueue(new Callback<AllCarWashResponse>() {
             @Override
             public void onResponse(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
