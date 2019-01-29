@@ -45,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 
 public class AddCarActivity extends AppCompatActivity {
 
@@ -707,7 +708,7 @@ public class AddCarActivity extends AppCompatActivity {
     public void getAllFilter() {
 //        showProgressDialog();
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<List<FilterResponse>> call = apiInterface.getFilters("CAR_WASH");
+        Call<List<FilterResponse>> call = apiInterface.getFilters(SERVICE_TYPE);
         call.enqueue(new Callback<List<FilterResponse>>() {
             @Override
             public void onResponse(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {

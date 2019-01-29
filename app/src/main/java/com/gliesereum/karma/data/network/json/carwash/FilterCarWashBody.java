@@ -12,8 +12,8 @@ public class FilterCarWashBody {
     @SerializedName("serviceIds")
     private List<String> serviceIds;
 
-    @SerializedName("carId")
-    private String carId;
+    @SerializedName("targetId")
+    private String targetId;
 
     public List<String> getServiceIds() {
         return serviceIds;
@@ -23,16 +23,16 @@ public class FilterCarWashBody {
         this.serviceIds = serviceIds;
     }
 
-    public String getCarId() {
-        return carId;
+    public String getTargetId() {
+        return targetId;
     }
 
-    public void setCarId(String carId) {
-        this.carId = carId;
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 
-    public FilterCarWashBody(String carId, List<String> serviceIds) {
-        this.carId = carId;
+    public FilterCarWashBody(String targetId, List<String> serviceIds) {
+        this.targetId = targetId;
         this.serviceIds = serviceIds;
     }
 

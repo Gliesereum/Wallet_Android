@@ -64,7 +64,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
         private TextView brandId;
         private TextView yearId;
         private TextView modelId;
-        private TextView carId;
+        private TextView targetId;
         private TextView registrationNumber;
         private TextView description;
         private TextView interior;
@@ -82,7 +82,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
             interior = itemView.findViewById(R.id.interior);
             carBody = itemView.findViewById(R.id.carBody);
             colour = itemView.findViewById(R.id.colour);
-            carId = itemView.findViewById(R.id.carId);
+            targetId = itemView.findViewById(R.id.targetId);
             chooseCar = itemView.findViewById(R.id.chooseCar);
 
 
@@ -97,7 +97,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
             interior.setText(carInfo.getInterior());
             carBody.setText(carInfo.getCarBody());
             colour.setText(carInfo.getColour());
-            carId.setText(carInfo.getId());
+            targetId.setText(carInfo.getId());
             chooseCar.setTag(carInfo.getId());
             if (carInfo.getId().equals(FastSave.getInstance().getString(CAR_ID, ""))) {
                 chooseCar.setVisibility(View.GONE);

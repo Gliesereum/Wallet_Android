@@ -2,6 +2,7 @@ package com.gliesereum.karma;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
@@ -27,6 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 
 public class RecordListActivity extends AppCompatActivity {
 
@@ -37,6 +39,8 @@ public class RecordListActivity extends AppCompatActivity {
     private Map<String, String> carWashNameMap = new HashMap<>();
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
+    private TextView splashTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,7 @@ public class RecordListActivity extends AppCompatActivity {
 
     private void getAllRecord() {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<List<AllRecordResponse>> call = apiInterface.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        Call<List<AllRecordResponse>> call = apiInterface.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE);
         call.enqueue(new Callback<List<AllRecordResponse>>() {
             @Override
             public void onResponse(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
@@ -62,6 +66,7 @@ public class RecordListActivity extends AppCompatActivity {
 
                 } else {
                     if (response.code() == 204) {
+                        splashTextView.setVisibility(View.VISIBLE);
                         Toast.makeText(RecordListActivity.this, "У вас пока нет записей", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
@@ -118,7 +123,9 @@ public class RecordListActivity extends AppCompatActivity {
     private void initView() {
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Список записей");
         setSupportActionBar(toolbar);
+        splashTextView = findViewById(R.id.splashTextView);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recordListAdapter = new RecordListAdapter(RecordListActivity.this);

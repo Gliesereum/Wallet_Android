@@ -418,7 +418,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         switch (button) {
                             case NDialog.BUTTON_POSITIVE:
                                 FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
-                                filterCarWashBody.setCarId(FastSave.getInstance().getString(CAR_ID, ""));
+                                filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, ""));
                                 filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
                                 getAllCarWash(filterCarWashBody);
                                 break;

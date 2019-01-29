@@ -1,5 +1,6 @@
 package com.gliesereum.karma.data.network.json.carwash;
 
+import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -15,11 +16,17 @@ public class ServicePricesItem {
 	@SerializedName("serviceClass")
 	private List<ServiceClassItem> serviceClass;
 
+	@SerializedName("attributes")
+	private List<AttributesItem> attributes;
+
 	@SerializedName("price")
 	private int price;
 
 	@SerializedName("corporationServiceId")
 	private String corporationServiceId;
+
+	@SerializedName("description")
+	private String description;
 
 	@SerializedName("service")
 	private Service service;
@@ -33,11 +40,38 @@ public class ServicePricesItem {
 	@SerializedName("serviceId")
 	private String serviceId;
 
+	@SerializedName("businessId")
+	private String businessId;
+
 	@SerializedName("carBodies")
 	private List<String> carBodies;
 
 	@SerializedName("interiorTypes")
 	private List<String> interiorTypes;
+
+	public List<AttributesItem> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<AttributesItem> attributes) {
+		this.attributes = attributes;
+	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public void setDuration(int duration) {
 		this.duration = duration;

@@ -95,7 +95,7 @@ public class Util {
                                 break;
                             case "car_list":
                                 activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity.class));
-                                activity.finish();
+//                                activity.finish();
                                 break;
                             case "record_list":
                                 activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class));

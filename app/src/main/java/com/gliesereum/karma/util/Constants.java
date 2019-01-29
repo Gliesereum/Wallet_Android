@@ -7,6 +7,7 @@ public class Constants {
     public static final String USER_NAME = "userName";
     public static final String USER_SECOND_NAME = "userSecondName";
     public static final String IS_LOGIN = "isLogin";
+    public static final String SERVICE_TYPE = "CAR_WASH";
 
     public static final String CAR_ID = "carId";
     public static final String CAR_BRAND = "carBrand";
@@ -15,6 +16,10 @@ public class Constants {
     public static final String CAR_INTERIOR = "carInterior";
     public static final String CAR_BODY = "carBody";
     public static final String CAR_COLOR = "carColor";
+    public static final String CAR_SERVICE_CLASS_ID = "carServiceClassId";
+    public static final String CAR_INTERIOR_ID = "carInteriorId";
+    public static final String CAR_BODY_ID = "carBodyId";
+    public static final String CAR_COLOR_ID = "carColorId";
 
     public static final String CAR_BODY_VALUE = "carColorValue";
     public static final String CAR_INTERIOR_VALUE = "carColorValue";

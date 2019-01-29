@@ -16,8 +16,8 @@ public class Service {
     @SerializedName("id")
     private String id;
 
-    @SerializedName("type")
-    private String type;
+    @SerializedName("serviceType")
+    private String serviceType;
 
     public void setName(String name) {
         this.name = name;
@@ -43,11 +43,11 @@ public class Service {
         return id;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public String getServiceType() {
+        return serviceType;
     }
 
-    public String getType() {
-        return type;
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }

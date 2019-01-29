@@ -16,6 +16,17 @@ public class ServicesItem {
     @SerializedName("id")
     private String id;
 
+    @SerializedName("serviceType")
+    private String serviceType;
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

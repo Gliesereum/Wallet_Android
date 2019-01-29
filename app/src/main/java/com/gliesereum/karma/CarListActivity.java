@@ -102,8 +102,8 @@ public class CarListActivity extends AppCompatActivity {
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Список авто");
-        splashTextView = findViewById(R.id.splashTextView);
         setSupportActionBar(toolbar);
+        splashTextView = findViewById(R.id.splashTextView);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         carListAdapter = new CarListAdapter();

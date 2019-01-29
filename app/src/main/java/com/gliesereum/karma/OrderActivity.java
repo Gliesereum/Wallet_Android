@@ -127,13 +127,23 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean checkCarInterior(ServicePricesItem servicePricesItem, String carInterior) {
-        if (servicePricesItem.getInteriorTypes().size() == 0) {
-            Log.d(TAG, "servicePricesItem.getInteriorTypes().size()==0");
+        if (servicePricesItem.getAttributes().size() == 0) {
             return true;
         } else {
-            Log.d(TAG, "contains(carInterior): " + servicePricesItem.getInteriorTypes().contains(carInterior) + " " + servicePricesItem.getInteriorTypes().toString() + " " + FastSave.getInstance().getString(CAR_INTERIOR, ""));
-            return servicePricesItem.getInteriorTypes().contains(carInterior);
+            for (int i = 0; i < servicePricesItem.getAttributes().size(); i++) {
+                if (servicePricesItem.getAttributes().get(i).getValue().equals(carInterior)) {
+                    return true;
+                }
+            }
+            return false;
         }
+//        if (servicePricesItem.getInteriorTypes().size() == 0) {
+//            Log.d(TAG, "servicePricesItem.getInteriorTypes().size()==0");
+//            return true;
+//        } else {
+//            Log.d(TAG, "contains(carInterior): " + servicePricesItem.getInteriorTypes().contains(carInterior) + " " + servicePricesItem.getInteriorTypes().toString() + " " + FastSave.getInstance().getString(CAR_INTERIOR, ""));
+//            return servicePricesItem.getInteriorTypes().contains(carInterior);
+//        }
     }
 
 //    private boolean checkCarParametr(List<ServicePricesItem> servicePricesItemList, String carBody, String carInterior) {
