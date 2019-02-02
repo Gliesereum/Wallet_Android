@@ -39,6 +39,8 @@ import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.karma.util.Constants.USER_ID;
+import static com.gliesereum.karma.util.Constants.USER_NAME;
+import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -126,7 +128,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         timerLabel = findViewById(R.id.timerLabel);
         registerBtn = (MaterialButton) findViewById(R.id.registerBtn);
         cardView = (CardView) findViewById(R.id.cardView);
-        textView2 = (TextView) findViewById(R.id.textView2);
     }
 
     @Override
@@ -143,7 +144,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void startTimer() {
-        countDownTimer = new CountDownTimer(100000, 1000) {
+        countDownTimer = new CountDownTimer(180000, 1000) {
             public void onTick(long millisUntilFinished) {
                 setTimerTime(millisUntilFinished);
             }
@@ -156,7 +157,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void saveUserInfo(Response<UserResponse> user) {
         FastSave.getInstance().saveBoolean(IS_LOGIN, true);
-        FastSave.getInstance().saveString(USER_ID, user.body().getTokenInfo().getUserId());
+        FastSave.getInstance().saveString(USER_ID, user.body().getUser().getId());
         FastSave.getInstance().saveString(ACCESS_TOKEN, "Bearer " + user.body().getTokenInfo().getAccessToken());
         FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, user.body().getTokenInfo().getAccessToken());
         FastSave.getInstance().saveString(REFRESH_TOKEN, user.body().getTokenInfo().getRefreshToken());
@@ -179,7 +180,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             response.body().getUser().getMiddleName() == null) {
                         startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
                     } else {
+                        FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
+                        FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
                         startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+                        saveUserInfo(response);
                     }
                     finish();
                 } else {

@@ -24,7 +24,6 @@ import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;
-import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
@@ -74,7 +73,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private Map<String, String> customServiceMap = new HashMap<>();
     //    private Toolbar toolbar;
     private TextView address;
-    private CollapsibleCalendar calendarView;
     private LinearLayout packagesBlock;
     private ImageView imageView2;
     private ImageView imageView3;
@@ -104,7 +102,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         initView();
         getCarWash();
 
-        GlideApp.with(this).load(R.drawable.header).circleCrop().into(imageView3);
+        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(imageView3);
 
     }
 
@@ -376,7 +374,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         });
         boxLinearLayout = (LinearLayout) findViewById(R.id.boxLinearLayout);
         address = (TextView) findViewById(R.id.address);
-        calendarView = (CollapsibleCalendar) findViewById(R.id.calendarView);
         packagesBlock = (LinearLayout) findViewById(R.id.packagesBlock);
         imageView2 = (ImageView) findViewById(R.id.imageView2);
         imageView3 = (ImageView) findViewById(R.id.imageView3);
@@ -514,7 +511,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "title", "message");
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
 
     }
 
@@ -552,7 +549,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
-            packageBtn.setCornerRadius(25);
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -560,7 +556,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
                         serviceNameList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
                     }
-                    Toast.makeText(CarWashActivity.this, (String) v.getTag(), Toast.LENGTH_SHORT).show();
                     packagePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
                             .addItem(new PowerMenuItem(packageMap.get(v.getTag()).getName(), false))
                             .addItem(new PowerMenuItem("Скидка = " + packageMap.get(v.getTag()).getDiscount() + "%", false))

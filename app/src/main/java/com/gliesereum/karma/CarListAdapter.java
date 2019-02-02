@@ -25,11 +25,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
-import static com.gliesereum.karma.util.Constants.CAR_BODY;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
-import static com.gliesereum.karma.util.Constants.CAR_COLOR;
+import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
-import static com.gliesereum.karma.util.Constants.CAR_INTERIOR;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 
@@ -67,9 +65,6 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
         private TextView targetId;
         private TextView registrationNumber;
         private TextView description;
-        private TextView interior;
-        private TextView carBody;
-        private TextView colour;
         private Button chooseCar;
 
         public ViewHolder(View itemView) {
@@ -79,9 +74,6 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
             yearId = itemView.findViewById(R.id.yearId);
             registrationNumber = itemView.findViewById(R.id.registrationNumber);
             description = itemView.findViewById(R.id.description);
-            interior = itemView.findViewById(R.id.interior);
-            carBody = itemView.findViewById(R.id.carBody);
-            colour = itemView.findViewById(R.id.colour);
             targetId = itemView.findViewById(R.id.targetId);
             chooseCar = itemView.findViewById(R.id.chooseCar);
 
@@ -94,9 +86,6 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
             yearId.setText(carInfo.getYear().getName());
             registrationNumber.setText(carInfo.getRegistrationNumber());
             description.setText(carInfo.getDescription());
-            interior.setText(carInfo.getInterior());
-            carBody.setText(carInfo.getCarBody());
-            colour.setText(carInfo.getColour());
             targetId.setText(carInfo.getId());
             chooseCar.setTag(carInfo.getId());
             if (carInfo.getId().equals(FastSave.getInstance().getString(CAR_ID, ""))) {
@@ -118,9 +107,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.ViewHold
                                 FastSave.getInstance().saveString(CAR_BRAND, carById.getBrand().getName());
                                 FastSave.getInstance().saveString(CAR_MODEL, carById.getModel().getName());
                                 FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carById.getServices());
-                                FastSave.getInstance().saveString(CAR_BODY, carById.getCarBody());
-                                FastSave.getInstance().saveString(CAR_INTERIOR, carById.getInterior());
-                                FastSave.getInstance().saveString(CAR_COLOR, carById.getColour());
+                                FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, carById.getAttributes());
                                 notifyDataSetChanged();
                                 Log.d(TAG, "onResponse: Choose " + carById.getBrand().getName());
                             } else {

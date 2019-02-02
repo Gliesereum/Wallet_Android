@@ -19,8 +19,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/accent"
         app:rippleColor="@color/accent"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp"
         tools:text="Button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

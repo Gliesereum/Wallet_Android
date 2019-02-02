@@ -63,7 +63,6 @@ public class RecordListActivity extends AppCompatActivity {
 //                        recordListAdapter.setItems(recordsList);
                         getCarWash(recordsList);
                     }
-
                 } else {
                     if (response.code() == 204) {
                         splashTextView.setVisibility(View.VISIBLE);
@@ -87,16 +86,16 @@ public class RecordListActivity extends AppCompatActivity {
     }
 
     private void getCarWash(List<AllRecordResponse> recordsList) {
-        carWashNameMap.clear();
+//        carWashNameMap.clear();
         for (int i = 0; i < recordsList.size(); i++) {
-            if (!carWashNameMap.containsKey(recordsList.get(i).getCarWashId())) {
-                Call<AllCarWashResponse> call = apiInterface.getCarWash(recordsList.get(i).getCarWashId());
+            if (!carWashNameMap.containsKey(recordsList.get(i).getBusinessId())) {
+                Call<AllCarWashResponse> call = apiInterface.getCarWash(recordsList.get(i).getBusinessId());
                 call.enqueue(new Callback<AllCarWashResponse>() {
                     @Override
                     public void onResponse(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
                         if (response.code() == 200) {
                             carWashNameMap.put(response.body().getId(), response.body().getName());
-                            recordListAdapter.setItems(recordsList, carWashNameMap);
+                            recordListAdapter.notifyDataSetChanged();
                         } else {
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -113,10 +112,10 @@ public class RecordListActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                recordListAdapter.setItems(recordsList, carWashNameMap);
+//                recordListAdapter.setItems(recordsList, carWashNameMap);
             }
         }
-//        recordListAdapter.setItems(recordsList, carWashNameMap);
+        recordListAdapter.setItems(recordsList, carWashNameMap);
 
     }
 
@@ -137,6 +136,6 @@ public class RecordListActivity extends AppCompatActivity {
             }
         });
 
-        new Util(this, toolbar).addNavigation();
+        new Util(this, toolbar, 3).addNavigation();
     }
 }

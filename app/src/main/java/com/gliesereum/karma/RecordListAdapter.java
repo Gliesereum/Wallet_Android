@@ -64,11 +64,11 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
             timeTextView.setText(Util.getStringTime(recordInfo.getBegin()));
             priceTextView.setText(recordInfo.getPrice() + "грн");
 //            if (recordInfo.getCarWashName()!=null){
-            carWashName.setText(carWashNameMap.get(recordInfo.getCarWashId()));
+            carWashName.setText(carWashNameMap.get(recordInfo.getBusinessId()));
 //            }else {
 //                carWashName.setText("Загрузка...");
 //            }
-            GlideApp.with(context).load(R.drawable.header).circleCrop().into(carWashLogo);
+            GlideApp.with(context).load(R.mipmap.ic_launcher_round).circleCrop().into(carWashLogo);
         }
 
         @Override

@@ -48,8 +48,8 @@ public class AllRecordResponse {
     @SerializedName("begin")
     private long begin;
 
-    @SerializedName("carWashId")
-    private String carWashId;
+    @SerializedName("businessId")
+    private String businessId;
 
     private String carWashName;
 
@@ -165,11 +165,11 @@ public class AllRecordResponse {
         return begin;
     }
 
-    public void setCarWashId(String carWashId) {
-        this.carWashId = carWashId;
+    public String getBusinessId() {
+        return businessId;
     }
 
-    public String getCarWashId() {
-        return carWashId;
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

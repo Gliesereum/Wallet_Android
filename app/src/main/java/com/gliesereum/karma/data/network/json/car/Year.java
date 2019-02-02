@@ -13,19 +13,19 @@ public class Year {
 	@SerializedName("id")
 	private String id;
 
-	public void setName(String name) {
+    public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getName() {
+    public String getName() {
 		return name;
 	}
 
-	public void setId(String id) {
+    public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getId() {
+    public String getId() {
 		return id;
 	}
 }

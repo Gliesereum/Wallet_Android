@@ -1,36 +1,28 @@
 package com.gliesereum.karma;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
+import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
-import com.gohn.nativedialog.ButtonClickListener;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,7 +37,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 
-import net.fitken.rose.Rose;
 import net.sharewire.googlemapsclustering.Cluster;
 import net.sharewire.googlemapsclustering.ClusterManager;
 
@@ -58,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -68,9 +58,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
+import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
+import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
 
@@ -101,9 +93,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         FastSave.init(getApplicationContext());
-        Rose.INSTANCE.debugEnabled(BuildConfig.DEBUG);
-        Rose.INSTANCE.debug("this is the very first log");
-        Rose.INSTANCE.error("this is the very first log");
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
         if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") && FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
@@ -125,36 +114,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermission();
-        new Util(this, toolbar).addNavigation();
+        new Util(this, toolbar, 1).addNavigation();
 
         getAllService();
-
-//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-//        mapView = findViewById(R.id.map);
-//        mapView.onCreate(mapViewBundle);
-//        mapView.getMapAsync(this);
-
-
     }
 
-    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
-
-        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);
-        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.profile_image);
-        markerImageView.setImageResource(resId);
-        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-        customMarkerView.buildDrawingCache();
-        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(returnedBitmap);
-        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        Drawable drawable = customMarkerView.getBackground();
-        if (drawable != null)
-            drawable.draw(canvas);
-        customMarkerView.draw(canvas);
-        return returnedBitmap;
-    }
+//    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
+//
+//        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);
+//        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.profile_image);
+//        markerImageView.setImageResource(resId);
+//        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+//        customMarkerView.buildDrawingCache();
+//        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
+//                Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(returnedBitmap);
+//        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+//        Drawable drawable = customMarkerView.getBackground();
+//        if (drawable != null)
+//            drawable.draw(canvas);
+//        customMarkerView.draw(canvas);
+//        return returnedBitmap;
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -165,9 +147,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onInfoWindowClick(Marker marker) {
                 if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-                    Intent intent = new Intent(MapsActivity.this, CarWashActivity.class);
-                    intent.putExtra("carWashId", marker.getSnippet());
-                    startActivity(intent);
+                    if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class) != null) {
+                        Intent intent = new Intent(MapsActivity.this, CarWashActivity.class);
+                        intent.putExtra("carWashId", marker.getSnippet());
+                        startActivity(intent);
+                    } else {
+//                        Toast.makeText(MapsActivity.this, "Добавте свою первую машину", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(MapsActivity.this, CarListActivity2.class));
+//                        finish();
+                    }
+
                 } else {
                     startActivity(new Intent(MapsActivity.this, LoginActivity.class));
                     finish();
@@ -196,7 +185,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
                             Log.d(TAG, "onClusterClick");
-                            return false;
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
+                            return true;
                         }
 
                         @Override
@@ -209,50 +199,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                     for (AllCarWashResponse coordinate : carWashList) {
-//                        coordinateList.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
                         clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
-//                        mMap.addMarker(new MarkerOptions()
-//                                .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
-//                                .snippet(coordinate.getId())
-//                                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ic_local_car_wash_black_24dp)))
-//                                .title(coordinate.getName()));
                     }
-
-
-//                    for (int i = 0; i < coordinateList.size(); i++) {
-//                        clusterItems.add(new SampleClusterItem(coordinateList.get(i)));
-//                    }
-
                     clusterManager.setItems(clusterItems);
-
-
-//                    if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                        // TODO: Consider calling
-//                        //    ActivityCompat#requestPermissions
-//                        // here to request the missing permissions, and then overriding
-//                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                        //                                          int[] grantResults)
-//                        // to handle the case where the user grants the permission. See the documentation
-//                        // for ActivityCompat#requestPermissions for more details.
-//                        return;
-//                    }
-
                     mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-//                    mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this, R.raw.style_json));
-//                    mMap.setMyLocationEnabled(true);
                     mMap.setBuildingsEnabled(true);
                     mMap.getUiSettings().setMapToolbarEnabled(true);
                     mMap.getUiSettings().setMyLocationButtonEnabled(true);
                     mMap.getUiSettings().setAllGesturesEnabled(true);
-
                     updateLocationUI();
-
-                    // Get the current location of the device and set the position of the map.
                     getDeviceLocation();
-
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
+                        mMap.clear();
+                        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+                        List<SampleClusterItem> clusterItems = new ArrayList<>();
+                        clusterManager.setItems(clusterItems);
+                        mMap.setBuildingsEnabled(true);
+                        mMap.getUiSettings().setMapToolbarEnabled(true);
+                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                        mMap.getUiSettings().setAllGesturesEnabled(true);
+                        updateLocationUI();
+                        getDeviceLocation();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -295,16 +263,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSION:
-                // If the permission is granted, get the location,
-                // otherwise, show a Toast
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     updateLocationUI();
                     getDeviceLocation();
                 } else {
-                    Toast.makeText(this,
-                            "FAIL",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "FAIL", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -409,26 +372,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.filter_menu:
-                NDialog nDialog = new NDialog(MapsActivity.this, ButtonType.ONE_BUTTON);
-                nDialog.setTitle("This is title");
-                nDialog.setMessage("This is Content Message");
-                ButtonClickListener buttonClickListener = new ButtonClickListener() {
-                    @Override
-                    public void onClick(int button) {
-                        switch (button) {
-                            case NDialog.BUTTON_POSITIVE:
-                                FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
-                                filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, ""));
-                                filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
-                                getAllCarWash(filterCarWashBody);
-                                break;
-                        }
-                    }
-                };
-                nDialog.setPositiveButtonText("Применить фильтр");
-                nDialog.setPositiveButtonTextColor(Color.BLUE);
-                nDialog.setPositiveButtonOnClickDismiss(true); // default : true
-                nDialog.setPositiveButtonClickListener(buttonClickListener);
+                NDialog nDialog = new NDialog(MapsActivity.this, ButtonType.NO_BUTTON);
+                nDialog.setTitle("Фильтр");
+                nDialog.setMessage("Накликай фильтров");
+//                ButtonClickListener buttonClickListener = new ButtonClickListener() {
+//                    @Override
+//                    public void onClick(int button) {
+//                        switch (button) {
+//                            case NDialog.BUTTON_POSITIVE:
+//                                FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
+//                                filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, null));
+//                                filterCarWashBody.setServiceType(SERVICE_TYPE);
+//                                filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
+//                                getAllCarWash(filterCarWashBody);
+//                                break;
+//                        }
+//                    }
+//                };
+//                nDialog.setPositiveButtonText("Применить фильтр");
+//                nDialog.setPositiveButtonTextColor(Color.BLUE);
+//                nDialog.setPositiveButtonOnClickDismiss(true); // default : true
+//                nDialog.setPositiveButtonClickListener(buttonClickListener);
 
                 nDialog.isCancelable(true);
 
@@ -437,6 +401,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 List<View> childViews = nDialog.getCustomViewChildren();
                 for (View childView : childViews) {
                     switch (childView.getId()) {
+                        case R.id.okBtn:
+                            MaterialButton okBtn = childView.findViewById(R.id.okBtn);
+                            okBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
+                                    filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, null));
+                                    filterCarWashBody.setServiceType(SERVICE_TYPE);
+                                    filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
+                                    getAllCarWash(filterCarWashBody);
+                                    nDialog.dismiss();
+                                }
+                            });
+                            break;
                         case R.id.serviceGroup:
                             LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
                             for (int i = 0; i < mapServise.size(); i++) {

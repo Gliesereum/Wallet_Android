@@ -2,6 +2,7 @@ package com.gliesereum.karma.data.network;
 
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
+import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -65,14 +67,17 @@ public interface APIInterface {
     @POST("karma/v1/car")
     Call<AllCarResponse> addCar(@Header("Authorization") String accessToken, @Body AllCarResponse object);
 
+    @DELETE("karma/v1/car/{idCar}")
+    Call<CarDeleteResponse> deleteCar(@Header("Authorization") String accessToken, @Path("idCar") String idCar);
+
     @GET("karma/v1/class")
     Call<List<ClassServiceResponse>> getAllClassService();
 
     @POST("karma/v1/car/service/{idCar}/{idService}")
-    Call<AllCarResponse> addClassService(@Path("idCar") String idCar, @Path("idService") String idService, @Header("Authorization") String accessToken);
+    Call<CarDeleteResponse> addClassService(@Path("idCar") String idCar, @Path("idService") String idService, @Header("Authorization") String accessToken);
 
     @POST("karma/v1/car/filter-attribute/{idCar}/{idAttribute}")
-    Call<AllCarResponse> addCarFilter(@Path("idCar") String idCar, @Path("idAttribute") String idAttribute, @Header("Authorization") String accessToken);
+    Call<CarDeleteResponse> addCarFilter(@Path("idCar") String idCar, @Path("idAttribute") String idAttribute, @Header("Authorization") String accessToken);
 
 
     //FILTER

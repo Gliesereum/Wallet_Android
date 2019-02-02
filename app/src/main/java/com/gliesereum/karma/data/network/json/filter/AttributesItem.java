@@ -2,6 +2,8 @@ package com.gliesereum.karma.data.network.json.filter;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 import javax.annotation.Generated;
 
 @Generated("com.robohorse.robopojogenerator")
@@ -49,5 +51,18 @@ public class AttributesItem {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttributesItem that = (AttributesItem) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

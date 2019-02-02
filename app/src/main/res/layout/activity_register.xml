@@ -103,6 +103,8 @@
         android:text="Сохранить"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/thirdNameTextInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/thirdNameTextInputLayout"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

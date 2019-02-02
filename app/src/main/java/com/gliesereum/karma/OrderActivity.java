@@ -22,12 +22,13 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
-import com.gliesereum.karma.data.network.json.carwash.ServiceClassItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicesItem;
+import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.util.ErrorHandler;
+import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
 import com.google.android.material.button.MaterialButton;
@@ -40,6 +41,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -49,9 +51,8 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CAR_BODY;
+import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
-import static com.gliesereum.karma.util.Constants.CAR_INTERIOR;
-import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -78,6 +79,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private Map<String, ServicesItem> serviceMap = new HashMap<>();
     private LinearLayout servicePriceBlock;
     private List<String> nameOfServiceList = new ArrayList<>();
+    private Calendar date;
 
 
     @Override
@@ -101,16 +103,16 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     private void setServicePrices(AllCarWashResponse carWash) {
         servicePriceBlock.removeAllViews();
-        List<ServiceClassItem> serviceClassItemList = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
-        String carBody = FastSave.getInstance().getString(CAR_BODY, "");
-        String carInterior = FastSave.getInstance().getString(CAR_INTERIOR, "");
-
+//        List<ServiceClassItem> serviceClassItemList = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            if (checkCarInterior(carWash.getServicePrices().get(i), carInterior) && checkCarBody(carWash.getServicePrices().get(i), carBody) && !serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
+            if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes())) {
                 CheckBox checkBox = new CheckBox(OrderActivity.this);
                 checkBox.setText(carWash.getServicePrices().get(i).getName() + " | +" + carWash.getServicePrices().get(i).getDuration() + "мин | +" + carWash.getServicePrices().get(i).getPrice() + "грн");
                 checkBox.setTag(carWash.getServicePrices().get(i).getId());
                 servicePriceBlock.addView(checkBox);
+            } else {
+                Log.d(TAG, "false: " + carWash.getServicePrices().get(i).getName());
+
             }
         }
 
@@ -167,7 +169,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
         packageBtn.setText("Не выбран");
         packageBtn.setTag("default");
-        packageBtn.setCornerRadius(25);
         packageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,18 +193,16 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         packageScroll.addView(layout2);
 //        packageBtn.performClick();
         for (int i = 0; i < carWash.getPackages().size(); i++) {
-            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
+            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn3, packageScroll, false);
             packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
-            packageBtn.setCornerRadius(25);
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     serviceMap.clear();
                     nameOfServiceList.clear();
                     orderBody.setPackageId((String) v.getTag());
-
                     for (int j = 0; j < packageScroll.getChildCount(); j++) {
                         ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                         if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
@@ -239,10 +238,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         orderButton = findViewById(R.id.orderButton);
         nowOrderBtn = findViewById(R.id.nowOrderBtn);
         timeOrderBtn = findViewById(R.id.timeOrderBtn);
-        timeOrderBtn.setCornerRadius(25);
+//        timeOrderBtn.setCornerRadius(25);
         orderButton.setOnClickListener(this);
         nowOrderBtn.setOnClickListener(this);
-        nowOrderBtn.setCornerRadius(25);
+//        nowOrderBtn.setCornerRadius(25);
         timeOrderBtn.setOnClickListener(this);
         horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
         packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
@@ -258,10 +257,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         showProgressDialog();
         orderBody.setWorkingSpaceId(null);
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        orderBody.setCarId(FastSave.getInstance().getString(CAR_ID, ""));
-        orderBody.setCarWashId(carWash.getId());
+        orderBody.setTargetId(FastSave.getInstance().getString(CAR_ID, ""));
+        orderBody.setBusinessId(carWash.getId());
         if (nowFlag) {
-            orderBody.setBegin(System.currentTimeMillis());
+            orderBody.setBegin(System.currentTimeMillis() + (carWash.getTimeZone() * 60000));
         } else {
             orderBody.setBegin(begin);
         }
@@ -332,7 +331,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                             switch (childView.getId()) {
                                 case R.id.time:
                                     TextView time = childView.findViewById(R.id.time);
-                                    time.setText(getStringTime(response.body().getBegin()));
+                                    time.setText(Util.getStringTime(response.body().getBegin()));
                                     break;
                                 case R.id.okBtn:
                                     Button okBtn = childView.findViewById(R.id.okBtn);
@@ -340,37 +339,38 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onClick(View v) {
                                             showProgressDialog();
-                                        apiInterface = APIClient.getClient().create(APIInterface.class);
-                                        Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
-                                        call.enqueue(new Callback<OrderResponse>() {
-                                            @Override
-                                            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
-                                                if (response.code() == 200) {
-                                                    closeProgressDialog();
-                                                    nDialog.dismiss();
-                                                    startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
-                                                    finish();
-                                                } else {
-                                                    try {
-                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                                        errorHandler.showError(jObjError.getInt("code"));
+                                            apiInterface = APIClient.getClient().create(APIInterface.class);
+                                            Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
+                                            call.enqueue(new Callback<OrderResponse>() {
+                                                @Override
+                                                public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+                                                    if (response.code() == 200) {
                                                         closeProgressDialog();
                                                         nDialog.dismiss();
-                                                    } catch (Exception e) {
-                                                        errorHandler.showCustomError(e.getMessage());
-                                                        closeProgressDialog();
-                                                        nDialog.dismiss();
+                                                        Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
+                                                        startActivity(new Intent(OrderActivity.this, MapsActivity.class));
+                                                        finish();
+                                                    } else {
+                                                        try {
+                                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                            errorHandler.showError(jObjError.getInt("code"));
+                                                            closeProgressDialog();
+                                                            nDialog.dismiss();
+                                                        } catch (Exception e) {
+                                                            errorHandler.showCustomError(e.getMessage());
+                                                            closeProgressDialog();
+                                                            nDialog.dismiss();
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            @Override
-                                            public void onFailure(Call<OrderResponse> call, Throwable t) {
-                                                errorHandler.showCustomError(t.getMessage());
-                                                closeProgressDialog();
-                                                nDialog.dismiss();
-                                            }
-                                        });
+                                                @Override
+                                                public void onFailure(Call<OrderResponse> call, Throwable t) {
+                                                    errorHandler.showCustomError(t.getMessage());
+                                                    closeProgressDialog();
+                                                    nDialog.dismiss();
+                                                }
+                                            });
                                         }
                                     });
                                     break;
@@ -422,7 +422,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "title", "message");
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
 
     }
 
@@ -432,11 +432,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    Calendar date;
 
     public void showDateTimePicker() {
         final Calendar currentDate = Calendar.getInstance();
-        date = Calendar.getInstance();
+        date = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         new DatePickerDialog(OrderActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -447,10 +446,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         date.set(Calendar.MINUTE, minute);
                         begin = date.getTimeInMillis();
+                        Log.d(TAG, "onTimeSet: ");
                     }
                 }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
             }
-        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+        },
+                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
     }
 
     @Override

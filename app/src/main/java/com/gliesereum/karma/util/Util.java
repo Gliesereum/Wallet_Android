@@ -3,10 +3,9 @@ package com.gliesereum.karma.util;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.gliesereum.karma.CarListActivity;
+import com.gliesereum.karma.CarListActivity2;
 import com.gliesereum.karma.LoginActivity;
 import com.gliesereum.karma.MapsActivity;
 import com.gliesereum.karma.ProfileActivity;
@@ -21,13 +20,18 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import androidx.appcompat.widget.Toolbar;
 
+import static com.gliesereum.karma.util.Constants.CAR_BRAND;
+import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
+import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_MODEL;
+import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
@@ -35,21 +39,24 @@ import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 public class Util {
     private Activity activity;
     private Toolbar toolbar;
+    private int identifier;
 
 
-    public Util(Activity activity, Toolbar toolbar) {
+    public Util(Activity activity, Toolbar toolbar, int identifier) {
         this.activity = activity;
         this.toolbar = toolbar;
+        this.identifier = identifier;
+
     }
 
     public void addNavigation() {
         new DrawerBuilder().withActivity(activity).build();
-        PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта").withSelectable(false).withTag("maps").withIcon(R.drawable.ic_map_black_24dp);
-        SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withSelectable(false).withTag("car_list");
-        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withSelectable(false).withTag("record_list");
-        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withSelectable(false).withTag("profile");
-        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withSelectable(false).withTag("logout");
-        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withSelectable(false).withTag("login");
+        PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта").withIdentifier(1).withTag("maps").withIcon(R.drawable.map_icon);
+        SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withIcon(R.drawable.my_cars);
+        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withIcon(R.drawable.orders);
+        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withIcon(R.drawable.profile);
+        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withIcon(R.drawable.logout);
+        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withIcon(R.drawable.login);
 
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             car_listItem.withEnabled(false);
@@ -59,23 +66,24 @@ public class Util {
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(activity)
-                .withHeaderBackground(R.drawable.header)
+                .withHeaderBackground(R.drawable.cover_karma)
                 .addProfiles(
                         new ProfileDrawerItem().withName(FastSave.getInstance().getString(USER_NAME, "") + " " + FastSave.getInstance().getString(USER_SECOND_NAME, ""))
-                                .withIcon(activity.getResources().getDrawable(R.drawable.logo))
+                                .withIcon(activity.getResources().getDrawable(R.mipmap.ic_launcher_round))
                 )
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                        return false;
-                    }
-                })
+//                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+//                    @Override
+//                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+//                        return false;
+//                    }
+//                })
                 .build();
 
         Drawer result = new DrawerBuilder()
                 .withAccountHeader(headerResult)
                 .withActivity(activity)
                 .withToolbar(toolbar)
+                .withSelectedItem(identifier)
                 .addDrawerItems(
                         mapsItem,
                         new DividerDrawerItem(),
@@ -86,24 +94,26 @@ public class Util {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        // do something with the clicked item :D
-                        Toast.makeText(activity.getApplicationContext(), String.valueOf(drawerItem.getTag().toString()), Toast.LENGTH_SHORT).show();
                         switch (drawerItem.getTag().toString()) {
                             case "maps":
                                 activity.startActivity(new Intent(activity.getApplicationContext(), MapsActivity.class));
                                 activity.finish();
                                 break;
                             case "car_list":
-                                activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity.class));
-//                                activity.finish();
+                                activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity2.class));
                                 break;
                             case "record_list":
                                 activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class));
-//                                activity.finish();
-//                                Toast.makeText(activity, "Open List", Toast.LENGTH_SHORT).show();
                                 break;
                             case "logout":
                                 FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+                                FastSave.getInstance().deleteValue(USER_NAME);
+                                FastSave.getInstance().deleteValue(USER_SECOND_NAME);
+                                FastSave.getInstance().deleteValue(CAR_ID);
+                                FastSave.getInstance().deleteValue(CAR_BRAND);
+                                FastSave.getInstance().deleteValue(CAR_SERVICE_CLASS);
+                                FastSave.getInstance().deleteValue(CAR_MODEL);
+                                FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
                                 activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class));
                                 activity.finish();
                                 break;
@@ -137,16 +147,20 @@ public class Util {
     }
 
     public static String getStringTime(Long millisecond) {
+//        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+//        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+//        calendar.setTimeInMillis(millisecond);
+//        return format.format(calendar.getTime());
+
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(millisecond);
-        return format.format(calendar.getTime());
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return format.format(new Date(millisecond));
+
     }
 
     public static String getStringDate(Long millisecond) {
-        SimpleDateFormat format = new SimpleDateFormat("DD.MM");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(millisecond);
-        return format.format(calendar.getTime());
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return format.format(new Date(millisecond));
     }
 }

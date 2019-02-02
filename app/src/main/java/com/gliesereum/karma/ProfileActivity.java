@@ -26,6 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.ANDROID_APP;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
@@ -50,10 +51,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Util util = new Util(this, toolbar);
         errorHandler = new ErrorHandler(this, this);
-        util.addNavigation();
-
+        new Util(this, toolbar, 4).addNavigation();
         initView();
         getUser();
     }
@@ -126,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "title", "message");
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
 
     }
 
@@ -142,6 +141,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         user.setFirstName(nameTextView.getText().toString());
         user.setLastName(secondNameTextView.getText().toString());
         user.setMiddleName(thirdNameTextView.getText().toString());
+        user.setCoverUrl(ANDROID_APP);
+        user.setCountry(ANDROID_APP);
+        user.setAddress(ANDROID_APP);
+        user.setAvatarUrl(ANDROID_APP);
+        user.setCity(ANDROID_APP);
+        user.setAddAddress(ANDROID_APP);
+        user.setPosition(ANDROID_APP);
+
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<User> call = apiInterface.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
         call.enqueue(new Callback<User>() {

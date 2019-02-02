@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,6 +16,7 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
+import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.filter.FilterResponse;
 import com.gliesereum.karma.util.ErrorHandler;
@@ -38,8 +38,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
-import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
-import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,8 +54,12 @@ public class AddCarActivity extends AppCompatActivity {
     private MaterialSpinner interiorSpinner;
     private MaterialSpinner carBodySpinner;
     private MaterialSpinner colourSpinner;
-    private SearchableSpinner mSearchableSpinner;
-    private SimpleArrayListAdapter mSimpleArrayListAdapter;
+    private boolean brandFlag;
+    private boolean modelFlag;
+    private boolean yearFlag;
+    private boolean interiorFlag;
+    private boolean carBodyFlag;
+    private boolean colourFlag;
     private final ArrayList<String> mStrings = new ArrayList<>();
     private ScrollView scrollView;
     private gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner SearchableSpinner;
@@ -112,63 +114,106 @@ public class AddCarActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
                     enableSpinner(modelSpinner);
+                    brandFlag = true;
+                } else {
+                    brandFlag = false;
                 }
+                checkFillFields();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                brandFlag = false;
+                checkFillFields();
             }
         });
-
         modelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
                     enableSpinner(yearSpinner);
+                    modelFlag = true;
+                } else {
+                    modelFlag = false;
                 }
+                checkFillFields();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                modelFlag = false;
+                checkFillFields();
             }
         });
-
         yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
                     enableSpinner(interiorSpinner);
+                    yearFlag = true;
+                } else {
+                    yearFlag = false;
                 }
+                checkFillFields();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                yearFlag = false;
+                checkFillFields();
             }
         });
-
         interiorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
                     enableSpinner(carBodySpinner);
+                    interiorFlag = true;
+                } else {
+                    interiorFlag = false;
                 }
+                checkFillFields();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                interiorFlag = false;
+                checkFillFields();
             }
         });
-
         carBodySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (id != 0) {
                     enableSpinner(colourSpinner);
+                    carBodyFlag = true;
+                } else {
+                    carBodyFlag = false;
                 }
+                checkFillFields();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                carBodyFlag = false;
+                checkFillFields();
+            }
+        });
+        colourSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (id != 0) {
+                    colourFlag = true;
+                } else {
+                    colourFlag = false;
+                }
+                checkFillFields();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                colourFlag = false;
+                checkFillFields();
             }
         });
 
@@ -196,35 +241,6 @@ public class AddCarActivity extends AppCompatActivity {
         ArrayAdapter<String> colourAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, colourITEMS);
         colourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colourSpinner.setAdapter(colourAdapter);
-
-//        String[] carBodyITEMS = getResources().getStringArray(R.array.carBodyStringList);
-//        carBodyAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, carBodyITEMS);
-//        carBodyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        carBodySpinner.setAdapter(carBodyAdapter);
-
-//        String[] colourITEMS = getResources().getStringArray(R.array.colorStringList);
-//        colourAdapter = new ArrayAdapter<String>(this, R.layout.car_hint_item_layout, colourITEMS);
-//        colourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        colourSpinner.setAdapter(colourAdapter);
-
-
-        mSimpleArrayListAdapter = new SimpleArrayListAdapter(this, mStrings);
-
-        mSearchableSpinner.setAdapter(mSimpleArrayListAdapter);
-        mSearchableSpinner.setOnItemSelectedListener(mOnItemSelectedListener);
-        mSearchableSpinner.setStatusListener(new IStatusListener() {
-            @Override
-            public void spinnerIsOpening() {
-//                mSearchableSpinner1.hideEdit();
-//                mSearchableSpinner2.hideEdit();
-            }
-
-            @Override
-            public void spinnerIsClosing() {
-
-            }
-        });
-
     }
 
     private void getAllClassService() {
@@ -240,6 +256,12 @@ public class AddCarActivity extends AppCompatActivity {
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View rowView = inflater.inflate(R.layout.chip_class_service, null);
                         ((Chip) rowView).setText(classServiceList.get(i).getName());
+                        rowView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                checkFillFields();
+                            }
+                        });
                         chipGroup.addView(rowView);
                     }
                 } else {
@@ -263,31 +285,17 @@ public class AddCarActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!mSearchableSpinner.isInsideSearchEditText(event)) {
-            mSearchableSpinner.hideEdit();
-        }
-//        if (!mSearchableSpinner1.isInsideSearchEditText(event)) {
-//            mSearchableSpinner1.hideEdit();
+//    private OnItemSelectedListener mOnItemSelectedListener = new OnItemSelectedListener() {
+//        @Override
+//        public void onItemSelected(View view, int position, long id) {
+//            Toast.makeText(AddCarActivity.this, "Item on position " + position + " : " + " Selected", Toast.LENGTH_SHORT).show();
 //        }
-//        if (!mSearchableSpinner2.isInsideSearchEditText(event)) {
-//            mSearchableSpinner2.hideEdit();
+//
+//        @Override
+//        public void onNothingSelected() {
+//            Toast.makeText(AddCarActivity.this, "Nothing Selected", Toast.LENGTH_SHORT).show();
 //        }
-        return super.onTouchEvent(event);
-    }
-
-    private OnItemSelectedListener mOnItemSelectedListener = new OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(View view, int position, long id) {
-            Toast.makeText(AddCarActivity.this, "Item on position " + position + " : " + " Selected", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onNothingSelected() {
-            Toast.makeText(AddCarActivity.this, "Nothing Selected", Toast.LENGTH_SHORT).show();
-        }
-    };
+//    };
 
 
     private void initView() {
@@ -298,7 +306,6 @@ public class AddCarActivity extends AppCompatActivity {
         interiorSpinner = (MaterialSpinner) findViewById(R.id.interiorSpinner);
         carBodySpinner = (MaterialSpinner) findViewById(R.id.carBodySpinner);
         colourSpinner = (MaterialSpinner) findViewById(R.id.colourSpinner);
-        mSearchableSpinner = (SearchableSpinner) findViewById(R.id.SearchableSpinner);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         SearchableSpinner = (SearchableSpinner) findViewById(R.id.SearchableSpinner);
         registrationNumberTextInputLayout = (TextInputLayout) findViewById(R.id.registrationNumberTextInputLayout);
@@ -402,9 +409,6 @@ public class AddCarActivity extends AppCompatActivity {
                 yearHashMap.get(yearSpinner.getSelectedItem().toString()),
                 registrationNumberTextView.getText().toString(),
                 descriptionNumberTextView.getText().toString()
-//                setInterior(interiorSpinner.getSelectedItem().toString()),
-//                setCarBody(carBodySpinner.getSelectedItem().toString()),
-//                setColor(colourSpinner.getSelectedItem().toString())
         );
 
         Call<AllCarResponse> call = apiInterface.addCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
@@ -412,7 +416,6 @@ public class AddCarActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
                 if (response.code() == 200) {
-
                     for (int j = 0; j < chipGroup.getChildCount(); j++) {
                         Chip chip = (Chip) chipGroup.getChildAt(j);
                         if (chip.isChecked()) {
@@ -427,7 +430,8 @@ public class AddCarActivity extends AppCompatActivity {
                     addCarFilter(response.body().getId(), interiorHashMap.get(interiorSpinner.getSelectedItem().toString()));
                     addCarFilter(response.body().getId(), carBodyHashMap.get(carBodySpinner.getSelectedItem().toString()));
                     addCarFilter(response.body().getId(), colorHashMap.get(colourSpinner.getSelectedItem().toString()));
-                    startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
+                    startActivity(new Intent(AddCarActivity.this, CarListActivity2.class));
+                    finish();
                     Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
@@ -448,10 +452,10 @@ public class AddCarActivity extends AppCompatActivity {
 
     private void addClassService(String idCar, String idService) {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<AllCarResponse> call = apiInterface.addClassService(idCar, idService, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
-        call.enqueue(new Callback<AllCarResponse>() {
+        Call<CarDeleteResponse> call = apiInterface.addClassService(idCar, idService, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        call.enqueue(new Callback<CarDeleteResponse>() {
             @Override
-            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+            public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
                 if (response.code() == 200) {
 
 
@@ -470,7 +474,7 @@ public class AddCarActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<AllCarResponse> call, Throwable t) {
+            public void onFailure(Call<CarDeleteResponse> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
             }
         });
@@ -478,10 +482,10 @@ public class AddCarActivity extends AppCompatActivity {
 
     private void addCarFilter(String idCar, String idAttribute) {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<AllCarResponse> call = apiInterface.addCarFilter(idCar, idAttribute, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
-        call.enqueue(new Callback<AllCarResponse>() {
+        Call<CarDeleteResponse> call = apiInterface.addCarFilter(idCar, idAttribute, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        call.enqueue(new Callback<CarDeleteResponse>() {
             @Override
-            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+            public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
                 if (response.code() == 200) {
 
 
@@ -500,7 +504,7 @@ public class AddCarActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<AllCarResponse> call, Throwable t) {
+            public void onFailure(Call<CarDeleteResponse> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
             }
         });
@@ -752,7 +756,7 @@ public class AddCarActivity extends AppCompatActivity {
 
     public void showProgressDialog() {
 //        Log.d(TAG, "showProgressDialog: ");
-        progressDialog = ProgressDialog.show(this, "Загрузка данных", "Пожайлуста, подоэжите...");
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
 
     }
 
@@ -760,6 +764,23 @@ public class AddCarActivity extends AppCompatActivity {
 //        Log.d(TAG, "closeProgressDialog: ");
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    private void checkFillFields() {
+        boolean result = false;
+        if (brandFlag && modelFlag && yearFlag && interiorFlag && carBodyFlag && colourFlag) {
+            for (int i = 0; i < chipGroup.getChildCount(); i++) {
+                if (((Chip) chipGroup.getChildAt(i)).isChecked()) {
+                    result = true;
+                }
+            }
+        }
+
+        if (result) {
+            addCarBtn.setEnabled(true);
+        } else {
+            addCarBtn.setEnabled(false);
         }
     }
 

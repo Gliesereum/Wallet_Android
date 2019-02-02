@@ -2,6 +2,7 @@ package com.gliesereum.karma.data.network.json.carwash;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -10,10 +11,13 @@ import javax.annotation.Generated;
 public class FilterCarWashBody {
 
     @SerializedName("serviceIds")
-    private List<String> serviceIds;
+    private List<String> serviceIds = new ArrayList<>();
 
     @SerializedName("targetId")
     private String targetId;
+
+    @SerializedName("serviceType")
+    private String serviceType;
 
     public List<String> getServiceIds() {
         return serviceIds;
@@ -31,9 +35,23 @@ public class FilterCarWashBody {
         this.targetId = targetId;
     }
 
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
     public FilterCarWashBody(String targetId, List<String> serviceIds) {
         this.targetId = targetId;
         this.serviceIds = serviceIds;
+    }
+
+    public FilterCarWashBody(List<String> serviceIds, String targetId, String serviceType) {
+        this.serviceIds = serviceIds;
+        this.targetId = targetId;
+        this.serviceType = serviceType;
     }
 
     public FilterCarWashBody() {

@@ -21,11 +21,11 @@ public class OrderBody {
     @SerializedName("begin")
     private long begin;
 
-    @SerializedName("carId")
-    private String carId;
+    @SerializedName("targetId")
+    private String targetId;
 
-    @SerializedName("carWashId")
-    private String carWashId;
+    @SerializedName("businessId")
+    private String businessId;
 
     @SerializedName("packageId")
     private String packageId;
@@ -70,19 +70,19 @@ public class OrderBody {
         return begin;
     }
 
-    public void setCarId(String carId) {
-        this.carId = carId;
+    public String getTargetId() {
+        return targetId;
     }
 
-    public String getCarId() {
-        return carId;
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 
-    public void setCarWashId(String carWashId) {
-        this.carWashId = carWashId;
+    public String getBusinessId() {
+        return businessId;
     }
 
-    public String getCarWashId() {
-        return carWashId;
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

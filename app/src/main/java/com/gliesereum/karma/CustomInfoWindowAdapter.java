@@ -2,9 +2,7 @@ package com.gliesereum.karma;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,14 +40,14 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     }
 
     private void render(Marker marker, View view) {
-        ((ImageView) view.findViewById(R.id.badge)).setImageResource(R.drawable.badge_qld);
+        ((ImageView) view.findViewById(R.id.badge)).setImageResource(R.mipmap.ic_launcher_round);
         TextView titleUi = ((TextView) view.findViewById(R.id.title));
         String title = marker.getTitle();
         if (title != null) {
             // Spannable carWashId allows us to edit the formatting of the text.
-            SpannableString titleText = new SpannableString(title);
-            titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
-            titleUi.setText(titleText);
+//            SpannableString titleText = new SpannableString(title);
+//            titleText.setSpan(new ForegroundColorSpan(R.color.black), 0, titleText.length(), 0);
+            titleUi.setText(title);
         } else {
             titleUi.setText("");
         }
@@ -69,7 +67,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     }
 
     public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(activity, "title", "message");
+        progressDialog = ProgressDialog.show(activity, "Ща сек...", "Ща все сделаю...");
 
     }
 

@@ -63,6 +63,18 @@ public class AllCarWashResponse {
     @SerializedName("longitude")
     private double longitude;
 
+    @SerializedName("timeZone")
+    private Integer timeZone;
+
+
+    public Integer getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(Integer timeZone) {
+        this.timeZone = timeZone;
+    }
+
     public String getId() {
         return id;
     }

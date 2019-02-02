@@ -1,5 +1,6 @@
 package com.gliesereum.karma.data.network.json.car;
 
+import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -11,9 +12,6 @@ public class AllCarResponse {
 
 	@SerializedName("note")
 	private Object note;
-
-	@SerializedName("carBody")
-	private String carBody;
 
 	@SerializedName("modelId")
 	private String modelId;
@@ -33,12 +31,6 @@ public class AllCarResponse {
 	@SerializedName("yearId")
 	private String yearId;
 
-	@SerializedName("interior")
-	private String interior;
-
-	@SerializedName("colour")
-	private String colour;
-
 	@SerializedName("registrationNumber")
 	private String registrationNumber;
 
@@ -48,141 +40,117 @@ public class AllCarResponse {
 	@SerializedName("model")
 	private Model model;
 
+    @SerializedName("attributes")
+    private List<AttributesItem> attributes;
+
 	@SerializedName("id")
 	private String id;
 
 	@SerializedName("brand")
 	private Brand brand;
 
-	public void setNote(Object note) {
+    public void setNote(Object note) {
 		this.note = note;
 	}
 
-	public Object getNote() {
+    public Object getNote() {
 		return note;
 	}
 
-	public void setCarBody(String carBody) {
-		this.carBody = carBody;
-	}
-
-	public String getCarBody() {
-		return carBody;
-	}
-
-	public void setModelId(String modelId) {
+    public void setModelId(String modelId) {
 		this.modelId = modelId;
 	}
 
-	public String getModelId() {
+    public String getModelId() {
 		return modelId;
 	}
 
-	public void setYear(Year year) {
+    public void setYear(Year year) {
 		this.year = year;
 	}
 
-	public Year getYear() {
+    public Year getYear() {
 		return year;
 	}
 
-	public void setDescription(String description) {
+    public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public String getDescription() {
+    public String getDescription() {
 		return description;
 	}
 
-	public void setServices(List<ServicesItem> services) {
+    public void setServices(List<ServicesItem> services) {
 		this.services = services;
 	}
 
-	public List<ServicesItem> getServices() {
+    public List<ServicesItem> getServices() {
 		return services;
 	}
 
-	public void setUserId(String userId) {
+    public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
-	public String getUserId() {
+    public String getUserId() {
 		return userId;
 	}
 
-	public void setYearId(String yearId) {
+    public void setYearId(String yearId) {
 		this.yearId = yearId;
 	}
 
-	public String getYearId() {
+    public String getYearId() {
 		return yearId;
 	}
 
-	public void setInterior(String interior) {
-		this.interior = interior;
-	}
-
-	public String getInterior() {
-		return interior;
-	}
-
-	public void setColour(String colour) {
-		this.colour = colour;
-	}
-
-	public String getColour() {
-		return colour;
-	}
-
-	public void setRegistrationNumber(String registrationNumber) {
+    public void setRegistrationNumber(String registrationNumber) {
 		this.registrationNumber = registrationNumber;
 	}
 
-	public String getRegistrationNumber() {
+    public String getRegistrationNumber() {
 		return registrationNumber;
 	}
 
-	public void setBrandId(String brandId) {
+    public void setBrandId(String brandId) {
 		this.brandId = brandId;
 	}
 
-	public String getBrandId() {
+    public String getBrandId() {
 		return brandId;
 	}
 
-	public void setModel(Model model) {
+    public void setModel(Model model) {
 		this.model = model;
 	}
 
-	public Model getModel() {
+    public Model getModel() {
 		return model;
 	}
 
-	public void setId(String id) {
+    public void setAttributes(List<AttributesItem> attributes) {
+        this.attributes = attributes;
+    }
+
+    public List<AttributesItem> getAttributes() {
+        return attributes;
+    }
+
+    public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getId() {
+    public String getId() {
 		return id;
 	}
 
-	public void setBrand(Brand brand) {
+    public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
 
-	public Brand getBrand() {
+    public Brand getBrand() {
 		return brand;
-	}
-
-	public AllCarResponse(String brandId, String modelId, String yearId, String registrationNumber, String description, String interior, String carBody, String colour) {
-		this.brandId = brandId;
-		this.modelId = modelId;
-		this.yearId = yearId;
-		this.registrationNumber = registrationNumber;
-		this.description = description;
-		this.interior = interior;
-		this.carBody = carBody;
-		this.colour = colour;
 	}
 
     public AllCarResponse(String brandId, String modelId, String yearId, String registrationNumber, String description) {
