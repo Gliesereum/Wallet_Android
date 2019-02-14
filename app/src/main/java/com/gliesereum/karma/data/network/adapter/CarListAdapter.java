@@ -1,4 +1,4 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.data.network.adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;

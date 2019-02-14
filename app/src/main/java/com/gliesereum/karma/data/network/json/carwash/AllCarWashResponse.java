@@ -16,7 +16,7 @@ public class AllCarWashResponse {
     private String address;
 
     @SerializedName("comments")
-    private List<Object> comments;
+    private List<CommentsItem> comments;
 
     @SerializedName("servicePrices")
     private List<ServicePricesItem> servicePrices;
@@ -34,7 +34,7 @@ public class AllCarWashResponse {
     private String description;
 
     @SerializedName("media")
-    private List<Object> media;
+    private List<MediaItem> media;
 
     @SerializedName("packages")
     private List<PackagesItem> packages;
@@ -91,12 +91,12 @@ public class AllCarWashResponse {
         return address;
     }
 
-    public void setComments(List<Object> comments) {
-        this.comments = comments;
+    public List<CommentsItem> getComments() {
+        return comments;
     }
 
-    public List<Object> getComments() {
-        return comments;
+    public void setComments(List<CommentsItem> comments) {
+        this.comments = comments;
     }
 
     public void setServicePrices(List<ServicePricesItem> servicePrices) {
@@ -139,12 +139,12 @@ public class AllCarWashResponse {
         return description;
     }
 
-    public void setMedia(List<Object> media) {
-        this.media = media;
+    public List<MediaItem> getMedia() {
+        return media;
     }
 
-    public List<Object> getMedia() {
-        return media;
+    public void setMedia(List<MediaItem> media) {
+        this.media = media;
     }
 
     public void setPackages(List<PackagesItem> packages) {

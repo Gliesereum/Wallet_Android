@@ -86,6 +86,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<ServiceResponse> serviceList = new ArrayList<>();
     private Map<String, String> mapServise = new HashMap<>();
     private Set<String> serviceIdList = new HashSet<>();
+    private Menu menu;
 
 
     @Override
@@ -117,6 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new Util(this, toolbar, 1).addNavigation();
 
         getAllService();
+
     }
 
 //    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
@@ -252,7 +254,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d(TAG, "getLocation: permissions granted");
             mLocationPermissionGranted = true;
 //            updateLocationUI();
-//            getDeviceLocation();
+            updateLocationUI();
+            getDeviceLocation();
 
         }
     }
@@ -364,6 +367,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.filter_menu, menu);
+//        BubbleShowCaseBuilder first =  new BubbleShowCaseBuilder(this) //Activity instance
+//                .title("Заказать мойку")//Any title for the bubble view
+//                .targetView(menu.getItem(0).); //View to point out
+//
+//        new BubbleShowCaseSequence()
+//                .addShowCase(first)
+//                .show();
         return true;
     }
 

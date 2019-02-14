@@ -12,6 +12,7 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.vivchar.viewpagerindicator.ViewPagerIndicator;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.adapter.CarListAdapter;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;

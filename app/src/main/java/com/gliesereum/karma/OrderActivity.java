@@ -18,6 +18,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
@@ -99,6 +101,36 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         nowOrderBtn.performClick();
         setPackages(carWash);
 
+        BubbleShowCaseBuilder first = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Заказать моку на ближайшее время") //Any title for the bubble view
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .targetView(nowOrderBtn); //View to point out
+
+        BubbleShowCaseBuilder second = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Заказать мойку на время")//Any title for the bubble view
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .targetView(timeOrderBtn); //View to point out
+
+        BubbleShowCaseBuilder third = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Выбрать пакет услуг")//Any title for the bubble view
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .targetView(packageScroll); //View to point out
+
+        BubbleShowCaseBuilder fouth = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Заказать мойку")//Any title for the bubble view
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .targetView(orderButton); //View to point out
+
+        new BubbleShowCaseSequence()
+                .addShowCase(first)
+                .addShowCase(second)
+                .addShowCase(third)
+                .addShowCase(fouth)
+                .show();
     }
 
     private void setServicePrices(AllCarWashResponse carWash) {

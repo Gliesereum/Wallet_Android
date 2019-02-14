@@ -4,6 +4,7 @@ import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
@@ -108,4 +109,9 @@ public interface APIInterface {
 
     @GET("karma/v1/record/client/all")
     Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken, @Query("serviceType") String serviceType);
+
+    //COMMENT
+    @POST("karma/v1/business/{carwashId}/comment")
+    Call<CommentsItem> sendComment(@Header("Authorization") String accessToken, @Path("carwashId") String id, @Body CommentsItem orderBody);
+
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,24 +15,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.adapter.CommentListAdapter;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
+import com.gliesereum.karma.data.network.json.carwash.MediaItem;
 import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
 import com.gliesereum.karma.data.network.json.carwash.RecordsItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
+import com.gliesereum.karma.util.photo.PhotosViewSlider;
+import com.gohn.nativedialog.ButtonType;
+import com.gohn.nativedialog.NDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
+import com.willy.ratingbar.ScaleRatingBar;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +50,10 @@ import java.util.Map;
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import de.ehsun.coloredtimebar.TimelinePickerView;
 import de.ehsun.coloredtimebar.TimelineView;
 import hakobastvatsatryan.DropdownTextView;
@@ -46,6 +61,8 @@ import iammert.com.expandablelib.ExpandableLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 
 public class CarWashActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -87,10 +104,22 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private Map<String, WorkTimesItem> workTimeMap = new HashMap<>();
     private PowerMenu packagePowerMenu;
     private PowerMenu powerMenu1;
-    private LinearLayout boxLinearLayout;
+    //    private LinearLayout boxLinearLayout;
     private LinearLayout packageScroll;
     private Map<String, PackagesItem> packageMap = new HashMap<>();
     private Map<String, ServicePricesItem> servicePriceMap = new HashMap<>();
+    private PhotosViewSlider photosViewSlider;
+    private TextInputLayout commentTextInputLayout;
+    private TextInputEditText commentTextView;
+    private CardView cardView;
+    private TextView textView15;
+    private HorizontalScrollView photoScrollView;
+    private ConstraintLayout constraintLayout2;
+    private Button sendCommentBtn;
+    private RecyclerView commentList;
+    private CommentListAdapter commentListAdapter;
+    private ScaleRatingBar scaleRatingBar;
+    private String commentString = "";
 
 
     @Override
@@ -104,6 +133,22 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
         GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(imageView3);
 
+        BubbleShowCaseBuilder first = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Тут можно заказать мойку") //Any title for the bubble view
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .targetView(orderButton); //View to point out
+
+        BubbleShowCaseBuilder second = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Тут можно посмотреть график работы мойки")//Any title for the bubble view
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .targetView(imageView2); //View to point out
+
+        new BubbleShowCaseSequence()
+                .addShowCase(first)
+                .addShowCase(second)
+                .show();
     }
 
     private void getCarWash() {
@@ -128,13 +173,11 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     name.setText(carWash.getName());
                     adres.setText(carWash.getAddress());
-//                    description.setText(carWash.getDescription());
                     descriptionDropdown.setContentText(carWash.getDescription());
                     setWorkTime(carWash);
-                    setBoxTime(carWash);
-//                    setPackageBlock(carWash);
                     setPackages(carWash);
-//                    setServicePricesBlock(carWash);
+                    setPhotoSlider(carWash);
+                    setCommentList(carWash);
 
                     for (int i = 0; i < carWash.getServicePrices().size(); i++) {
                         if (carWash.getServicePrices().get(i).getName() != null) {
@@ -149,76 +192,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
                         }
                     }
-
-//                    int countBox = carWash.getSpaces().size();
-//                    int countBox = 5;
-//                    for (int i = 0; i < countBox; i++) {
-//                        TextView textView = new TextView(CarWashActivity.this);
-//                        TimelineView timelineBox = new TimelineView(CarWashActivity.this);
-//                        textView.setText("Бокс №" + (i + 1));
-//                        timelineBox.setId(i);
-//                        timelineBox.setTimeRange(carWash.getWorkTimes().get(0).getFrom() + "-" + carWash.getWorkTimes().get(0).getTo());
-//                        timelineBox.setTimeTextInterval(2);
-//                        timelineBox.setFractionTextSize(30);
-//                        timelineBox.setBarWidth(75);
-//                        timelineBox.setFractionLineLength(20);
-//                        timelineBox.setBarColorAvailable(Color.parseColor("#FF0000"));
-//                        timelineBox.setBarColorNotAvailable(Color.parseColor("#00FF00"));
-////                        timelineBox.setFractionLineColor(Color.parseColor("#DEFFFFFF"));
-////                        timelineBox.setFractionSecondaryTextColor(Color.parseColor("#DEFFFFFF"));
-////                        timelineBox.setFractionPrimaryTextColor(Color.parseColor("#DEFFFFFF"));
-////                        timelineBox.setHighlightTimeRange("10:00-23:00");
-////                        timelineBox.setFractionPrimaryTextColor(R.color.available_time_default_color);
-////                        timelineBox.setBarColorAvailable(R.color.timeline_default_color);
-////                        timelineBox.setBarColorNotAvailable(R.color.available_time_default_color);
-//                        boxBlock.addView(textView);
-//                        boxBlock.addView(timelineBox);
-//                        timelineBox.setOnClickListener(CarWashActivity.this);
-//                    }
-//                    TimelineView timelineBox0 = boxBlock.findViewById(0);
-//                    List<String> timeRange = new ArrayList<>();
-//                    timeRange.add("11:00-12:00");
-//                    timeRange.add("14:00-16:00");
-//                    timeRange.add("17:30-19:00");
-//                    timelineBox0.setAvailableTimeRange(timeRange);
-//
-//                    String MONDAY = "";
-//                    String TUESDAY = "";
-//                    String WEDNESDAY = "";
-//                    String THURSDAY = "";
-//                    String FRIDAY = "";
-//                    String SATURDAY = "";
-//                    String SUNDAY = "";
-//                    for (int i = 0; i < carWash.getWorkTimes().size(); i++) {
-//                        switch (carWash.getWorkTimes().get(i).getDayOfWeek()) {
-//                            case "MONDAY":
-//                                MONDAY = "MONDAY: " + carWash.getWorkTimes().get(i).getFrom() + "-" + carWash.getWorkTimes().get(i).getTo();
-//                                break;
-//                            case "TUESDAY":
-//                                TUESDAY = "TUESDAY: " + carWash.getWorkTimes().get(i).getFrom() + "-" + carWash.getWorkTimes().get(i).getTo();
-//                                break;
-//                            case "WEDNESDAY":
-//                                WEDNESDAY = "WEDNESDAY: " + carWash.getWorkTimes().get(i).getFrom() + "-" + carWash.getWorkTimes().get(i).getTo();
-//                                break;
-//                            case "THURSDAY":
-//                                THURSDAY = "THURSDAY: " + carWash.getWorkTimes().get(i).getFrom() + "-" + carWash.getWorkTimes().get(i).getTo();
-//                                break;
-//                            case "FRIDAY":
-//                                FRIDAY = "FRIDAY: " + carWash.getWorkTimes().get(i).getFrom() + "-" + carWash.getWorkTimes().get(i).getTo();
-//                                break;
-//                            case "SATURDAY":
-//                                SATURDAY = "SATURDAY: " + carWash.getWorkTimes().get(i).getFrom() + "-" + carWash.getWorkTimes().get(i).getTo();
-//                                break;
-//                            case "SUNDAY":
-//                                SUNDAY = "SUNDAY: " + carWash.getWorkTimes().get(i).getFrom() + "-" + carWash.getWorkTimes().get(i).getTo();
-//                                break;
-//                        }
-//
-//                    }
-
-//                    workTimesDropdown.setContentText(MONDAY + "\n" + TUESDAY + "\n" + WEDNESDAY + "\n" + THURSDAY + "\n" + FRIDAY + "\n" + SATURDAY + "\n" + SUNDAY);
-
-
                     closeProgressDialog();
                 } else {
                     try {
@@ -237,6 +210,27 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                 errorHandler.showCustomError(t.getMessage());
             }
         });
+    }
+
+    private void setCommentList(AllCarWashResponse carWash) {
+        commentListAdapter.setItems(carWash.getComments());
+        commentList.setAdapter(commentListAdapter);
+        commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+    }
+
+    private void setPhotoSlider(AllCarWashResponse carWash) {
+        List<MediaItem> mediumList = carWash.getMedia();
+        ArrayList<String> mediaURLList = new ArrayList<>();
+        for (int i = 0; i < mediumList.size(); i++) {
+            mediaURLList.add(mediumList.get(i).getUrl());
+        }
+
+        if (mediaURLList.size() != 0) {
+            photosViewSlider.setGridColumns(mediaURLList.size());
+            photosViewSlider.initializePhotosUrls(mediaURLList);
+        } else {
+            horizontalScrollView.setVisibility(View.GONE);
+        }
     }
 
 //    private void setServicePricesBlock(AllCarWashResponse carWash) {
@@ -258,49 +252,49 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 //
 //    }
 
-    private void setBoxTime(AllCarWashResponse carWash) {
-        for (int i = 0; i < carWash.getSpaces().size(); i++) {
-            View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_boxline, boxLinearLayout, false);
-            TimelineView timelineBox = layout2.findViewById(R.id.timelineView);
-            Calendar calendar = Calendar.getInstance();
-            int intDay = calendar.get(Calendar.DAY_OF_WEEK);
-            timelineBox.setTimeRange(Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo()));
-            timelineBox.setTimeTextInterval(4);
-            timelineBox.setFractionTextSize(30);
-            timelineBox.setId(i);
-            timelineBox.setBarWidth(75);
-            timelineBox.setFractionLineLength(20);
-            timelineBox.setBarColorAvailable(Color.parseColor("#282828"));
-            timelineBox.setBarColorNotAvailable(Color.parseColor("#F5A623"));
-            timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), carWash.getSpaces().get(i).getId()));
-            boxLinearLayout.addView(layout2);
-        }
-
-//        ((TextView) view.findViewById(R.id.boxName)).setText("Бокс №" + model.getIndexNumber());
-//        Log.d(TAG, "renderChild: " + "Бокс №" + model.getIndexNumber());
-//        ((TextView) view.findViewById(R.id.boxId)).setText(model.getId());
-//        LinearLayout linearLayout = view.findViewById(R.id.boxView);
-//        TimelineView timelineBox = new TimelineView(CarWashActivity.this);
-//        Calendar calendar = Calendar.getInstance();
-//        int intDay = calendar.get(Calendar.DAY_OF_WEEK);
-//        timelineBox.setTimeRange(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom() + "-" + workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo());
-//        timelineBox.setTimeTextInterval(2);
-//        timelineBox.setFractionTextSize(30);
-//        timelineBox.setBarWidth(75);
-//        timelineBox.setFractionLineLength(20);
-//        timelineBox.setBarColorAvailable(Color.parseColor("#FF0000"));
-//        timelineBox.setBarColorNotAvailable(Color.parseColor("#00FF00"));
-//        timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), model.getId()));
-//        boxLinearLayout.addView(timelineBox);
-//                timelineBox.setOnClickListener(CarWashActivity.this);
-//        linearLayout.addView(timelineBox);
-
-//        Section<String, SpacesItem> section = new Section<>();
-//        section.parent = "Загруженность боксов";
-//        section.children.addAll(carWash.getSpaces());
-//        expandableBoxBlock.addSection(section);
-
-    }
+//    private void setBoxTime(AllCarWashResponse carWash) {
+//        for (int i = 0; i < carWash.getSpaces().size(); i++) {
+//            View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_boxline, boxLinearLayout, false);
+//            TimelineView timelineBox = layout2.findViewById(R.id.timelineView);
+//            Calendar calendar = Calendar.getInstance();
+//            int intDay = calendar.get(Calendar.DAY_OF_WEEK);
+//            timelineBox.setTimeRange(Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo()));
+//            timelineBox.setTimeTextInterval(4);
+//            timelineBox.setFractionTextSize(30);
+//            timelineBox.setId(i);
+//            timelineBox.setBarWidth(75);
+//            timelineBox.setFractionLineLength(20);
+//            timelineBox.setBarColorAvailable(Color.parseColor("#282828"));
+//            timelineBox.setBarColorNotAvailable(Color.parseColor("#F5A623"));
+//            timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), carWash.getSpaces().get(i).getId()));
+//            boxLinearLayout.addView(layout2);
+//        }
+//
+////        ((TextView) view.findViewById(R.id.boxName)).setText("Бокс №" + model.getIndexNumber());
+////        Log.d(TAG, "renderChild: " + "Бокс №" + model.getIndexNumber());
+////        ((TextView) view.findViewById(R.id.boxId)).setText(model.getId());
+////        LinearLayout linearLayout = view.findViewById(R.id.boxView);
+////        TimelineView timelineBox = new TimelineView(CarWashActivity.this);
+////        Calendar calendar = Calendar.getInstance();
+////        int intDay = calendar.get(Calendar.DAY_OF_WEEK);
+////        timelineBox.setTimeRange(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom() + "-" + workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo());
+////        timelineBox.setTimeTextInterval(2);
+////        timelineBox.setFractionTextSize(30);
+////        timelineBox.setBarWidth(75);
+////        timelineBox.setFractionLineLength(20);
+////        timelineBox.setBarColorAvailable(Color.parseColor("#FF0000"));
+////        timelineBox.setBarColorNotAvailable(Color.parseColor("#00FF00"));
+////        timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), model.getId()));
+////        boxLinearLayout.addView(timelineBox);
+////                timelineBox.setOnClickListener(CarWashActivity.this);
+////        linearLayout.addView(timelineBox);
+//
+////        Section<String, SpacesItem> section = new Section<>();
+////        section.parent = "Загруженность боксов";
+////        section.children.addAll(carWash.getSpaces());
+////        expandableBoxBlock.addSection(section);
+//
+//    }
 
     private void setWorkTime(AllCarWashResponse carWash) {
         String monday, tuesday, wednesday, thursday, friday, saturday, sunday;
@@ -359,6 +353,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initView() {
+        commentListAdapter = new CommentListAdapter();
+        photosViewSlider = findViewById(R.id.photosViewSlider);
         name = (TextView) findViewById(R.id.name);
         adres = (TextView) findViewById(R.id.address);
         description = (TextView) findViewById(R.id.description);
@@ -372,7 +368,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(CarWashActivity.this, OrderActivity.class));
             }
         });
-        boxLinearLayout = (LinearLayout) findViewById(R.id.boxLinearLayout);
+//        boxLinearLayout = (LinearLayout) findViewById(R.id.boxLinearLayout);
         address = (TextView) findViewById(R.id.address);
         packagesBlock = (LinearLayout) findViewById(R.id.packagesBlock);
         imageView2 = (ImageView) findViewById(R.id.imageView2);
@@ -383,92 +379,88 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                 powerMenu1.showAsDropDown(imageView2); // view is an anchor
             }
         });
-
-
-//        expandablePackage = (ExpandableLayout) findViewById(R.id.expandablePackage);
-//
-//        expandablePackage = findViewById(R.id.expandablePackage);
-//        expandablePackage.setRenderer(new ExpandableLayout.Renderer<String, PackagesItem>() {
-//            @Override
-//            public void renderParent(View view, String model, boolean isExpanded, int parentPosition) {
-//                ((TextView) view.findViewById(R.id.parent)).setText(model);
-//                view.findViewById(R.id.arrow).setBackgroundResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
-//            }
-//
-//            @Override
-//            public void renderChild(View view, PackagesItem model, int parentPosition, int childPosition) {
-//                ((TextView) view.findViewById(R.id.child)).setText(model.getName());
-//            }
-//        });
-
-//        expandableWorkTime = findViewById(R.id.expandableWorkTime);
-//        expandableWorkTime.setRenderer(new ExpandableLayout.Renderer<String, WorkTimesItem>() {
-//            @Override
-//            public void renderParent(View view, String model, boolean isExpanded, int parentPosition) {
-//                ((TextView) view.findViewById(R.id.parent)).setText(model);
-//                view.findViewById(R.id.arrow).setBackgroundResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
-//            }
-//
-//            @Override
-//            public void renderChild(View view, WorkTimesItem model, int parentPosition, int childPosition) {
-//                switch (model.getDayOfWeek()) {
-//                    case "MONDAY":
-//                        ((TextView) view.findViewById(R.id.child)).setText("MONDAY: " + model.getFrom() + "-" + model.getTo());
-//                        break;
-//                    case "TUESDAY":
-//                        ((TextView) view.findViewById(R.id.child)).setText("TUESDAY: " + model.getFrom() + "-" + model.getTo());
-//                        break;
-//                    case "WEDNESDAY":
-//                        ((TextView) view.findViewById(R.id.child)).setText("WEDNESDAY: " + model.getFrom() + "-" + model.getTo());
-//                        break;
-//                    case "THURSDAY":
-//                        ((TextView) view.findViewById(R.id.child)).setText("THURSDAY: " + model.getFrom() + "-" + model.getTo());
-//                        break;
-//                    case "FRIDAY":
-//                        ((TextView) view.findViewById(R.id.child)).setText("FRIDAY: " + model.getFrom() + "-" + model.getTo());
-//                        break;
-//                    case "SATURDAY":
-//                        ((TextView) view.findViewById(R.id.child)).setText("SATURDAY: " + model.getFrom() + "-" + model.getTo());
-//                        break;
-//                    case "SUNDAY":
-//                        ((TextView) view.findViewById(R.id.child)).setText("SUNDAY: " + model.getFrom() + "-" + model.getTo());
-//                        break;
-//                }
-//
-//            }
-//        });
-
-//        expandableBoxBlock = findViewById(R.id.expandableBoxBlock);
-//        expandableBoxBlock.setRenderer(new ExpandableLayout.Renderer<String, SpacesItem>() {
-//            @Override
-//            public void renderParent(View view, String model, boolean isExpanded, int parentPosition) {
-//                ((TextView) view.findViewById(R.id.parent)).setText(model);
-//                view.findViewById(R.id.arrow).setBackgroundResource(isExpanded ? R.drawable.arrow_up : R.drawable.arrow_down);
-//            }
-//
-//            @Override
-//            public void renderChild(View view, SpacesItem model, int parentPosition, int childPosition) {
-//                ((TextView) view.findViewById(R.id.boxName)).setText("Бокс №" + model.getIndexNumber());
-//                Log.d(TAG, "renderChild: " + "Бокс №" + model.getIndexNumber());
-//                ((TextView) view.findViewById(R.id.boxId)).setText(model.getId());
-//                LinearLayout linearLayout = view.findViewById(R.id.boxView);
-//                TimelineView timelineBox = new TimelineView(CarWashActivity.this);
-//                Calendar calendar = Calendar.getInstance();
-//                int intDay = calendar.get(Calendar.DAY_OF_WEEK);
-//                timelineBox.setTimeRange(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom() + "-" + workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo());
-//                timelineBox.setTimeTextInterval(2);
-//                timelineBox.setFractionTextSize(30);
-//                timelineBox.setBarWidth(75);
-//                timelineBox.setFractionLineLength(20);
-//                timelineBox.setBarColorAvailable(Color.parseColor("#FF0000"));
-//                timelineBox.setBarColorNotAvailable(Color.parseColor("#00FF00"));
-////                timelineBox.setOnClickListener(CarWashActivity.this);
-//                linearLayout.addView(timelineBox);
-//                timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), model.getId()));
-//            }
-//        });
         packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
         descriptionDropdown = findViewById(R.id.descriptionDropdown);
+        commentTextInputLayout = findViewById(R.id.commentTextInputLayout);
+        commentTextView = findViewById(R.id.commentTextView);
+        cardView = findViewById(R.id.cardView);
+        textView15 = findViewById(R.id.textView15);
+        photoScrollView = findViewById(R.id.photoScrollView);
+        constraintLayout2 = findViewById(R.id.constraintLayout2);
+        sendCommentBtn = findViewById(R.id.sendCommentBtn);
+        sendCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCommentDialog();
+            }
+        });
+        commentList = findViewById(R.id.commentList);
+    }
+
+    private void openCommentDialog() {
+        NDialog commentDialog = new NDialog(CarWashActivity.this, ButtonType.NO_BUTTON);
+        commentDialog.isCancelable(false);
+        commentDialog.setCustomView(R.layout.comment_dialog);
+        List<View> childViews = commentDialog.getCustomViewChildren();
+        for (View childView : childViews) {
+            switch (childView.getId()) {
+                case R.id.commentTextView:
+                    commentTextView = childView.findViewById(R.id.commentTextView);
+                    break;
+                case R.id.simpleRatingBar:
+                    scaleRatingBar = childView.findViewById(R.id.simpleRatingBar);
+                    break;
+                case R.id.okBtn:
+                    Button okBtn = childView.findViewById(R.id.okBtn);
+                    okBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showProgressDialog();
+                            apiInterface = APIClient.getClient().create(APIInterface.class);
+                            Call<CommentsItem> call = apiInterface.sendComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId, new CommentsItem((int) scaleRatingBar.getRating(), commentTextView.getText().toString()));
+                            call.enqueue(new Callback<CommentsItem>() {
+                                @Override
+                                public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
+                                    if (response.code() == 200) {
+                                        closeProgressDialog();
+                                        commentDialog.dismiss();
+                                        Toast.makeText(CarWashActivity.this, "Комментарий добавлен", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        try {
+                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                            errorHandler.showError(jObjError.getInt("code"));
+                                            closeProgressDialog();
+                                            commentDialog.dismiss();
+                                        } catch (Exception e) {
+                                            errorHandler.showCustomError(e.getMessage());
+                                            closeProgressDialog();
+                                            commentDialog.dismiss();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<CommentsItem> call, Throwable t) {
+                                    errorHandler.showCustomError(t.getMessage());
+                                    closeProgressDialog();
+                                    commentDialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+                    break;
+                case R.id.backBtn:
+                    Button backBtn = childView.findViewById(R.id.backBtn);
+                    backBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            commentDialog.dismiss();
+                        }
+                    });
+                    break;
+            }
+        }
+        commentDialog.show();
     }
 
     private String getCurrentDayOfWeek(int intDay) {
