@@ -43,7 +43,6 @@
                 app:srb_isIndicator="false"
                 app:srb_minimumStars="1"
                 app:srb_numStars="5"
-                app:srb_rating="5"
                 app:srb_scrollable="true"
                 app:srb_starHeight="30dp"
                 app:srb_starPadding="15dp"

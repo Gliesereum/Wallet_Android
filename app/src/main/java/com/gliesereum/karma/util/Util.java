@@ -22,6 +22,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -147,14 +148,17 @@ public class Util {
     }
 
     public static String getStringTime(Long millisecond) {
-//        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-//        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-//        calendar.setTimeInMillis(millisecond);
-//        return format.format(calendar.getTime());
-
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(new Date(millisecond));
+
+    }
+
+    public static String getStringDateTrue(Long millisecond) {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        calendar.setTimeInMillis(millisecond);
+        return format.format(calendar.getTime());
 
     }
 

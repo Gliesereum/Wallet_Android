@@ -2,6 +2,8 @@ package com.gliesereum.karma.data.network.json.carwash;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class CommentsItem {
 
     @SerializedName("id")
@@ -34,6 +36,12 @@ public class CommentsItem {
     public CommentsItem(int rating, String toString) {
         this.rating = rating;
         this.text = toString;
+    }
+
+    public CommentsItem(int rating, String toString, String id) {
+        this.rating = rating;
+        this.text = toString;
+        this.id = id;
     }
 
     public CommentsItem() {
@@ -109,5 +117,18 @@ public class CommentsItem {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CommentsItem that = (CommentsItem) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.gliesereum.karma;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -67,7 +68,7 @@ import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 public class CarWashActivity extends AppCompatActivity implements View.OnClickListener {
 
     String carWashId;
-    private AllCarWashResponse carWash;
+    AllCarWashResponse carWash;
     private MaterialButton addCarBtn;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
@@ -91,7 +92,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     //    private Toolbar toolbar;
     private TextView address;
     private LinearLayout packagesBlock;
-    private ImageView imageView2;
+    private ImageView workTimeImage;
     private ImageView imageView3;
     private ScrollView scrollView2;
     private HorizontalScrollView horizontalScrollView;
@@ -104,6 +105,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private Map<String, WorkTimesItem> workTimeMap = new HashMap<>();
     private PowerMenu packagePowerMenu;
     private PowerMenu powerMenu1;
+    private PowerMenu editCommentMenu;
     //    private LinearLayout boxLinearLayout;
     private LinearLayout packageScroll;
     private Map<String, PackagesItem> packageMap = new HashMap<>();
@@ -120,13 +122,14 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private CommentListAdapter commentListAdapter;
     private ScaleRatingBar scaleRatingBar;
     private String commentString = "";
+    private Context context;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_wash_test);
-
+        context = this;
         carWashId = getIntent().getStringExtra("carWashId");
         initView();
         getCarWash();
@@ -143,7 +146,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                 .title("Тут можно посмотреть график работы мойки")//Any title for the bubble view
                 .backgroundColorResourceId(R.color.colorAccent)
                 .textColorResourceId(R.color.black)
-                .targetView(imageView2); //View to point out
+                .targetView(workTimeImage); //View to point out
 
         new BubbleShowCaseSequence()
                 .addShowCase(first)
@@ -212,10 +215,46 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    private void setCommentList(AllCarWashResponse carWash) {
-        commentListAdapter.setItems(carWash.getComments());
-        commentList.setAdapter(commentListAdapter);
-        commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+    public void setCommentList(AllCarWashResponse carWash) {
+        List<CommentsItem> commentsItemList = new ArrayList<>();
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<CommentsItem> call = apiInterface.getMyComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId);
+        call.enqueue(new Callback<CommentsItem>() {
+            @Override
+            public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
+                if (response.code() == 200) {
+                    commentListAdapter = new CommentListAdapter(true, CarWashActivity.this);
+                    commentsItemList.add(response.body());
+                    carWash.getComments().remove(response.body());
+                    commentsItemList.addAll(carWash.getComments());
+                    commentListAdapter.setItems(commentsItemList);
+                    commentList.setAdapter(commentListAdapter);
+                    commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+                    sendCommentBtn.setVisibility(View.GONE);
+                } else {
+                    if (response.code() == 204) {
+                        commentListAdapter = new CommentListAdapter(false, CarWashActivity.this);
+                        commentsItemList.addAll(carWash.getComments());
+                        commentListAdapter.setItems(commentsItemList);
+                        commentList.setAdapter(commentListAdapter);
+                        commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+                        sendCommentBtn.setVisibility(View.VISIBLE);
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommentsItem> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
     }
 
     private void setPhotoSlider(AllCarWashResponse carWash) {
@@ -232,69 +271,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             horizontalScrollView.setVisibility(View.GONE);
         }
     }
-
-//    private void setServicePricesBlock(AllCarWashResponse carWash) {
-////        for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-//        for (int i = 0; i < 10; i++) {
-//            CheckBox checkBox = new CheckBox(CarWashActivity.this);
-//            checkBox.setText("Услуга №" + i);
-//            servicePricesBlock.addView(checkBox);
-//        }
-//    }
-//    private void setPackageBlock(AllCarWashResponse carWash) {
-//        Section<String, PackagesItem> section = new Section<>();
-//        section.parent = "Пакеты услуг";
-//        for (int i = 0; i < carWash.getPackages().size(); i++) {
-//            section.children.add(carWash.getPackages().get(i));
-//        }
-//        expandablePackage.addSection(section);
-//
-//
-//    }
-
-//    private void setBoxTime(AllCarWashResponse carWash) {
-//        for (int i = 0; i < carWash.getSpaces().size(); i++) {
-//            View layout2 = LayoutInflater.from(this).inflate(R.layout.layout_boxline, boxLinearLayout, false);
-//            TimelineView timelineBox = layout2.findViewById(R.id.timelineView);
-//            Calendar calendar = Calendar.getInstance();
-//            int intDay = calendar.get(Calendar.DAY_OF_WEEK);
-//            timelineBox.setTimeRange(Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo()));
-//            timelineBox.setTimeTextInterval(4);
-//            timelineBox.setFractionTextSize(30);
-//            timelineBox.setId(i);
-//            timelineBox.setBarWidth(75);
-//            timelineBox.setFractionLineLength(20);
-//            timelineBox.setBarColorAvailable(Color.parseColor("#282828"));
-//            timelineBox.setBarColorNotAvailable(Color.parseColor("#F5A623"));
-//            timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), carWash.getSpaces().get(i).getId()));
-//            boxLinearLayout.addView(layout2);
-//        }
-//
-////        ((TextView) view.findViewById(R.id.boxName)).setText("Бокс №" + model.getIndexNumber());
-////        Log.d(TAG, "renderChild: " + "Бокс №" + model.getIndexNumber());
-////        ((TextView) view.findViewById(R.id.boxId)).setText(model.getId());
-////        LinearLayout linearLayout = view.findViewById(R.id.boxView);
-////        TimelineView timelineBox = new TimelineView(CarWashActivity.this);
-////        Calendar calendar = Calendar.getInstance();
-////        int intDay = calendar.get(Calendar.DAY_OF_WEEK);
-////        timelineBox.setTimeRange(workTimeMap.get(getCurrentDayOfWeek(intDay)).getFrom() + "-" + workTimeMap.get(getCurrentDayOfWeek(intDay)).getTo());
-////        timelineBox.setTimeTextInterval(2);
-////        timelineBox.setFractionTextSize(30);
-////        timelineBox.setBarWidth(75);
-////        timelineBox.setFractionLineLength(20);
-////        timelineBox.setBarColorAvailable(Color.parseColor("#FF0000"));
-////        timelineBox.setBarColorNotAvailable(Color.parseColor("#00FF00"));
-////        timelineBox.setAvailableTimeRange(getTimeInBox(carWash.getRecords(), model.getId()));
-////        boxLinearLayout.addView(timelineBox);
-////                timelineBox.setOnClickListener(CarWashActivity.this);
-////        linearLayout.addView(timelineBox);
-//
-////        Section<String, SpacesItem> section = new Section<>();
-////        section.parent = "Загруженность боксов";
-////        section.children.addAll(carWash.getSpaces());
-////        expandableBoxBlock.addSection(section);
-//
-//    }
 
     private void setWorkTime(AllCarWashResponse carWash) {
         String monday, tuesday, wednesday, thursday, friday, saturday, sunday;
@@ -353,7 +329,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initView() {
-        commentListAdapter = new CommentListAdapter();
         photosViewSlider = findViewById(R.id.photosViewSlider);
         name = (TextView) findViewById(R.id.name);
         adres = (TextView) findViewById(R.id.address);
@@ -371,12 +346,12 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 //        boxLinearLayout = (LinearLayout) findViewById(R.id.boxLinearLayout);
         address = (TextView) findViewById(R.id.address);
         packagesBlock = (LinearLayout) findViewById(R.id.packagesBlock);
-        imageView2 = (ImageView) findViewById(R.id.imageView2);
+        workTimeImage = (ImageView) findViewById(R.id.imageView2);
         imageView3 = (ImageView) findViewById(R.id.imageView3);
-        imageView2.setOnClickListener(new View.OnClickListener() {
+        workTimeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                powerMenu1.showAsDropDown(imageView2); // view is an anchor
+                powerMenu1.showAsDropDown(workTimeImage); // view is an anchor
             }
         });
         packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
@@ -395,6 +370,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
         commentList = findViewById(R.id.commentList);
+
+
     }
 
     private void openCommentDialog() {
@@ -409,6 +386,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     break;
                 case R.id.simpleRatingBar:
                     scaleRatingBar = childView.findViewById(R.id.simpleRatingBar);
+                    scaleRatingBar.setRating(5);
                     break;
                 case R.id.okBtn:
                     Button okBtn = childView.findViewById(R.id.okBtn);
@@ -422,6 +400,30 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                 @Override
                                 public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
                                     if (response.code() == 200) {
+                                        Call<AllCarWashResponse> call1 = apiInterface.getCarWashFull(carWashId);
+                                        call1.enqueue(new Callback<AllCarWashResponse>() {
+                                            @Override
+                                            public void onResponse(Call<AllCarWashResponse> call1, Response<AllCarWashResponse> response) {
+                                                if (response.code() == 200) {
+                                                    setCommentList(response.body());
+                                                    closeProgressDialog();
+                                                } else {
+                                                    try {
+                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                        errorHandler.showError(jObjError.getInt("code"));
+                                                        closeProgressDialog();
+                                                    } catch (Exception e) {
+                                                        errorHandler.showCustomError(e.getMessage());
+                                                        closeProgressDialog();
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
+                                                errorHandler.showCustomError(t.getMessage());
+                                            }
+                                        });
                                         closeProgressDialog();
                                         commentDialog.dismiss();
                                         Toast.makeText(CarWashActivity.this, "Комментарий добавлен", Toast.LENGTH_SHORT).show();
@@ -575,4 +577,11 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    public AllCarWashResponse getCarWashObjact() {
+        return carWash;
+    }
+
+    public Context getContext() {
+        return context;
+    }
 }

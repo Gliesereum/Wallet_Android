@@ -114,4 +114,15 @@ public interface APIInterface {
     @POST("karma/v1/business/{carwashId}/comment")
     Call<CommentsItem> sendComment(@Header("Authorization") String accessToken, @Path("carwashId") String id, @Body CommentsItem orderBody);
 
+    @GET("karma/v1/business/{carwashId}/comment/current-user")
+    Call<CommentsItem> getMyComment(@Header("Authorization") String accessToken, @Path("carwashId") String id);
+
+    @PUT("karma/v1/business/comment")
+    Call<CommentsItem> editComment(@Header("Authorization") String accessToken, @Body CommentsItem orderBody);
+
+    @DELETE("karma/v1/business/comment/{commentId}")
+    Call<CarDeleteResponse> deleteComment(@Header("Authorization") String accessToken, @Path("commentId") String id);
+
+
+
 }
