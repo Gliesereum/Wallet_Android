@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.vivchar.viewpagerindicator.ViewPagerIndicator;
@@ -49,7 +50,7 @@ public class CarListActivity2 extends AppCompatActivity {
     private ErrorHandler errorHandler;
     private TextView splashTextView;
     private WrapContentHeightViewPager viewPager;
-    private MaterialButton orderButton;
+    private MaterialButton chooseCarBtn;
     private MaterialButton addFirstCarBtn;
     private int selectPosition = 0;
 
@@ -83,13 +84,13 @@ public class CarListActivity2 extends AppCompatActivity {
             public void onPageSelected(int position) {
                 selectPosition = position;
                 if (FastSave.getInstance().getString(CAR_ID, "").equals(carsList.get(selectPosition).getId())) {
-                    orderButton.setTextColor(getResources().getColor(R.color.black));
-                    orderButton.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
-                    orderButton.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
+                    chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                    chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
+                    chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
                 } else {
-                    orderButton.setTextColor(getResources().getColor(R.color.black));
-                    orderButton.setBackgroundTintMode(PorterDuff.Mode.ADD);
-                    orderButton.setText("Пересесть на " + carsList.get(selectPosition).getBrand().getName());
+                    chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                    chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.ADD);
+                    chooseCarBtn.setText("Пересесть на " + carsList.get(selectPosition).getBrand().getName());
                 }
             }
 
@@ -119,25 +120,25 @@ public class CarListActivity2 extends AppCompatActivity {
                             FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carsList.get(0).getServices());
                             FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, carsList.get(0).getAttributes());
 
-                            orderButton.setTextColor(getResources().getColor(R.color.black));
-                            orderButton.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
-                            orderButton.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
+                            chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                            chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
+                            chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
                         }
                         if (FastSave.getInstance().getString(CAR_ID, "").equals(carsList.get(0).getId())) {
-                            orderButton.setTextColor(getResources().getColor(R.color.black));
-                            orderButton.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
-                            orderButton.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
+                            chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                            chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
+                            chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
                         } else {
-                            orderButton.setTextColor(getResources().getColor(R.color.black));
-                            orderButton.setBackgroundTintMode(PorterDuff.Mode.ADD);
-                            orderButton.setText("Пересесть на " + carsList.get(0).getBrand().getName());
+                            chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                            chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.ADD);
+                            chooseCarBtn.setText("Пересесть на " + carsList.get(0).getBrand().getName());
                         }
                     }
                 } else {
                     if (response.code() == 204) {
                         splashTextView.setVisibility(View.VISIBLE);
                         addFirstCarBtn.setVisibility(View.VISIBLE);
-                        orderButton.setVisibility(View.GONE);
+                        chooseCarBtn.setVisibility(View.GONE);
                         viewPagerIndicator.setVisibility(View.GONE);
                     } else {
                         try {
@@ -159,8 +160,8 @@ public class CarListActivity2 extends AppCompatActivity {
 
     private void initView() {
         splashTextView = findViewById(R.id.splashTextView);
-        orderButton = findViewById(R.id.orderButton);
-        orderButton.setOnClickListener(new View.OnClickListener() {
+        chooseCarBtn = findViewById(R.id.chooseCarBtn);
+        chooseCarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MaterialButton) v).setTextColor(getResources().getColor(R.color.black));
@@ -171,14 +172,16 @@ public class CarListActivity2 extends AppCompatActivity {
                 FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, carsList.get(selectPosition).getAttributes());
 
                 if (FastSave.getInstance().getString(CAR_ID, "").equals(carsList.get(selectPosition).getId())) {
-                    orderButton.setTextColor(getResources().getColor(R.color.black));
-                    orderButton.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
-                    orderButton.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
+                    chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                    chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
+                    chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
                 } else {
-                    orderButton.setTextColor(getResources().getColor(R.color.black));
-                    orderButton.setBackgroundTintMode(PorterDuff.Mode.ADD);
-                    orderButton.setText("Пересесть на " + carsList.get(selectPosition).getBrand().getName());
+                    chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                    chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.ADD);
+                    chooseCarBtn.setText("Пересесть на " + carsList.get(selectPosition).getBrand().getName());
                 }
+                Toast.makeText(CarListActivity2.this, "Вы выбрали " + carsList.get(selectPosition).getBrand().getName(), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(CarListActivity2.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             }
         });
         addFirstCarBtn = findViewById(R.id.addFirstCarBtn);

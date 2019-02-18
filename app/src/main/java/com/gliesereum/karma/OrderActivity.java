@@ -100,36 +100,51 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         initView();
         nowOrderBtn.performClick();
         setPackages(carWash);
+        showTutorial();
+    }
 
-        BubbleShowCaseBuilder first = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Заказать моку на ближайшее время") //Any title for the bubble view
+    private void showTutorial() {
+        BubbleShowCaseBuilder nowOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Нажмите тут что б заказать мойку на ближайшее время") //Any title for the bubble view
                 .backgroundColorResourceId(R.color.colorAccent)
                 .textColorResourceId(R.color.black)
+                .showOnce("OrderActivity")
                 .targetView(nowOrderBtn); //View to point out
 
-        BubbleShowCaseBuilder second = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Заказать мойку на время")//Any title for the bubble view
+        BubbleShowCaseBuilder timeOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Нажмите тут что б заказать мойку на удобное для Вас время")//Any title for the bubble view
                 .backgroundColorResourceId(R.color.colorAccent)
                 .textColorResourceId(R.color.black)
+                .showOnce("OrderActivity")
                 .targetView(timeOrderBtn); //View to point out
 
-        BubbleShowCaseBuilder third = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Выбрать пакет услуг")//Any title for the bubble view
+        BubbleShowCaseBuilder packageTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Выберите пакет услуг. Будет скидка!)")//Any title for the bubble view
                 .backgroundColorResourceId(R.color.colorAccent)
                 .textColorResourceId(R.color.black)
+                .showOnce("OrderActivity")
                 .targetView(packageScroll); //View to point out
 
-        BubbleShowCaseBuilder fouth = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Заказать мойку")//Any title for the bubble view
+        BubbleShowCaseBuilder serviceTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Так же можете выбрать дополнительные услуги к пакетам")//Any title for the bubble view
                 .backgroundColorResourceId(R.color.colorAccent)
                 .textColorResourceId(R.color.black)
+                .showOnce("OrderActivity")
+                .targetView(servicePriceBlock); //View to point out
+
+        BubbleShowCaseBuilder orderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("После того как все выбрали, можете заказать мойку автомобиля")//Any title for the bubble view
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .showOnce("OrderActivity")
                 .targetView(orderButton); //View to point out
 
         new BubbleShowCaseSequence()
-                .addShowCase(first)
-                .addShowCase(second)
-                .addShowCase(third)
-                .addShowCase(fouth)
+                .addShowCase(nowOrderTutorial)
+                .addShowCase(timeOrderTutorial)
+                .addShowCase(packageTutorial)
+                .addShowCase(serviceTutorial)
+                .addShowCase(orderTutorial)
                 .show();
     }
 
@@ -267,7 +282,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     private void initView() {
         errorHandler = new ErrorHandler(this, this);
-        orderButton = findViewById(R.id.orderButton);
+        orderButton = findViewById(R.id.chooseCarBtn);
         nowOrderBtn = findViewById(R.id.nowOrderBtn);
         timeOrderBtn = findViewById(R.id.timeOrderBtn);
 //        timeOrderBtn.setCornerRadius(25);
@@ -500,7 +515,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 timeOrderBtn.setTextColor(getResources().getColor(R.color.white));
                 nowOrderBtn.setTextColor(getResources().getColor(R.color.black));
                 break;
-            case R.id.orderButton:
+            case R.id.chooseCarBtn:
                 perOrder();
                 break;
         }

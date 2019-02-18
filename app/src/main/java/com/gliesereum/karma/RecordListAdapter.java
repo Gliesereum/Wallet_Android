@@ -1,11 +1,13 @@
 package com.gliesereum.karma;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.Util;
@@ -29,6 +31,12 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
     public RecordListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_item, parent, false);
+        view.setOnClickListener(v -> {
+            Toast.makeText(context, ((TextView) v.findViewById(R.id.recordId)).getText().toString(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, SingleRecordActivity.class);
+            intent.putExtra("recordId", ((TextView) v.findViewById(R.id.recordId)).getText().toString());
+            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+        });
         return new RecordListAdapter.ViewHolder(view);
     }
 
@@ -47,12 +55,14 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         private TextView timeTextView;
         private TextView priceTextView;
         private TextView carWashName;
+        private TextView recordId;
         private ImageView carWashLogo;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             dataTextView = itemView.findViewById(R.id.dataTextView);
+            recordId = itemView.findViewById(R.id.recordId);
             timeTextView = itemView.findViewById(R.id.timeTextView);
             priceTextView = itemView.findViewById(R.id.priceTextView);
             carWashName = itemView.findViewById(R.id.carWashName);
@@ -65,6 +75,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
             priceTextView.setText(recordInfo.getPrice() + "грн");
 //            if (recordInfo.getCarWashName()!=null){
             carWashName.setText(carWashNameMap.get(recordInfo.getBusinessId()));
+            recordId.setText(recordInfo.getId());
 //            }else {
 //                carWashName.setText("Загрузка...");
 //            }

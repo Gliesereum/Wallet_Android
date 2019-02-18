@@ -2,6 +2,7 @@ package com.gliesereum.karma;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,6 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
     private User user;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
+    boolean doubleBackToExitPressedOnce = false;
+
 
 
     @Override
@@ -119,5 +122,24 @@ public class RegisterActivity extends AppCompatActivity {
         if (user.getMiddleName() != null) {
             thirdNameTextView.setText(user.getMiddleName().toString());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }

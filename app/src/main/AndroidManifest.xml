@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CarListActivity2"></activity>
+        <activity android:name=".SingleRecordActivity"></activity>
+        <activity android:name=".CarListActivity2" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -30,23 +31,16 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".RecordListActivity"
-            android:parentActivityName=".MapsActivity" />
+        <activity android:name=".RecordListActivity" />
         <activity android:name=".MapsActivity" />
         <activity android:name=".MarkerDemoActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity
-            android:name=".AddCarActivity"
-            android:parentActivityName=".CarListActivity" />
-        <activity
-            android:name=".CarListActivity"
-            android:parentActivityName=".MapsActivity" />
-        <activity
-            android:name=".CarWashActivity"
-            android:parentActivityName=".MapsActivity" />
+        <activity android:name=".AddCarActivity" />
+        <activity android:name=".CarListActivity" />
+        <activity android:name=".CarWashActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".OrderActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,7 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OrderActivity" />
     </application>
 
 </manifest>

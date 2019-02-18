@@ -129,13 +129,6 @@ public class RecordListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recordListAdapter = new RecordListAdapter(RecordListActivity.this);
         recyclerView.setAdapter(recordListAdapter);
-        recyclerView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return false;
-            }
-        });
-
         new Util(this, toolbar, 3).addNavigation();
     }
 }

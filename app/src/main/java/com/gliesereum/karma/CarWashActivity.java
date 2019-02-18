@@ -133,24 +133,54 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         carWashId = getIntent().getStringExtra("carWashId");
         initView();
         getCarWash();
-
         GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(imageView3);
+    }
 
-        BubbleShowCaseBuilder first = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Тут можно заказать мойку") //Any title for the bubble view
+    private void showTutorial() {
+        BubbleShowCaseBuilder workTimeTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+                .title("Тут будет титул этого сообщения")
+                .description("Тут можно посмотреть график работы мойки")
                 .backgroundColorResourceId(R.color.colorAccent)
                 .textColorResourceId(R.color.black)
-                .targetView(orderButton); //View to point out
+                .showOnce("CarWashActivity")
+                .targetView(workTimeImage);
 
-        BubbleShowCaseBuilder second = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Тут можно посмотреть график работы мойки")//Any title for the bubble view
+        BubbleShowCaseBuilder descriptionTutorial = new BubbleShowCaseBuilder(this)
+                .title("Вы всегда можете прочитать что то интересное про мойку")
                 .backgroundColorResourceId(R.color.colorAccent)
                 .textColorResourceId(R.color.black)
-                .targetView(workTimeImage); //View to point out
+                .showOnce("CarWashActivity")
+                .targetView(descriptionDropdown);
+
+        BubbleShowCaseBuilder packageTutorial = new BubbleShowCaseBuilder(this)
+                .title("Пакеты услуг")
+                .description("Пакет дешевле... Можете ознакомиться тут")
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .showOnce("CarWashActivity")
+                .targetView(packageScroll);
+
+        BubbleShowCaseBuilder commentTutorial = new BubbleShowCaseBuilder(this)
+                .description("Оставте комментарий как Вам все понравилось")
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .showOnce("CarWashActivity")
+                .targetView(sendCommentBtn);
+
+        BubbleShowCaseBuilder orderTutorial = new BubbleShowCaseBuilder(this)
+                .title("Заказать мойку")
+                .description("Жмите сюда и выбирайте когда, как и чем мыть вашу Ласточку")
+                .backgroundColorResourceId(R.color.colorAccent)
+                .textColorResourceId(R.color.black)
+                .showOnce("CarWashActivity")
+                .targetView(orderButton);
 
         new BubbleShowCaseSequence()
-                .addShowCase(first)
-                .addShowCase(second)
+                .addShowCase(workTimeTutorial)
+                .addShowCase(descriptionTutorial)
+                .addShowCase(packageTutorial)
+                .addShowCase(commentTutorial)
+                .addShowCase(orderTutorial)
                 .show();
     }
 
@@ -196,6 +226,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                     closeProgressDialog();
+                    showTutorial();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -265,10 +296,11 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if (mediaURLList.size() != 0) {
+            photoScrollView.setVisibility(View.VISIBLE);
             photosViewSlider.setGridColumns(mediaURLList.size());
             photosViewSlider.initializePhotosUrls(mediaURLList);
         } else {
-            horizontalScrollView.setVisibility(View.GONE);
+            photoScrollView.setVisibility(View.GONE);
         }
     }
 
@@ -334,7 +366,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         adres = (TextView) findViewById(R.id.address);
         description = (TextView) findViewById(R.id.description);
         boxBlock = (LinearLayout) findViewById(R.id.boxBlock);
-        orderButton = (MaterialButton) findViewById(R.id.orderButton);
+        orderButton = (MaterialButton) findViewById(R.id.chooseCarBtn);
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -568,12 +600,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
                 }
             });
-
-//            packageScroll.addView(packageBtn);
             packageScroll.addView(layout2);
         }
-//        packageScroll.getChildAt(0).performClick();
-//        setServicePrices(carWash);
 
     }
 

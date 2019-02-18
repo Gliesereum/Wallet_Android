@@ -3,10 +3,13 @@ package com.gliesereum.karma;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.chaos.view.PinView;
@@ -62,6 +65,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private MaterialButton registerBtn;
     private CardView cardView;
     private TextView textView2;
+    private ImageView mapImageBtn;
+    boolean doubleBackToExitPressedOnce = false;
 
 
     @Override
@@ -73,6 +78,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
+        mapImageBtn = findViewById(R.id.mapImageBtn);
+        mapImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+            }
+        });
         errorHandler = new ErrorHandler(this, this);
         getCodeBtn = findViewById(R.id.registerBtn);
         getCodeBtn.setOnClickListener(this);
@@ -178,11 +190,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (response.body().getUser().getFirstName() == null ||
                             response.body().getUser().getLastName() == null ||
                             response.body().getUser().getMiddleName() == null) {
-                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                     } else {
                         FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
                         FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
-                        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         saveUserInfo(response);
                     }
                     finish();
@@ -297,5 +309,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void setPhoneCodeLabel(String phone) {
         codeLabel2.setText("+" + phone);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }

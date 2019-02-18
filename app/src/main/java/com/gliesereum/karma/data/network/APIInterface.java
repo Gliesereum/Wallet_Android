@@ -6,6 +6,7 @@ import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
+import com.gliesereum.karma.data.network.json.carwash.RecordsItem;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
@@ -110,9 +111,12 @@ public interface APIInterface {
     @GET("karma/v1/record/client/all")
     Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken, @Query("serviceType") String serviceType);
 
+    @GET("karma/v1/record/{recordId}")
+    Call<RecordsItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
+
     //COMMENT
     @POST("karma/v1/business/{carwashId}/comment")
-    Call<CommentsItem> sendComment(@Header("Authorization") String accessToken, @Path("carwashId") String id, @Body CommentsItem orderBody);
+    Call<CommentsItem> sendComment(@Header("Authorization") String accessToken, @Path("carwashId") String carwashId, @Body CommentsItem orderBody);
 
     @GET("karma/v1/business/{carwashId}/comment/current-user")
     Call<CommentsItem> getMyComment(@Header("Authorization") String accessToken, @Path("carwashId") String id);

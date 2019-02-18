@@ -16,7 +16,7 @@ public class RecordsItem {
     private List<Object> servicesIds;
 
     @SerializedName("packageId")
-    private Object packageId;
+    private String packageId;
 
     @SerializedName("description")
     private String description;
@@ -27,11 +27,8 @@ public class RecordsItem {
     @SerializedName("statusPay")
     private Object statusPay;
 
-    @SerializedName("carId")
-    private String carId;
-
-    @SerializedName("statusWashing")
-    private Object statusWashing;
+    @SerializedName("targetId")
+    private String targetId;
 
     @SerializedName("workingSpaceId")
     private String workingSpaceId;
@@ -48,118 +45,110 @@ public class RecordsItem {
     @SerializedName("begin")
     private long begin;
 
-    @SerializedName("carWashId")
-    private String carWashId;
-
-    public void setStatusRecord(String statusRecord) {
-        this.statusRecord = statusRecord;
-    }
+    @SerializedName("businessId")
+    private String businessId;
 
     public String getStatusRecord() {
         return statusRecord;
     }
 
-    public void setServicesIds(List<Object> servicesIds) {
-        this.servicesIds = servicesIds;
+    public void setStatusRecord(String statusRecord) {
+        this.statusRecord = statusRecord;
     }
 
     public List<Object> getServicesIds() {
         return servicesIds;
     }
 
-    public void setPackageId(Object packageId) {
-        this.packageId = packageId;
+    public void setServicesIds(List<Object> servicesIds) {
+        this.servicesIds = servicesIds;
     }
 
-    public Object getPackageId() {
+    public String getPackageId() {
         return packageId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPackageId(String packageId) {
+        this.packageId = packageId;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setServices(List<ServicesItem> services) {
-        this.services = services;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<ServicesItem> getServices() {
         return services;
     }
 
-    public void setStatusPay(Object statusPay) {
-        this.statusPay = statusPay;
+    public void setServices(List<ServicesItem> services) {
+        this.services = services;
     }
 
     public Object getStatusPay() {
         return statusPay;
     }
 
-    public void setCarId(String carId) {
-        this.carId = carId;
+    public void setStatusPay(Object statusPay) {
+        this.statusPay = statusPay;
     }
 
-    public String getCarId() {
-        return carId;
+    public String getTargetId() {
+        return targetId;
     }
 
-    public void setStatusWashing(Object statusWashing) {
-        this.statusWashing = statusWashing;
-    }
-
-    public Object getStatusWashing() {
-        return statusWashing;
-    }
-
-    public void setWorkingSpaceId(String workingSpaceId) {
-        this.workingSpaceId = workingSpaceId;
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 
     public String getWorkingSpaceId() {
         return workingSpaceId;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setWorkingSpaceId(String workingSpaceId) {
+        this.workingSpaceId = workingSpaceId;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public void setFinish(long finish) {
-        this.finish = finish;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public long getFinish() {
         return finish;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFinish(long finish) {
+        this.finish = finish;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setBegin(long begin) {
-        this.begin = begin;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public long getBegin() {
         return begin;
     }
 
-    public void setCarWashId(String carWashId) {
-        this.carWashId = carWashId;
+    public void setBegin(long begin) {
+        this.begin = begin;
     }
 
-    public String getCarWashId() {
-        return carWashId;
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

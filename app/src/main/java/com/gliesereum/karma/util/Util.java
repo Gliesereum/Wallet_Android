@@ -53,11 +53,11 @@ public class Util {
     public void addNavigation() {
         new DrawerBuilder().withActivity(activity).build();
         PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта").withIdentifier(1).withTag("maps").withIcon(R.drawable.map_icon);
-        SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withIcon(R.drawable.my_cars);
-        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withIcon(R.drawable.orders);
-        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withIcon(R.drawable.profile);
-        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withIcon(R.drawable.logout);
-        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withIcon(R.drawable.login);
+        SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withSelectable(false).withIcon(R.drawable.my_cars);
+        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.orders);
+        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.profile);
+        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.logout);
+        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.login);
 
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             car_listItem.withEnabled(false);
@@ -80,56 +80,62 @@ public class Util {
 //                })
                 .build();
 
-        Drawer result = new DrawerBuilder()
-                .withAccountHeader(headerResult)
-                .withActivity(activity)
-                .withToolbar(toolbar)
-                .withSelectedItem(identifier)
-                .addDrawerItems(
-                        mapsItem,
-                        new DividerDrawerItem(),
-                        car_listItem,
-                        record_listItem,
-                        profileItem
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch (drawerItem.getTag().toString()) {
-                            case "maps":
-                                activity.startActivity(new Intent(activity.getApplicationContext(), MapsActivity.class));
-                                activity.finish();
-                                break;
-                            case "car_list":
-                                activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity2.class));
-                                break;
-                            case "record_list":
-                                activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class));
-                                break;
-                            case "logout":
-                                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                                FastSave.getInstance().deleteValue(USER_NAME);
-                                FastSave.getInstance().deleteValue(USER_SECOND_NAME);
-                                FastSave.getInstance().deleteValue(CAR_ID);
-                                FastSave.getInstance().deleteValue(CAR_BRAND);
-                                FastSave.getInstance().deleteValue(CAR_SERVICE_CLASS);
-                                FastSave.getInstance().deleteValue(CAR_MODEL);
-                                FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
-                                activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class));
-                                activity.finish();
-                                break;
-                            case "profile":
-                                activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class));
-                                break;
-                            case "login":
-                                activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class));
-                                break;
-                        }
+        DrawerBuilder drawerBuilder = new DrawerBuilder();
+        drawerBuilder.withAccountHeader(headerResult);
+        drawerBuilder.withActivity(activity);
+        drawerBuilder.withToolbar(toolbar);
+        drawerBuilder.withSelectedItem(identifier);
+        drawerBuilder.addDrawerItems(
+                mapsItem,
+                new DividerDrawerItem(),
+                car_listItem,
+                record_listItem,
+                profileItem
+        );
+        Drawer result = drawerBuilder.build();
+        drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                switch (drawerItem.getTag().toString()) {
+                    case "maps":
+                        activity.startActivity(new Intent(activity.getApplicationContext(), MapsActivity.class));
+                        activity.finish();
+                        result.closeDrawer();
+                        break;
+                    case "car_list":
+                        activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity2.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        result.closeDrawer();
+                        break;
+                    case "record_list":
+                        activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        result.closeDrawer();
+                        break;
+                    case "logout":
+                        FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+                        FastSave.getInstance().deleteValue(USER_NAME);
+                        FastSave.getInstance().deleteValue(USER_SECOND_NAME);
+                        FastSave.getInstance().deleteValue(CAR_ID);
+                        FastSave.getInstance().deleteValue(CAR_BRAND);
+                        FastSave.getInstance().deleteValue(CAR_SERVICE_CLASS);
+                        FastSave.getInstance().deleteValue(CAR_MODEL);
+                        FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
+                        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        activity.finish();
+                        break;
+                    case "profile":
+                        activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        result.closeDrawer();
+                        break;
+                    case "login":
+                        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        activity.finish();
+                        break;
+                }
 
-                        return true;
-                    }
-                })
-                .build();
+                return true;
+            }
+        });
+
 
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             result.addItem(logoutItem);

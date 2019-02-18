@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
@@ -87,6 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Map<String, String> mapServise = new HashMap<>();
     private Set<String> serviceIdList = new HashSet<>();
     private Menu menu;
+    boolean doubleBackToExitPressedOnce = false;
 
 
     @Override
@@ -495,5 +498,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             serviceIdList.remove(mapServise.get(buttonView.getText().toString()));
             Log.d(TAG, "onCheckedChanged: " + serviceIdList.size());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }
