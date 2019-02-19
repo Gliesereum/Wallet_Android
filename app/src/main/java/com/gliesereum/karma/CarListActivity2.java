@@ -160,7 +160,7 @@ public class CarListActivity2 extends AppCompatActivity {
 
     private void initView() {
         splashTextView = findViewById(R.id.splashTextView);
-        chooseCarBtn = findViewById(R.id.chooseCarBtn);
+        chooseCarBtn = findViewById(R.id.orderButton);
         chooseCarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

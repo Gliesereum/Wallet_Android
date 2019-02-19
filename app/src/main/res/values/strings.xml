@@ -365,6 +365,10 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
+    <string name="moneyUNICODE">&#128176;</string>
+    <string name="timeUNICODE">&#8987;</string>
+
+
     <string name="textile">Текстиль</string>
     <string name="suede">Замша</string>
     <string name="leather">Кожа</string>

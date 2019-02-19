@@ -414,8 +414,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 List<View> childViews = nDialog.getCustomViewChildren();
                 for (View childView : childViews) {
                     switch (childView.getId()) {
-                        case R.id.okBtn:
-                            MaterialButton okBtn = childView.findViewById(R.id.okBtn);
+                        case R.id.timeOrderBtn:
+                            MaterialButton okBtn = childView.findViewById(R.id.timeOrderBtn);
                             okBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

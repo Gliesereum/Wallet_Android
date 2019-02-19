@@ -10,7 +10,7 @@ import javax.annotation.Generated;
 public class OrderResponse {
 
     @SerializedName("statusRecord")
-    private Object statusRecord;
+    private String statusRecord;
 
     @SerializedName("servicesIds")
     private List<String> servicesIds;
@@ -31,7 +31,7 @@ public class OrderResponse {
     private String carId;
 
     @SerializedName("statusWashing")
-    private Object statusWashing;
+    private String statusWashing;
 
     @SerializedName("workingSpaceId")
     private String workingSpaceId;
@@ -43,7 +43,7 @@ public class OrderResponse {
     private Long finish;
 
     @SerializedName("id")
-    private Object id;
+    private String id;
 
     @SerializedName("begin")
     private Long begin;
@@ -51,115 +51,115 @@ public class OrderResponse {
     @SerializedName("carWashId")
     private String carWashId;
 
-    public void setStatusRecord(Object statusRecord) {
-        this.statusRecord = statusRecord;
-    }
-
-    public Object getStatusRecord() {
+    public String getStatusRecord() {
         return statusRecord;
     }
 
-    public void setServicesIds(List<String> servicesIds) {
-        this.servicesIds = servicesIds;
+    public void setStatusRecord(String statusRecord) {
+        this.statusRecord = statusRecord;
     }
 
     public List<String> getServicesIds() {
         return servicesIds;
     }
 
-    public void setPackageId(String packageId) {
-        this.packageId = packageId;
+    public void setServicesIds(List<String> servicesIds) {
+        this.servicesIds = servicesIds;
     }
 
     public String getPackageId() {
         return packageId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPackageId(String packageId) {
+        this.packageId = packageId;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setServices(List<Object> services) {
-        this.services = services;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<Object> getServices() {
         return services;
     }
 
-    public void setStatusPay(Object statusPay) {
-        this.statusPay = statusPay;
+    public void setServices(List<Object> services) {
+        this.services = services;
     }
 
     public Object getStatusPay() {
         return statusPay;
     }
 
-    public void setCarId(String carId) {
-        this.carId = carId;
+    public void setStatusPay(Object statusPay) {
+        this.statusPay = statusPay;
     }
 
     public String getCarId() {
         return carId;
     }
 
-    public void setStatusWashing(Object statusWashing) {
-        this.statusWashing = statusWashing;
+    public void setCarId(String carId) {
+        this.carId = carId;
     }
 
-    public Object getStatusWashing() {
+    public String getStatusWashing() {
         return statusWashing;
     }
 
-    public void setWorkingSpaceId(String workingSpaceId) {
-        this.workingSpaceId = workingSpaceId;
+    public void setStatusWashing(String statusWashing) {
+        this.statusWashing = statusWashing;
     }
 
     public String getWorkingSpaceId() {
         return workingSpaceId;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setWorkingSpaceId(String workingSpaceId) {
+        this.workingSpaceId = workingSpaceId;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public void setFinish(Long finish) {
-        this.finish = finish;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public Long getFinish() {
         return finish;
     }
 
-    public void setId(Object id) {
-        this.id = id;
+    public void setFinish(Long finish) {
+        this.finish = finish;
     }
 
-    public Object getId() {
+    public String getId() {
         return id;
     }
 
-    public void setBegin(Long begin) {
-        this.begin = begin;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Long getBegin() {
         return begin;
     }
 
-    public void setCarWashId(String carWashId) {
-        this.carWashId = carWashId;
+    public void setBegin(Long begin) {
+        this.begin = begin;
     }
 
     public String getCarWashId() {
         return carWashId;
+    }
+
+    public void setCarWashId(String carWashId) {
+        this.carWashId = carWashId;
     }
 }

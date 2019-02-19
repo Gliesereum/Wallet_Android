@@ -142,8 +142,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                         scaleRatingBar = childView.findViewById(R.id.simpleRatingBar);
                                         scaleRatingBar.setRating(commentsItem.getRating());
                                         break;
-                                    case R.id.okBtn:
-                                        Button okBtn = childView.findViewById(R.id.okBtn);
+                                    case R.id.timeOrderBtn:
+                                        Button okBtn = childView.findViewById(R.id.timeOrderBtn);
                                         okBtn.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
@@ -181,8 +181,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                             }
                                         });
                                         break;
-                                    case R.id.backBtn:
-                                        Button backBtn = childView.findViewById(R.id.backBtn);
+                                    case R.id.nowOrderBtn:
+                                        Button backBtn = childView.findViewById(R.id.nowOrderBtn);
                                         backBtn.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {

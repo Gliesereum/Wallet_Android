@@ -52,7 +52,6 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.ehsun.coloredtimebar.TimelinePickerView;
@@ -116,7 +115,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private CardView cardView;
     private TextView textView15;
     private HorizontalScrollView photoScrollView;
-    private ConstraintLayout constraintLayout2;
     private Button sendCommentBtn;
     private RecyclerView commentList;
     private CommentListAdapter commentListAdapter;
@@ -129,6 +127,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_wash_test);
+        FastSave.init(getApplicationContext());
         context = this;
         carWashId = getIntent().getStringExtra("carWashId");
         initView();
@@ -226,7 +225,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                     closeProgressDialog();
-                    showTutorial();
+//                    showTutorial();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -366,7 +365,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         adres = (TextView) findViewById(R.id.address);
         description = (TextView) findViewById(R.id.description);
         boxBlock = (LinearLayout) findViewById(R.id.boxBlock);
-        orderButton = (MaterialButton) findViewById(R.id.chooseCarBtn);
+        orderButton = (MaterialButton) findViewById(R.id.orderButton);
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -393,7 +392,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         cardView = findViewById(R.id.cardView);
         textView15 = findViewById(R.id.textView15);
         photoScrollView = findViewById(R.id.photoScrollView);
-        constraintLayout2 = findViewById(R.id.constraintLayout2);
         sendCommentBtn = findViewById(R.id.sendCommentBtn);
         sendCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -420,8 +418,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     scaleRatingBar = childView.findViewById(R.id.simpleRatingBar);
                     scaleRatingBar.setRating(5);
                     break;
-                case R.id.okBtn:
-                    Button okBtn = childView.findViewById(R.id.okBtn);
+                case R.id.timeOrderBtn:
+                    Button okBtn = childView.findViewById(R.id.timeOrderBtn);
                     okBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -483,8 +481,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     });
                     break;
-                case R.id.backBtn:
-                    Button backBtn = childView.findViewById(R.id.backBtn);
+                case R.id.nowOrderBtn:
+                    Button backBtn = childView.findViewById(R.id.nowOrderBtn);
                     backBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

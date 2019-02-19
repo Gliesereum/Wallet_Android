@@ -49,7 +49,7 @@
         app:layout_constraintTop_toBottomOf="@+id/viewPager" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/chooseCarBtn"
+        android:id="@+id/orderButton"
         android:layout_width="0dp"
         android:layout_height="75dp"
         android:layout_marginStart="8dp"

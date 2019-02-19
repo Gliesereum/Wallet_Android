@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
+import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
@@ -64,8 +65,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private ErrorHandler errorHandler;
     private OrderBody orderBody = new OrderBody();
     private ProgressDialog progressDialog;
-    private MaterialButton nowOrderBtn;
-    private MaterialButton timeOrderBtn;
     private HorizontalScrollView horizontalScrollView;
     private LinearLayout packageScroll;
     private TextView textView10;
@@ -75,13 +74,15 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private TextView textView14;
     private AllCarWashResponse carWash;
     private Long begin = 0L;
-    private Boolean nowFlag = true;
+    private boolean nowFlag = true;
     private Map<String, PackagesItem> packageMap = new HashMap<>();
     private Map<String, ServicePricesItem> servicePriceMap = new HashMap<>();
     private Map<String, ServicesItem> serviceMap = new HashMap<>();
     private LinearLayout servicePriceBlock;
     private List<String> nameOfServiceList = new ArrayList<>();
     private Calendar date;
+    private TextView durationLabel;
+    private TextView priceLabel;
 
 
     @Override
@@ -98,25 +99,23 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             servicePriceMap.put(carWash.getServicePrices().get(i).getId(), carWash.getServicePrices().get(i));
         }
         initView();
-        nowOrderBtn.performClick();
         setPackages(carWash);
-        showTutorial();
     }
 
     private void showTutorial() {
-        BubbleShowCaseBuilder nowOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Нажмите тут что б заказать мойку на ближайшее время") //Any title for the bubble view
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("OrderActivity")
-                .targetView(nowOrderBtn); //View to point out
-
-        BubbleShowCaseBuilder timeOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Нажмите тут что б заказать мойку на удобное для Вас время")//Any title for the bubble view
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("OrderActivity")
-                .targetView(timeOrderBtn); //View to point out
+//        BubbleShowCaseBuilder nowOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+//                .title("Нажмите тут что б заказать мойку на ближайшее время") //Any title for the bubble view
+//                .backgroundColorResourceId(R.color.colorAccent)
+//                .textColorResourceId(R.color.black)
+//                .showOnce("OrderActivity")
+//                .targetView(nowOrderBtn); //View to point out
+//
+//        BubbleShowCaseBuilder timeOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
+//                .title("Нажмите тут что б заказать мойку на удобное для Вас время")//Any title for the bubble view
+//                .backgroundColorResourceId(R.color.colorAccent)
+//                .textColorResourceId(R.color.black)
+//                .showOnce("OrderActivity")
+//                .targetView(timeOrderBtn); //View to point out
 
         BubbleShowCaseBuilder packageTutorial = new BubbleShowCaseBuilder(this) //Activity instance
                 .title("Выберите пакет услуг. Будет скидка!)")//Any title for the bubble view
@@ -140,8 +139,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 .targetView(orderButton); //View to point out
 
         new BubbleShowCaseSequence()
-                .addShowCase(nowOrderTutorial)
-                .addShowCase(timeOrderTutorial)
+//                .addShowCase(nowOrderTutorial)
+//                .addShowCase(timeOrderTutorial)
                 .addShowCase(packageTutorial)
                 .addShowCase(serviceTutorial)
                 .addShowCase(orderTutorial)
@@ -150,16 +149,37 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     private void setServicePrices(AllCarWashResponse carWash) {
         servicePriceBlock.removeAllViews();
-//        List<ServiceClassItem> serviceClassItemList = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
             if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes())) {
-                CheckBox checkBox = new CheckBox(OrderActivity.this);
-                checkBox.setText(carWash.getServicePrices().get(i).getName() + " | +" + carWash.getServicePrices().get(i).getDuration() + "мин | +" + carWash.getServicePrices().get(i).getPrice() + "грн");
-                checkBox.setTag(carWash.getServicePrices().get(i).getId());
-                servicePriceBlock.addView(checkBox);
+                if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(0, 0, 0, 8);
+                    CheckableChipView checkableChipView = new CheckableChipView(OrderActivity.this);
+                    checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+                    checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
+                    checkableChipView.setPadding(100, 100, 100, 100);
+                    checkableChipView.setOutlineCornerRadius(10f);
+                    checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
+                    checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
+                    checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+                    servicePriceBlock.addView(checkableChipView, layoutParams);
+                } else {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(0, 0, 0, 8);
+                    CheckableChipView checkableChipView = new CheckableChipView(OrderActivity.this);
+                    checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+                    checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
+                    checkableChipView.setPadding(100, 100, 100, 100);
+                    checkableChipView.setOutlineCornerRadius(10f);
+                    checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
+                    checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
+                    checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+                    checkableChipView.setChecked(true);
+                    checkableChipView.setEnabled(false);
+                    servicePriceBlock.addView(checkableChipView, layoutParams);
+                }
             } else {
                 Log.d(TAG, "false: " + carWash.getServicePrices().get(i).getName());
-
             }
         }
 
@@ -258,7 +278,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                             ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
                         }
                     }
-                    Toast.makeText(OrderActivity.this, packageMap.get(v.getTag()).getId(), Toast.LENGTH_SHORT).show();
                     for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
                         nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
                         serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
@@ -282,28 +301,103 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     private void initView() {
         errorHandler = new ErrorHandler(this, this);
-        orderButton = findViewById(R.id.chooseCarBtn);
-        nowOrderBtn = findViewById(R.id.nowOrderBtn);
-        timeOrderBtn = findViewById(R.id.timeOrderBtn);
-//        timeOrderBtn.setCornerRadius(25);
+        orderButton = findViewById(R.id.orderButton);
         orderButton.setOnClickListener(this);
-        nowOrderBtn.setOnClickListener(this);
-//        nowOrderBtn.setCornerRadius(25);
-        timeOrderBtn.setOnClickListener(this);
         horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
         packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
         textView10 = (TextView) findViewById(R.id.textView10);
-        textView11 = (TextView) findViewById(R.id.textView11);
         textView12 = (TextView) findViewById(R.id.textView12);
         packagesDescription = (TextView) findViewById(R.id.packagesDescription);
         textView14 = (TextView) findViewById(R.id.textView14);
         servicePriceBlock = (LinearLayout) findViewById(R.id.servicePriceBlock);
+        durationLabel = findViewById(R.id.durationLabel);
+        priceLabel = findViewById(R.id.priceLabel);
     }
 
-    private void perOrder() {
+    public static String getStringTime(Long millisecond) {
+        if (millisecond != null) {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(millisecond);
+            return format.format(calendar.getTime());
+        }
+        return "";
+    }
+
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
+
+    }
+
+    public void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+
+    public void showDateTimePicker() {
+        final Calendar currentDate = Calendar.getInstance();
+        date = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        new DatePickerDialog(OrderActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                new TimePickerDialog(OrderActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        date.set(Calendar.MINUTE, minute);
+                        begin = date.getTimeInMillis();
+                        getRecordFreeTime(false);
+                    }
+                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
+            }
+        },
+                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.orderButton:
+                openPreOrderDialog();
+                break;
+        }
+    }
+
+    private void openPreOrderDialog() {
+        NDialog preOrderNewDialog = new NDialog(OrderActivity.this, ButtonType.NO_BUTTON);
+        preOrderNewDialog.isCancelable(true);
+        preOrderNewDialog.setCustomView(R.layout.pre_order_new_dialod);
+        List<View> childViews = preOrderNewDialog.getCustomViewChildren();
+        for (View childView : childViews) {
+            switch (childView.getId()) {
+                case R.id.timeOrderBtn:
+                    Button okBtn = childView.findViewById(R.id.timeOrderBtn);
+                    okBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            preOrderNewDialog.dismiss();
+                            showDateTimePicker();
+                        }
+                    });
+                    break;
+                case R.id.nowOrderBtn:
+                    Button nowOrderBtn = childView.findViewById(R.id.nowOrderBtn);
+                    nowOrderBtn.setOnClickListener(v -> {
+                        preOrderNewDialog.dismiss();
+                        getRecordFreeTime(true);
+                    });
+                    break;
+            }
+        }
+        preOrderNewDialog.show();
+    }
+
+    private void getRecordFreeTime(boolean nowFlag) {
         showProgressDialog();
         orderBody.setWorkingSpaceId(null);
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         orderBody.setTargetId(FastSave.getInstance().getString(CAR_ID, ""));
         orderBody.setBusinessId(carWash.getId());
         if (nowFlag) {
@@ -314,11 +408,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         orderBody.setDescription("Android");
         List<String> list = new ArrayList<>();
         for (int i = 0; i < servicePriceBlock.getChildCount(); i++) {
-            if (((CheckBox) servicePriceBlock.getChildAt(i)).isChecked()) {
-                list.add((String) ((CheckBox) servicePriceBlock.getChildAt(i)).getTag());
+            if (((CheckableChipView) servicePriceBlock.getChildAt(i)).isChecked()) {
+                list.add((String) ((CheckableChipView) servicePriceBlock.getChildAt(i)).getTag());
             }
         }
         orderBody.setServicesIds(list);
+        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<OrderResponse> call = apiInterface.preOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
         call.enqueue(new Callback<OrderResponse>() {
             @Override
@@ -328,49 +423,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         orderBody.setWorkingSpaceId(response.body().getWorkingSpaceId());
                         orderBody.setBegin(response.body().getBegin());
                         NDialog nDialog = new NDialog(OrderActivity.this, ButtonType.NO_BUTTON);
-//                        ButtonClickListener buttonClickListener = new ButtonClickListener() {
-//                            @Override
-//                            public void onClick(int button) {
-//                                switch (button) {
-//                                    case NDialog.BUTTON_POSITIVE:
-//                                        showProgressDialog();
-//                                        apiInterface = APIClient.getClient().create(APIInterface.class);
-//                                        Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
-//                                        call.enqueue(new Callback<OrderResponse>() {
-//                                            @Override
-//                                            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
-//                                                if (response.code() == 200) {
-//                                                    Toast.makeText(OrderActivity.this, "Ok", Toast.LENGTH_SHORT).show();
-//                                                    closeProgressDialog();
-//                                                } else {
-//                                                    try {
-//                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-//                                                        errorHandler.showError(jObjError.getInt("code"));
-//                                                        closeProgressDialog();
-//                                                    } catch (Exception e) {
-//                                                        errorHandler.showCustomError(e.getMessage());
-//                                                        closeProgressDialog();
-//                                                    }
-//                                                }
-//                                            }
-//
-//                                            @Override
-//                                            public void onFailure(Call<OrderResponse> call, Throwable t) {
-//                                                errorHandler.showCustomError(t.getMessage());
-//                                                closeProgressDialog();
-//                                            }
-//                                        });
-//                                        break;
-//                                }
-//                            }
-//                        };
-//                        nDialog.setPositiveButtonText("Заказать");
-//                        nDialog.setPositiveButtonTextColor(Color.RED);
-//                        nDialog.setPositiveButtonOnClickDismiss(true); // default : true
-//                        nDialog.setPositiveButtonClickListener(buttonClickListener);
-//
-//                        nDialog.setNeutralButtonText("Назад");
-//                        nDialog.setNeutralButtonTextColor(Color.RED);
                         nDialog.isCancelable(false);
                         nDialog.setCustomView(R.layout.order_view);
                         List<View> childViews = nDialog.getCustomViewChildren();
@@ -395,7 +447,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                                         closeProgressDialog();
                                                         nDialog.dismiss();
                                                         Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
-                                                        startActivity(new Intent(OrderActivity.this, MapsActivity.class));
+//                                                        startActivity(new Intent(OrderActivity.this, MapsActivity.class));
+                                                        startActivity(new Intent(OrderActivity.this, SingleRecordActivity.class).putExtra("recordId", response.body().getId()));
                                                         finish();
                                                     } else {
                                                         try {
@@ -456,68 +509,5 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 closeProgressDialog();
             }
         });
-    }
-
-    public static String getStringTime(Long millisecond) {
-        if (millisecond != null) {
-            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(millisecond);
-            return format.format(calendar.getTime());
-        }
-        return "";
-    }
-
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-
-    }
-
-    public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-
-    public void showDateTimePicker() {
-        final Calendar currentDate = Calendar.getInstance();
-        date = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        new DatePickerDialog(OrderActivity.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.set(year, monthOfYear, dayOfMonth);
-                new TimePickerDialog(OrderActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        date.set(Calendar.MINUTE, minute);
-                        begin = date.getTimeInMillis();
-                        Log.d(TAG, "onTimeSet: ");
-                    }
-                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
-            }
-        },
-                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.timeOrderBtn:
-                nowFlag = false;
-                showDateTimePicker();
-                timeOrderBtn.setTextColor(getResources().getColor(R.color.black));
-                nowOrderBtn.setTextColor(getResources().getColor(R.color.white));
-                break;
-            case R.id.nowOrderBtn:
-                nowFlag = true;
-                timeOrderBtn.setTextColor(getResources().getColor(R.color.white));
-                nowOrderBtn.setTextColor(getResources().getColor(R.color.black));
-                break;
-            case R.id.chooseCarBtn:
-                perOrder();
-                break;
-        }
     }
 }

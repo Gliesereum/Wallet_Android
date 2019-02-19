@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/chooseCarBtn"
+        app:layout_constraintBottom_toTopOf="@+id/orderButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -162,29 +162,18 @@
                     android:layout_height="wrap_content" />
             </HorizontalScrollView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2"
-                android:layout_width="match_parent"
+
+            <Button
+                android:id="@+id/sendCommentBtn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Оставить комментарий"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/photoScrollView">
+                app:layout_constraintTop_toBottomOf="@+id/photoScrollView" />
 
-                <Button
-                    android:id="@+id/sendCommentBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Оставить комментарий"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentList"
@@ -197,7 +186,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                app:layout_constraintTop_toBottomOf="@+id/sendCommentBtn">
 
 
             </androidx.recyclerview.widget.RecyclerView>
@@ -207,7 +196,7 @@
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/chooseCarBtn"
+        android:id="@+id/orderButton"
         android:layout_width="0dp"
         android:layout_height="75dp"
         android:layout_marginStart="8dp"

@@ -26,59 +26,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.willy.ratingbar.ScaleRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/simpleRatingBar"
+            <TextView
+                android:id="@+id/preOrderLabel2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
+                android:text="Пожайлуста, сделайте свой выбор"
+                android:textColor="@color/black"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srb_clearRatingEnabled="true"
-                app:srb_clickable="true"
-                app:srb_drawableEmpty="@drawable/empty"
-                app:srb_drawableFilled="@drawable/filled"
-                app:srb_isIndicator="false"
-                app:srb_minimumStars="1"
-                app:srb_numStars="5"
-                app:srb_scrollable="true"
-                app:srb_starHeight="30dp"
-                app:srb_starPadding="15dp"
-                app:srb_starWidth="30dp"
-                app:srb_stepSize="1">
+                app:layout_constraintTop_toBottomOf="@+id/preOrderLabel1" />
 
-            </com.willy.ratingbar.ScaleRatingBar>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/commentTextInputLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
+            <TextView
+                android:id="@+id/preOrderLabel1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="8dp"
-                android:focusableInTouchMode="true"
-                android:textColorHint="#959CBB"
-                app:boxStrokeColor="#2A2B30"
+                android:text="У Вас есть возможность заказать мойку на ближайшее или на выбраное время"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/simpleRatingBar">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/commentTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:hint="Написать комментарий"
-                    android:inputType="textLongMessage|textMultiLine"
-                    android:singleLine="false"
-                    android:textColor="@color/black"
-                    android:textColorHint="#959CBB" />
-
-
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/timeOrderBtn"
@@ -88,12 +63,12 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Написать"
+                android:text="Выбрать время"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/nowOrderBtn"
-                app:layout_constraintTop_toBottomOf="@+id/commentTextInputLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/preOrderLabel2" />
 
             <Button
                 android:id="@+id/nowOrderBtn"
@@ -102,12 +77,12 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="8dp"
-                android:text="Назад"
+                android:text="На ближайшее"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/timeOrderBtn"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentTextInputLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/preOrderLabel2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
