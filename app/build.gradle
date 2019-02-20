@@ -112,6 +112,12 @@ dependencies {
     //https://android-arsenal.com/details/1/7087
     implementation 'androidx.core:core-ktx:1.1.0-alpha04'
 
+    implementation 'com.hanks:htextview-base:0.1.6'
+    implementation 'com.hanks:htextview-scale:0.1.6'
+    implementation 'com.hanks:htextview-evaporate:0.1.6'
+    implementation 'com.hanks:htextview-fall:0.1.6'
+    //https://github.com/hanks-zyh/HTextView
+
 
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'androidx.annotation:annotation:1.0.1'

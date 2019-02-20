@@ -153,23 +153,35 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes())) {
                 if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(0, 0, 0, 8);
+                    layoutParams.setMargins(0, 4, 0, 4);
                     CheckableChipView checkableChipView = new CheckableChipView(OrderActivity.this);
                     checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
                     checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
-                    checkableChipView.setPadding(100, 100, 100, 100);
+                    checkableChipView.setTag(R.string.tagKeyDuration, carWash.getServicePrices().get(i).getDuration());
+                    checkableChipView.setTag(R.string.tagKeyPrice, carWash.getServicePrices().get(i).getPrice());
                     checkableChipView.setOutlineCornerRadius(10f);
                     checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
                     checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
                     checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+                    checkableChipView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (((CheckableChipView) v).isChecked()) {
+                                durationLabel.setText(String.valueOf(Integer.parseInt(durationLabel.getText().toString()) + ((int) v.getTag(R.string.tagKeyDuration))));
+                                priceLabel.setText(String.valueOf(Double.parseDouble(priceLabel.getText().toString()) + ((int) v.getTag(R.string.tagKeyPrice))));
+                            } else {
+                                durationLabel.setText(String.valueOf(Integer.parseInt(durationLabel.getText().toString()) - ((int) v.getTag(R.string.tagKeyDuration))));
+                                priceLabel.setText(String.valueOf(Double.parseDouble(priceLabel.getText().toString()) - ((int) v.getTag(R.string.tagKeyPrice))));
+                            }
+                        }
+                    });
                     servicePriceBlock.addView(checkableChipView, layoutParams);
                 } else {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(0, 0, 0, 8);
+                    layoutParams.setMargins(0, 4, 0, 4);
                     CheckableChipView checkableChipView = new CheckableChipView(OrderActivity.this);
                     checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
                     checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
-                    checkableChipView.setPadding(100, 100, 100, 100);
                     checkableChipView.setOutlineCornerRadius(10f);
                     checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
                     checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
@@ -253,6 +265,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 packagesDescription.setText("");
                 packagesDescription.setVisibility(View.GONE);
                 textView12.setVisibility(View.GONE);
+                priceLabel.setText("0");
+                durationLabel.setText("0");
                 setServicePrices(carWash);
             }
         });
@@ -287,6 +301,14 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     packagesDescription.setVisibility(View.VISIBLE);
                     textView12.setVisibility(View.VISIBLE);
                     setServicePrices(carWash);
+                    String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
+                    durationLabel.setText(duration);
+                    double price = 0;
+                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                        price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
+                    }
+                    price = price - ((price / 100) * packageMap.get(v.getTag()).getDiscount());
+                    priceLabel.setText(String.valueOf(price));
                 }
             });
             packageScroll.addView(layout2);
@@ -312,6 +334,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         servicePriceBlock = (LinearLayout) findViewById(R.id.servicePriceBlock);
         durationLabel = findViewById(R.id.durationLabel);
         priceLabel = findViewById(R.id.priceLabel);
+
     }
 
     public static String getStringTime(Long millisecond) {
@@ -408,7 +431,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         orderBody.setDescription("Android");
         List<String> list = new ArrayList<>();
         for (int i = 0; i < servicePriceBlock.getChildCount(); i++) {
-            if (((CheckableChipView) servicePriceBlock.getChildAt(i)).isChecked()) {
+            if (((CheckableChipView) servicePriceBlock.getChildAt(i)).isChecked() && ((CheckableChipView) servicePriceBlock.getChildAt(i)).isEnabled()) {
                 list.add((String) ((CheckableChipView) servicePriceBlock.getChildAt(i)).getTag());
             }
         }

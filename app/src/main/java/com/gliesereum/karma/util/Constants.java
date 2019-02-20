@@ -33,4 +33,7 @@ public class Constants {
     public static final String REFRESH_TOKEN = "refreshToken";
     public static final String REFRESH_EXPIRATION_DATE = "refreshExpirationDate";
 
+    public static final String LATITUDE_CUR = "latitude_cur";
+    public static final String LONGITUDE_CUR = "longitude_cur";
+
 }

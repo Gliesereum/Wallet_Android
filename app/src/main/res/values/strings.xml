@@ -367,6 +367,8 @@
 
     <string name="moneyUNICODE">&#128176;</string>
     <string name="timeUNICODE">&#8987;</string>
+    <string name="tagKeyDuration">tagKeyDuration</string>
+    <string name="tagKeyPrice">tagKeyPrice</string>
 
 
     <string name="textile">Текстиль</string>

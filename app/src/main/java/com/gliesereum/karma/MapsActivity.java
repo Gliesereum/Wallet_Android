@@ -64,6 +64,8 @@ import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
+import static com.gliesereum.karma.util.Constants.LATITUDE_CUR;
+import static com.gliesereum.karma.util.Constants.LONGITUDE_CUR;
 import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
@@ -300,10 +302,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: ");
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (mLocationPermissionGranted) {
                 Task locationResult = mFusedLocationProviderClient.getLastLocation();
@@ -311,11 +309,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), 15));
+                            FastSave.getInstance().saveFloat(LATITUDE_CUR, (float) mLastKnownLocation.getLatitude());
+                            FastSave.getInstance().saveFloat(LONGITUDE_CUR, (float) mLastKnownLocation.getLongitude());
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());

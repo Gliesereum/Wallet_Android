@@ -98,21 +98,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/packagesDescription" />
 
-    <LinearLayout
-        android:id="@+id/servicePriceBlock"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="vertical"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/orderButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView14"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/textView14">
+
+        <LinearLayout
+            android:id="@+id/servicePriceBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -134,7 +144,7 @@
                 android:text="Продолжительность"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@+id/durationLabel"
+                app:layout_constraintEnd_toStartOf="@+id/textView2"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -157,31 +167,56 @@
                 android:id="@+id/durationLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="TextView"
+                android:layout_marginEnd="4dp"
+                android:text="0"
                 android:textColor="@color/accent"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/textView22"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="60" />
 
             <TextView
                 android:id="@+id/priceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
                 android:layout_marginBottom="8dp"
-                android:text="TextView"
+                android:text="0"
                 android:textColor="@color/accent"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/durationLabel"
-                app:layout_constraintTop_toBottomOf="@+id/durationLabel" />
+                app:layout_constraintEnd_toStartOf="@+id/textView11"
+                app:layout_constraintTop_toBottomOf="@+id/durationLabel"
+                tools:text="123" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="мин"
+                android:textColor="@color/accent"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView22"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="грн"
+                android:textColor="@color/accent"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

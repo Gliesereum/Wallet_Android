@@ -1,7 +1,11 @@
 package com.gliesereum.karma;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
@@ -20,6 +24,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.LATITUDE_CUR;
+import static com.gliesereum.karma.util.Constants.LONGITUDE_CUR;
 
 public class SingleRecordActivity extends AppCompatActivity {
 
@@ -37,6 +43,8 @@ public class SingleRecordActivity extends AppCompatActivity {
     private TextView addresTextView;
     private TextView carLabel;
     private TextView carTextView;
+    private Button goRoad;
+    private AllCarWashResponse carWash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +104,7 @@ public class SingleRecordActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
                 if (response.code() == 200) {
+                    carWash = response.body();
                     addresTextView.setText(response.body().getAddress());
                 } else {
                     try {
@@ -156,5 +165,17 @@ public class SingleRecordActivity extends AppCompatActivity {
         addresTextView = findViewById(R.id.addresTextView);
         carLabel = findViewById(R.id.carLabel);
         carTextView = findViewById(R.id.carTextView);
+        goRoad = findViewById(R.id.goRoad);
+        goRoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr=" + FastSave.getInstance().getFloat(LATITUDE_CUR, 50) + "," + FastSave.getInstance().getFloat(LONGITUDE_CUR, 30) + "&daddr=" + carWash.getLatitude() + "," + carWash.getLongitude()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                startActivity(intent);
+            }
+        });
     }
 }
