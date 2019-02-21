@@ -8,7 +8,6 @@ import android.widget.Toast;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
-import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
@@ -60,8 +59,8 @@ public class RecordListActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     recordsList = response.body();
                     if (recordsList != null && recordsList.size() > 0) {
-//                        recordListAdapter.setItems(recordsList);
-                        getCarWash(recordsList);
+                        recordListAdapter.setItems(recordsList);
+//                        getCarWash(recordsList);
                     }
                 } else {
                     if (response.code() == 204) {
@@ -85,39 +84,39 @@ public class RecordListActivity extends AppCompatActivity {
         });
     }
 
-    private void getCarWash(List<AllRecordResponse> recordsList) {
-//        carWashNameMap.clear();
-        for (int i = 0; i < recordsList.size(); i++) {
-            if (!carWashNameMap.containsKey(recordsList.get(i).getBusinessId())) {
-                Call<AllCarWashResponse> call = apiInterface.getCarWash(recordsList.get(i).getBusinessId());
-                call.enqueue(new Callback<AllCarWashResponse>() {
-                    @Override
-                    public void onResponse(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
-                        if (response.code() == 200) {
-                            carWashNameMap.put(response.body().getId(), response.body().getName());
-                            recordListAdapter.notifyDataSetChanged();
-                        } else {
-                            try {
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                errorHandler.showError(jObjError.getInt("code"));
-                            } catch (Exception e) {
-                                errorHandler.showCustomError(e.getMessage());
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
-                        errorHandler.showCustomError(t.getMessage());
-                    }
-                });
-            } else {
-//                recordListAdapter.setItems(recordsList, carWashNameMap);
-            }
-        }
-        recordListAdapter.setItems(recordsList, carWashNameMap);
-
-    }
+//    private void getCarWash(List<AllRecordResponse> recordsList) {
+////        carWashNameMap.clear();
+//        for (int i = 0; i < recordsList.size(); i++) {
+//            if (!carWashNameMap.containsKey(recordsList.get(i).getBusinessId())) {
+//                Call<AllCarWashResponse> call = apiInterface.getCarWash(recordsList.get(i).getBusinessId());
+//                call.enqueue(new Callback<AllCarWashResponse>() {
+//                    @Override
+//                    public void onResponse(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
+//                        if (response.code() == 200) {
+//                            carWashNameMap.put(response.body().getId(), response.body().getName());
+//                            recordListAdapter.notifyDataSetChanged();
+//                        } else {
+//                            try {
+//                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                errorHandler.showError(jObjError.getInt("code"));
+//                            } catch (Exception e) {
+//                                errorHandler.showCustomError(e.getMessage());
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
+//                        errorHandler.showCustomError(t.getMessage());
+//                    }
+//                });
+//            } else {
+////                recordListAdapter.setItems(recordsList, carWashNameMap);
+//            }
+//        }
+//        recordListAdapter.setItems(recordsList, carWashNameMap);
+//
+//    }
 
     private void initView() {
         errorHandler = new ErrorHandler(this, this);

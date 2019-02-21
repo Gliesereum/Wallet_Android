@@ -1,5 +1,7 @@
 package com.gliesereum.karma.data.network.json.record;
 
+import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -8,6 +10,12 @@ import javax.annotation.Generated;
 
 @Generated("com.robohorse.robopojogenerator")
 public class AllRecordResponse {
+
+    @SerializedName("business")
+    private AllCarWashResponse business;
+
+    @SerializedName("packageDto")
+    private PackagesItem packageDto;
 
     @SerializedName("statusRecord")
     private String statusRecord;
@@ -27,8 +35,8 @@ public class AllRecordResponse {
     @SerializedName("statusPay")
     private Object statusPay;
 
-    @SerializedName("carId")
-    private String carId;
+    @SerializedName("targetId")
+    private String targetId;
 
     @SerializedName("statusWashing")
     private Object statusWashing;
@@ -51,118 +59,124 @@ public class AllRecordResponse {
     @SerializedName("businessId")
     private String businessId;
 
-    private String carWashName;
-
-    public String getCarWashName() {
-        return carWashName;
+    public AllCarWashResponse getBusiness() {
+        return business;
     }
 
-    public void setCarWashName(String carWashName) {
-        this.carWashName = carWashName;
+    public void setBusiness(AllCarWashResponse business) {
+        this.business = business;
     }
 
-    public void setStatusRecord(String statusRecord) {
-        this.statusRecord = statusRecord;
+    public PackagesItem getPackageDto() {
+        return packageDto;
+    }
+
+    public void setPackageDto(PackagesItem packageDto) {
+        this.packageDto = packageDto;
     }
 
     public String getStatusRecord() {
         return statusRecord;
     }
 
-    public void setServicesIds(List<Object> servicesIds) {
-        this.servicesIds = servicesIds;
+    public void setStatusRecord(String statusRecord) {
+        this.statusRecord = statusRecord;
     }
 
     public List<Object> getServicesIds() {
         return servicesIds;
     }
 
-    public void setPackageId(Object packageId) {
-        this.packageId = packageId;
+    public void setServicesIds(List<Object> servicesIds) {
+        this.servicesIds = servicesIds;
     }
 
     public Object getPackageId() {
         return packageId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPackageId(Object packageId) {
+        this.packageId = packageId;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setServices(List<ServicesItem> services) {
-        this.services = services;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<ServicesItem> getServices() {
         return services;
     }
 
-    public void setStatusPay(Object statusPay) {
-        this.statusPay = statusPay;
+    public void setServices(List<ServicesItem> services) {
+        this.services = services;
     }
 
     public Object getStatusPay() {
         return statusPay;
     }
 
-    public void setCarId(String carId) {
-        this.carId = carId;
+    public void setStatusPay(Object statusPay) {
+        this.statusPay = statusPay;
     }
 
-    public String getCarId() {
-        return carId;
+    public String getTargetId() {
+        return targetId;
     }
 
-    public void setStatusWashing(Object statusWashing) {
-        this.statusWashing = statusWashing;
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 
     public Object getStatusWashing() {
         return statusWashing;
     }
 
-    public void setWorkingSpaceId(String workingSpaceId) {
-        this.workingSpaceId = workingSpaceId;
+    public void setStatusWashing(Object statusWashing) {
+        this.statusWashing = statusWashing;
     }
 
     public String getWorkingSpaceId() {
         return workingSpaceId;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setWorkingSpaceId(String workingSpaceId) {
+        this.workingSpaceId = workingSpaceId;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public void setFinish(long finish) {
-        this.finish = finish;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public long getFinish() {
         return finish;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFinish(long finish) {
+        this.finish = finish;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setBegin(long begin) {
-        this.begin = begin;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public long getBegin() {
         return begin;
+    }
+
+    public void setBegin(long begin) {
+        this.begin = begin;
     }
 
     public String getBusinessId() {

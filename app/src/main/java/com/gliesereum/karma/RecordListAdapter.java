@@ -7,15 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.Util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,8 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.ViewHolder> {
 
     private List<AllRecordResponse> allRecordList = new ArrayList<>();
-    private Map<String, String> carWashNameMap = new HashMap<>();
+    //    private Map<String, String> carWashNameMap = new HashMap<>();
     private Context context;
+    private int i = 0;
 
     @NonNull
     @Override
@@ -32,9 +31,10 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_item, parent, false);
         view.setOnClickListener(v -> {
-            Toast.makeText(context, ((TextView) v.findViewById(R.id.recordId)).getText().toString(), Toast.LENGTH_SHORT).show();
+            FastSave.getInstance().saveObject("RECORD", allRecordList.get(Integer.parseInt(((TextView) v.findViewById(R.id.recordId)).getText().toString())));
+//            Toast.makeText(context, ((TextView) v.findViewById(R.id.recordId)).getText().toString(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, SingleRecordActivity.class);
-            intent.putExtra("recordId", ((TextView) v.findViewById(R.id.recordId)).getText().toString());
+//            intent.putExtra("recordId", ((TextView) v.findViewById(R.id.recordId)).getText().toString());
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
         });
         return new RecordListAdapter.ViewHolder(view);
@@ -73,13 +73,12 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
             dataTextView.setText(Util.getStringDate(recordInfo.getBegin()));
             timeTextView.setText(Util.getStringTime(recordInfo.getBegin()));
             priceTextView.setText(recordInfo.getPrice() + "грн");
-//            if (recordInfo.getCarWashName()!=null){
-            carWashName.setText(carWashNameMap.get(recordInfo.getBusinessId()));
-            recordId.setText(recordInfo.getId());
-//            }else {
-//                carWashName.setText("Загрузка...");
-//            }
+            if (recordInfo.getBusiness().getName() != null) {
+                carWashName.setText(recordInfo.getBusiness().getName());
+            }
+            recordId.setText(String.valueOf(i));
             GlideApp.with(context).load(R.mipmap.ic_launcher_round).circleCrop().into(carWashLogo);
+            i++;
         }
 
         @Override
@@ -88,9 +87,9 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         }
     }
 
-    public void setItems(List<AllRecordResponse> cars, Map<String, String> carWashNameMap) {
+    public void setItems(List<AllRecordResponse> cars) {
         allRecordList.addAll(cars);
-        this.carWashNameMap = carWashNameMap;
+//        this.carWashNameMap = carWashNameMap;
         notifyDataSetChanged();
     }
 

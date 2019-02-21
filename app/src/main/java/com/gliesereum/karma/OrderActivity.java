@@ -83,6 +83,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private Calendar date;
     private TextView durationLabel;
     private TextView priceLabel;
+    private TextView discountTextView;
 
 
     @Override
@@ -184,11 +185,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
                     checkableChipView.setOutlineCornerRadius(10f);
                     checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
-                    checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
-                    checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+                    checkableChipView.setOutlineColor(getResources().getColor(R.color.accent));
+                    checkableChipView.setCheckedColor(getResources().getColor(R.color.black));
+                    checkableChipView.setCheckedTextColor(getResources().getColor(R.color.accent));
                     checkableChipView.setChecked(true);
                     checkableChipView.setEnabled(false);
-                    servicePriceBlock.addView(checkableChipView, layoutParams);
+                    servicePriceBlock.addView(checkableChipView, 0, layoutParams);
                 }
             } else {
                 Log.d(TAG, "false: " + carWash.getServicePrices().get(i).getName());
@@ -296,10 +298,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
                         serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
                     }
-                    String string = "Скидка = " + packageMap.get(v.getTag()).getDiscount() + ", " + nameOfServiceList.toString();
-                    packagesDescription.setText(string);
-                    packagesDescription.setVisibility(View.VISIBLE);
-                    textView12.setVisibility(View.VISIBLE);
+                    discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
+//                    packagesDescription.setText(string);
+//                    packagesDescription.setVisibility(View.VISIBLE);
+//                    textView12.setVisibility(View.VISIBLE);
                     setServicePrices(carWash);
                     String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
                     durationLabel.setText(duration);
@@ -307,8 +309,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
                         price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
                     }
-                    price = price - ((price / 100) * packageMap.get(v.getTag()).getDiscount());
-                    priceLabel.setText(String.valueOf(price));
+                    priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
                 }
             });
             packageScroll.addView(layout2);
@@ -334,7 +335,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         servicePriceBlock = (LinearLayout) findViewById(R.id.servicePriceBlock);
         durationLabel = findViewById(R.id.durationLabel);
         priceLabel = findViewById(R.id.priceLabel);
-
+        discountTextView = findViewById(R.id.discountTextView);
     }
 
     public static String getStringTime(Long millisecond) {
@@ -471,7 +472,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                                         nDialog.dismiss();
                                                         Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
 //                                                        startActivity(new Intent(OrderActivity.this, MapsActivity.class));
-                                                        startActivity(new Intent(OrderActivity.this, SingleRecordActivity.class).putExtra("recordId", response.body().getId()));
+                                                        startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
                                                         finish();
                                                     } else {
                                                         try {
