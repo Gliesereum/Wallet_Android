@@ -121,6 +121,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private ScaleRatingBar scaleRatingBar;
     private String commentString = "";
     private Context context;
+    private LinearLayout photoLayout;
+    private boolean isImageFitToScreen;
 
 
     @Override
@@ -400,8 +402,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
         commentList = findViewById(R.id.commentList);
-
-
     }
 
     private void openCommentDialog() {
@@ -576,13 +576,16 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    List<String> serviceNameList = new ArrayList<>();
+//                    List<String> serviceNameList = new ArrayList<>();
+                    List<PowerMenuItem> powerMenuItemList = new ArrayList<>();
                     for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                        serviceNameList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
+//                        serviceNameList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
+                        powerMenuItemList.add(new PowerMenuItem(packageMap.get(v.getTag()).getServices().get(j).getName()));
                     }
+
                     packagePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
-                            .addItem(new PowerMenuItem(packageMap.get(v.getTag()).getName(), false))
                             .addItem(new PowerMenuItem("Скидка = " + packageMap.get(v.getTag()).getDiscount() + "%", false))
+                            .addItemList(powerMenuItemList)
                             .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT) // Animation start point (TOP | LEFT)
                             .setMenuRadius(10f)
                             .setMenuShadow(10f)
@@ -593,6 +596,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 //                .setSelectedMenuColor(context.getResources().getColor(R.color.colorPrimary))
 //                .setOnMenuItemClickListener(onMenuItemClickListener)
                             .build();
+
                     packagePowerMenu.showAsDropDown(v); // view is an anchor
 
 

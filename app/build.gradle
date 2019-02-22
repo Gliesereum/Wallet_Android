@@ -118,6 +118,9 @@ dependencies {
     implementation 'com.hanks:htextview-fall:0.1.6'
     //https://github.com/hanks-zyh/HTextView
 
+    implementation 'com.github.mostafaaryan:transitional-imageview:v0.2.2'
+    //https://android-arsenal.com/details/1/6102
+
 
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'androidx.annotation:annotation:1.0.1'

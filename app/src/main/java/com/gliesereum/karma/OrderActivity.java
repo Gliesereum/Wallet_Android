@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,30 +61,35 @@ import static com.gliesereum.karma.util.Constants.CAR_ID;
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "TAG";
-    private Button orderButton;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
     private OrderBody orderBody = new OrderBody();
     private ProgressDialog progressDialog;
-    private HorizontalScrollView horizontalScrollView;
-    private LinearLayout packageScroll;
-    private TextView textView10;
-    private TextView textView11;
-    private TextView textView12;
-    private TextView packagesDescription;
-    private TextView textView14;
     private AllCarWashResponse carWash;
     private Long begin = 0L;
-    private boolean nowFlag = true;
     private Map<String, PackagesItem> packageMap = new HashMap<>();
     private Map<String, ServicePricesItem> servicePriceMap = new HashMap<>();
     private Map<String, ServicesItem> serviceMap = new HashMap<>();
-    private LinearLayout servicePriceBlock;
     private List<String> nameOfServiceList = new ArrayList<>();
     private Calendar date;
+    private CardView cardView2;
+    private TextView textView22;
+    private TextView textView23;
     private TextView durationLabel;
     private TextView priceLabel;
+    private TextView textView2;
+    private TextView textView11;
     private TextView discountTextView;
+    private TextView textView10;
+    private HorizontalScrollView horizontalScrollView;
+    private LinearLayout packageScroll;
+    private ConstraintLayout packageBlock;
+    private TextView textView18;
+    private LinearLayout packageItems;
+    private ConstraintLayout servicePriceBlock;
+    private TextView textView19;
+    private LinearLayout servicePriceItem;
+    private Button orderButton;
 
 
     @Override
@@ -149,7 +155,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void setServicePrices(AllCarWashResponse carWash) {
-        servicePriceBlock.removeAllViews();
+        servicePriceItem.removeAllViews();
+        packageItems.removeAllViews();
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
             if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes())) {
                 if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
@@ -169,14 +176,14 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         public void onClick(View v) {
                             if (((CheckableChipView) v).isChecked()) {
                                 durationLabel.setText(String.valueOf(Integer.parseInt(durationLabel.getText().toString()) + ((int) v.getTag(R.string.tagKeyDuration))));
-                                priceLabel.setText(String.valueOf(Double.parseDouble(priceLabel.getText().toString()) + ((int) v.getTag(R.string.tagKeyPrice))));
+                                priceLabel.setText(String.valueOf(Integer.parseInt(priceLabel.getText().toString()) + ((int) v.getTag(R.string.tagKeyPrice))));
                             } else {
                                 durationLabel.setText(String.valueOf(Integer.parseInt(durationLabel.getText().toString()) - ((int) v.getTag(R.string.tagKeyDuration))));
-                                priceLabel.setText(String.valueOf(Double.parseDouble(priceLabel.getText().toString()) - ((int) v.getTag(R.string.tagKeyPrice))));
+                                priceLabel.setText(String.valueOf(Integer.parseInt(priceLabel.getText().toString()) - ((int) v.getTag(R.string.tagKeyPrice))));
                             }
                         }
                     });
-                    servicePriceBlock.addView(checkableChipView, layoutParams);
+                    servicePriceItem.addView(checkableChipView, layoutParams);
                 } else {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);
@@ -185,12 +192,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
                     checkableChipView.setOutlineCornerRadius(10f);
                     checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
-                    checkableChipView.setOutlineColor(getResources().getColor(R.color.accent));
-                    checkableChipView.setCheckedColor(getResources().getColor(R.color.black));
-                    checkableChipView.setCheckedTextColor(getResources().getColor(R.color.accent));
+                    checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
+                    checkableChipView.setCheckedColor(getResources().getColor(R.color.material_drawer_selected));
                     checkableChipView.setChecked(true);
                     checkableChipView.setEnabled(false);
-                    servicePriceBlock.addView(checkableChipView, 0, layoutParams);
+                    packageItems.addView(checkableChipView, 0, layoutParams);
                 }
             } else {
                 Log.d(TAG, "false: " + carWash.getServicePrices().get(i).getName());
@@ -264,17 +270,15 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 }
                 serviceMap.clear();
                 nameOfServiceList.clear();
-                packagesDescription.setText("");
-                packagesDescription.setVisibility(View.GONE);
-                textView12.setVisibility(View.GONE);
                 priceLabel.setText("0");
                 durationLabel.setText("0");
+                textView19.setText("Выберите услуги");
+                packageBlock.setVisibility(View.GONE);
                 setServicePrices(carWash);
             }
         });
         packageBtn.performClick();
         packageScroll.addView(layout2);
-//        packageBtn.performClick();
         for (int i = 0; i < carWash.getPackages().size(); i++) {
             layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn3, packageScroll, false);
             packageBtn = layout2.findViewById(R.id.packageBtn);
@@ -299,9 +303,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
                     }
                     discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
-//                    packagesDescription.setText(string);
-//                    packagesDescription.setVisibility(View.VISIBLE);
-//                    textView12.setVisibility(View.VISIBLE);
                     setServicePrices(carWash);
                     String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
                     durationLabel.setText(duration);
@@ -310,32 +311,38 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
                     }
                     priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
+                    packageBlock.setVisibility(View.VISIBLE);
+                    textView19.setText("Дополнительные услуги");
                 }
             });
             packageScroll.addView(layout2);
         }
+
         setServicePrices(carWash);
-//        Log.d(TAG, "setPackages: do");
-//        packageScroll.getChildAt(0).performClick();
-//        ((View)packageScroll.getChildAt(0)).get
-//        Log.d(TAG, "setPackages: out");
 
     }
 
     private void initView() {
-        errorHandler = new ErrorHandler(this, this);
-        orderButton = findViewById(R.id.orderButton);
-        orderButton.setOnClickListener(this);
-        horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
-        packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
-        textView10 = (TextView) findViewById(R.id.textView10);
-        textView12 = (TextView) findViewById(R.id.textView12);
-        packagesDescription = (TextView) findViewById(R.id.packagesDescription);
-        textView14 = (TextView) findViewById(R.id.textView14);
-        servicePriceBlock = (LinearLayout) findViewById(R.id.servicePriceBlock);
+
+        cardView2 = findViewById(R.id.cardView2);
+        textView22 = findViewById(R.id.textView22);
+        textView23 = findViewById(R.id.textView23);
         durationLabel = findViewById(R.id.durationLabel);
         priceLabel = findViewById(R.id.priceLabel);
+        textView2 = findViewById(R.id.textView2);
+        textView11 = findViewById(R.id.textView11);
         discountTextView = findViewById(R.id.discountTextView);
+        textView10 = findViewById(R.id.textView10);
+        horizontalScrollView = findViewById(R.id.horizontalScrollView);
+        packageScroll = findViewById(R.id.packageScroll);
+        packageBlock = findViewById(R.id.packageBlock);
+        textView18 = findViewById(R.id.textView18);
+        packageItems = findViewById(R.id.packageItems);
+        servicePriceBlock = findViewById(R.id.servicePriceBlock);
+        textView19 = findViewById(R.id.textView19);
+        servicePriceItem = findViewById(R.id.servicePriceItem);
+        orderButton = findViewById(R.id.orderButton);
+        orderButton.setOnClickListener(this);
     }
 
     public static String getStringTime(Long millisecond) {
@@ -432,8 +439,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         orderBody.setDescription("Android");
         List<String> list = new ArrayList<>();
         for (int i = 0; i < servicePriceBlock.getChildCount(); i++) {
-            if (((CheckableChipView) servicePriceBlock.getChildAt(i)).isChecked() && ((CheckableChipView) servicePriceBlock.getChildAt(i)).isEnabled()) {
-                list.add((String) ((CheckableChipView) servicePriceBlock.getChildAt(i)).getTag());
+            if (((CheckableChipView) servicePriceItem.getChildAt(i)).isChecked()) {
+                list.add((String) ((CheckableChipView) servicePriceItem.getChildAt(i)).getTag());
             }
         }
         orderBody.setServicesIds(list);
