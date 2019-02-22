@@ -18,8 +18,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
-import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -52,11 +50,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CAR_BODY;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.ORDER_ACTIVITY;
 
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -107,51 +109,50 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         }
         initView();
         setPackages(carWash);
+        showTutorial();
     }
 
     private void showTutorial() {
-//        BubbleShowCaseBuilder nowOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-//                .title("Нажмите тут что б заказать мойку на ближайшее время") //Any title for the bubble view
-//                .backgroundColorResourceId(R.color.colorAccent)
-//                .textColorResourceId(R.color.black)
-//                .showOnce("OrderActivity")
-//                .targetView(nowOrderBtn); //View to point out
-//
-//        BubbleShowCaseBuilder timeOrderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-//                .title("Нажмите тут что б заказать мойку на удобное для Вас время")//Any title for the bubble view
-//                .backgroundColorResourceId(R.color.colorAccent)
-//                .textColorResourceId(R.color.black)
-//                .showOnce("OrderActivity")
-//                .targetView(timeOrderBtn); //View to point out
+        if (FastSave.getInstance().getBoolean(ORDER_ACTIVITY, true)) {
+            new GuideView.Builder(OrderActivity.this)
+                    .setTitle("Информация о заказе")
+                    .setContentText("Тут отображается время и цена выбранных вами услуг")
+                    .setTargetView(cardView2)
+                    .setDismissType(DismissType.anywhere)
+                    .setGuideListener(new GuideListener() {
+                        @Override
+                        public void onDismiss(View view) {
+                            new GuideView.Builder(OrderActivity.this)
+                                    .setTitle("Пакеты услуг")
+                                    .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
+                                    .setTargetView(horizontalScrollView)
+                                    .setDismissType(DismissType.anywhere)
+                                    .setGuideListener(new GuideListener() {
+                                        @Override
+                                        public void onDismiss(View view) {
+                                            new GuideView.Builder(OrderActivity.this)
+                                                    .setTitle("Заказать мойку")
+                                                    .setContentText("После того как Вы все выбрали, можете заказывать мойку. У Вас будет возмодность заказать мойку на ближайшее вермя или забронировать на удобное для Вас")
+                                                    .setTargetView(orderButton)
+                                                    .setDismissType(DismissType.anywhere)
+                                                    .setGuideListener(new GuideListener() {
+                                                        @Override
+                                                        public void onDismiss(View view) {
+                                                            FastSave.getInstance().saveBoolean(ORDER_ACTIVITY, false);
+                                                        }
+                                                    })
+                                                    .build()
+                                                    .show();
+                                        }
+                                    })
+                                    .build()
+                                    .show();
+                        }
+                    })
+                    .build()
+                    .show();
+        }
 
-        BubbleShowCaseBuilder packageTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Выберите пакет услуг. Будет скидка!)")//Any title for the bubble view
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("OrderActivity")
-                .targetView(packageScroll); //View to point out
-
-        BubbleShowCaseBuilder serviceTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Так же можете выбрать дополнительные услуги к пакетам")//Any title for the bubble view
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("OrderActivity")
-                .targetView(servicePriceBlock); //View to point out
-
-        BubbleShowCaseBuilder orderTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("После того как все выбрали, можете заказать мойку автомобиля")//Any title for the bubble view
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("OrderActivity")
-                .targetView(orderButton); //View to point out
-
-        new BubbleShowCaseSequence()
-//                .addShowCase(nowOrderTutorial)
-//                .addShowCase(timeOrderTutorial)
-                .addShowCase(packageTutorial)
-                .addShowCase(serviceTutorial)
-                .addShowCase(orderTutorial)
-                .show();
     }
 
     private void setServicePrices(AllCarWashResponse carWash) {

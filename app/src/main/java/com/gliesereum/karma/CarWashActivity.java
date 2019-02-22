@@ -16,8 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
-import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.adapter.CommentListAdapter;
@@ -61,8 +59,12 @@ import iammert.com.expandablelib.ExpandableLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CARWASHA_CTIVITY;
 
 public class CarWashActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -135,54 +137,62 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         initView();
         getCarWash();
         GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(imageView3);
+        showTutorial();
     }
 
     private void showTutorial() {
-        BubbleShowCaseBuilder workTimeTutorial = new BubbleShowCaseBuilder(this) //Activity instance
-                .title("Тут будет титул этого сообщения")
-                .description("Тут можно посмотреть график работы мойки")
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("CarWashActivity")
-                .targetView(workTimeImage);
+        if (FastSave.getInstance().getBoolean(CARWASHA_CTIVITY, true)) {
+            new GuideView.Builder(CarWashActivity.this)
+                    .setTitle("Расписание")
+                    .setContentText("Тут Вы можете посмотреть расписание мойки")
+                    .setTargetView(workTimeImage)
+                    .setDismissType(DismissType.anywhere)
+                    .setGuideListener(new GuideListener() {
+                        @Override
+                        public void onDismiss(View view) {
+                            new GuideView.Builder(CarWashActivity.this)
+                                    .setTitle("Пакеты услуг")
+                                    .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
+                                    .setTargetView(horizontalScrollView)
+                                    .setDismissType(DismissType.anywhere)
+                                    .setGuideListener(new GuideListener() {
+                                        @Override
+                                        public void onDismiss(View view) {
+                                            new GuideView.Builder(CarWashActivity.this)
+                                                    .setTitle("Фото мойки")
+                                                    .setContentText("Тут можно посмотреть фотографии мойки")
+                                                    .setTargetView(photoScrollView)
+                                                    .setDismissType(DismissType.anywhere)
+                                                    .setGuideListener(new GuideListener() {
+                                                        @Override
+                                                        public void onDismiss(View view) {
+                                                            new GuideView.Builder(CarWashActivity.this)
+                                                                    .setTitle("Заказать мойку")
+                                                                    .setContentText("Перейти к заказу мойки")
+                                                                    .setTargetView(orderButton)
+                                                                    .setDismissType(DismissType.anywhere)
+                                                                    .setGuideListener(new GuideListener() {
+                                                                        @Override
+                                                                        public void onDismiss(View view) {
+                                                                            FastSave.getInstance().saveBoolean(CARWASHA_CTIVITY, false);
+                                                                        }
+                                                                    })
+                                                                    .build()
+                                                                    .show();
+                                                        }
+                                                    })
+                                                    .build()
+                                                    .show();
+                                        }
+                                    })
+                                    .build()
+                                    .show();
+                        }
+                    })
+                    .build()
+                    .show();
+        }
 
-        BubbleShowCaseBuilder descriptionTutorial = new BubbleShowCaseBuilder(this)
-                .title("Вы всегда можете прочитать что то интересное про мойку")
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("CarWashActivity")
-                .targetView(descriptionDropdown);
-
-        BubbleShowCaseBuilder packageTutorial = new BubbleShowCaseBuilder(this)
-                .title("Пакеты услуг")
-                .description("Пакет дешевле... Можете ознакомиться тут")
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("CarWashActivity")
-                .targetView(packageScroll);
-
-        BubbleShowCaseBuilder commentTutorial = new BubbleShowCaseBuilder(this)
-                .description("Оставте комментарий как Вам все понравилось")
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("CarWashActivity")
-                .targetView(sendCommentBtn);
-
-        BubbleShowCaseBuilder orderTutorial = new BubbleShowCaseBuilder(this)
-                .title("Заказать мойку")
-                .description("Жмите сюда и выбирайте когда, как и чем мыть вашу Ласточку")
-                .backgroundColorResourceId(R.color.colorAccent)
-                .textColorResourceId(R.color.black)
-                .showOnce("CarWashActivity")
-                .targetView(orderButton);
-
-        new BubbleShowCaseSequence()
-                .addShowCase(workTimeTutorial)
-                .addShowCase(descriptionTutorial)
-                .addShowCase(packageTutorial)
-                .addShowCase(commentTutorial)
-                .addShowCase(orderTutorial)
-                .show();
     }
 
     private void getCarWash() {
@@ -402,6 +412,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
         commentList = findViewById(R.id.commentList);
+        horizontalScrollView = findViewById(R.id.horizontalScrollView);
     }
 
     private void openCommentDialog() {

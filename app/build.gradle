@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.karma"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 6
-        versionName "0.0.6 beta"
+        versionCode 7
+        versionName "0.0.7"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -105,22 +105,12 @@ dependencies {
     implementation 'com.github.ome450901:SimpleRatingBar:1.4.2'
     //https://android-arsenal.com/details/1/5836
 
-    implementation 'com.bitvale:switcher:1.0.0'
-    //https://android-arsenal.com/details/1/7460
-
     implementation 'com.github.okdroid:checkablechipview:1.0.3'
     //https://android-arsenal.com/details/1/7087
     implementation 'androidx.core:core-ktx:1.1.0-alpha04'
 
-    implementation 'com.hanks:htextview-base:0.1.6'
-    implementation 'com.hanks:htextview-scale:0.1.6'
-    implementation 'com.hanks:htextview-evaporate:0.1.6'
-    implementation 'com.hanks:htextview-fall:0.1.6'
-    //https://github.com/hanks-zyh/HTextView
-
-    implementation 'com.github.mostafaaryan:transitional-imageview:v0.2.2'
-    //https://android-arsenal.com/details/1/6102
-
+    implementation 'com.github.mreram:showcaseview:1.1'
+    //https://android-arsenal.com/details/1/6713
 
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'androidx.annotation:annotation:1.0.1'
