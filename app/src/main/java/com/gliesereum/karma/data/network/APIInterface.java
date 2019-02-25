@@ -49,6 +49,9 @@ public interface APIInterface {
     @POST("account/v1/auth/refresh")
     Call<TokenInfo> refreshAccessToken(@Query("accessToken") String accessToken, @Query("refreshToken") String refreshToken);
 
+    @GET("account/v1/auth/check")
+    Call<UserResponse> checkAccessToken(@Query("accessToken") String accessToken);
+
 
     //CAR
     @GET("karma/v1/car/brands")

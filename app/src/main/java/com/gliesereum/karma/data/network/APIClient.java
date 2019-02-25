@@ -16,7 +16,7 @@ public class APIClient {
 
     private static final String ROOT_URL = "http://207.154.239.122:8200/api/";
 
-    //        private static final String ROOT_URL = "https://karma.gliesereum.com/api/";
+    //            private static final String ROOT_URL = "https://karma.gliesereum.com/api/";
     public static Retrofit getClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);

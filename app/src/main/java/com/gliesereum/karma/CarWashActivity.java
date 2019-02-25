@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.daimajia.androidanimations.library.Techniques;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.adapter.CommentListAdapter;
@@ -137,7 +138,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         initView();
         getCarWash();
         GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(imageView3);
-        showTutorial();
     }
 
     private void showTutorial() {
@@ -237,7 +237,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                     closeProgressDialog();
-//                    showTutorial();
+                    showTutorial();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -307,9 +307,10 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if (mediaURLList.size() != 0) {
-            photoScrollView.setVisibility(View.VISIBLE);
             photosViewSlider.setGridColumns(mediaURLList.size());
             photosViewSlider.initializePhotosUrls(mediaURLList);
+            photosViewSlider.setTechniqueAnimation(Techniques.BounceIn);
+            photoScrollView.setVisibility(View.VISIBLE);
         } else {
             photoScrollView.setVisibility(View.GONE);
         }

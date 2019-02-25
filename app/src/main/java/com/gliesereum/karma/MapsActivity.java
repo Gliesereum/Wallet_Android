@@ -64,8 +64,6 @@ import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
-import static com.gliesereum.karma.util.Constants.LATITUDE_CUR;
-import static com.gliesereum.karma.util.Constants.LONGITUDE_CUR;
 import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
@@ -76,7 +74,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean mLocationPermissionGranted;
     private String TAG = "TAG";
     private Location mLastKnownLocation;
-    private LatLng mDefaultLocation;
+    private LatLng mDefaultLocation = new LatLng(50, 30);
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private FusedLocationProviderClient mFusedLocationClient;
     Bitmap bitmapSource;
@@ -310,15 +308,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             mLastKnownLocation = (Location) task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), 15));
-                            FastSave.getInstance().saveFloat(LATITUDE_CUR, (float) mLastKnownLocation.getLatitude());
-                            FastSave.getInstance().saveFloat(LONGITUDE_CUR, (float) mLastKnownLocation.getLongitude());
+                            if (mLastKnownLocation != null) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 12));
+                            }
                         } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 15));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 12));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }

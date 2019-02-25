@@ -10,6 +10,7 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
+import com.gliesereum.karma.data.network.json.user.UserResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 
@@ -42,14 +43,46 @@ public class SplashActivity extends AppCompatActivity {
         FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
 
-        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-            checkToken();
-        } else {
-            startActivity(new Intent(SplashActivity.this, MapsActivity.class));
-            finish();
-        }
+        checkAccessToken();
+    }
 
+    public void checkAccessToken() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<UserResponse> call = apiInterface.checkAccessToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""));
+        call.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.code() == 200) {
+                    if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+                        checkToken();
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                        finish();
+                    }
+                } else {
+                    FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+                    FastSave.getInstance().saveString(ACCESS_TOKEN, "");
+                    FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
+                    FastSave.getInstance().saveString(REFRESH_TOKEN, "");
+                    FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
+                    FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
+                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                    finish();
+                }
+            }
 
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+                FastSave.getInstance().saveString(ACCESS_TOKEN, "");
+                FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
+                FastSave.getInstance().saveString(REFRESH_TOKEN, "");
+                FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
+                FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
+                startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                finish();
+            }
+        });
     }
 
     public void checkToken() {
