@@ -224,9 +224,9 @@ public class PhotosViewSlider extends LinearLayout implements View.OnClickListen
         txtDescriptionGallery.setText(description);
         txtCurrentPosition.setText(String.valueOf(currentPosition + 1));
         txtPhotosTotal.setText(String.valueOf(photos.size()));
-        Picasso.with(getContext()).load(url).fit()
-                .placeholder(R.drawable.photodefault)
-                .into(imgPhoto);
+//        Picasso.with(getContext()).load(url).fit()
+//                .placeholder(R.drawable.photodefault)
+//                .into(imgPhoto);
 
 //        btnShare.setOnClickListener(this);
         viewDialog.setOnTouchListener(this);
@@ -246,9 +246,9 @@ public class PhotosViewSlider extends LinearLayout implements View.OnClickListen
             @Override
             public void run() {
                 try {
-                    image[0] = Picasso.with(getContext())
-                            .load(photos.get(currentPosition).getImageUrl())
-                            .get();
+//                    image[0] = Picasso.with(getContext())
+//                            .load(photos.get(currentPosition).getImageUrl())
+//                            .get();
 
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     image[0].compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -352,10 +352,12 @@ public class PhotosViewSlider extends LinearLayout implements View.OnClickListen
         @Override
         public void onBindViewHolder(final PhotosViewAdapter.PhotosAdapterViewHolder holder, int position) {
             holder.itemView.setTag(photoList.get(position));
-            Picasso.with(context).load(photoList.get(position).getImageUrl())
-                    .fit()
-                    .placeholder(R.drawable.photodefault)
-                    .into(holder.photo);
+            Picasso.get().load(photoList.get(position).getImageUrl()).into(holder.photo);
+
+//            Picasso.with(context).load(photoList.get(position).getImageUrl())
+//                    .fit()
+//                    .placeholder(R.drawable.photodefault)
+//                    .into(holder.photo);
         }
 
         @Override

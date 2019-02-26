@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.karma"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 7
-        versionName "0.0.7"
+        versionCode 8
+        versionName "0.0.8"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -111,6 +111,15 @@ dependencies {
 
     implementation 'com.github.mreram:showcaseview:1.1'
     //https://android-arsenal.com/details/1/6713
+
+    implementation 'com.github.onurkagan:KSnack:1.0.1'
+    //https://android-arsenal.com/details/1/7533
+
+    implementation 'com.github.smhdk:KM-Popup-Image-Slider:v1.2.0'
+    //https://android-arsenal.com/details/1/7336
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+
 
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'androidx.annotation:annotation:1.0.1'

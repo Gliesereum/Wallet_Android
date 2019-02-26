@@ -121,27 +121,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new Util(this, toolbar, 1).addNavigation();
 
         getAllService();
-
     }
-
-//    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
-//
-//        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);
-//        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.profile_image);
-//        markerImageView.setImageResource(resId);
-//        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-//        customMarkerView.buildDrawingCache();
-//        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
-//                Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(returnedBitmap);
-//        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-//        Drawable drawable = customMarkerView.getBackground();
-//        if (drawable != null)
-//            drawable.draw(canvas);
-//        customMarkerView.draw(canvas);
-//        return returnedBitmap;
-//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -200,7 +180,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             return false;
                         }
                     });
-
 
 
                     for (AllCarWashResponse coordinate : carWashList) {

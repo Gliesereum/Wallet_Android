@@ -1,5 +1,6 @@
 package com.gliesereum.karma;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.daimajia.androidanimations.library.Techniques;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.adapter.CommentListAdapter;
@@ -29,15 +29,16 @@ import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
-import com.gliesereum.karma.util.photo.PhotosViewSlider;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.kodmap.app.library.PopopDialogBuilder;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
+import com.squareup.picasso.Picasso;
 import com.willy.ratingbar.ScaleRatingBar;
 
 import org.json.JSONObject;
@@ -112,7 +113,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout packageScroll;
     private Map<String, PackagesItem> packageMap = new HashMap<>();
     private Map<String, ServicePricesItem> servicePriceMap = new HashMap<>();
-    private PhotosViewSlider photosViewSlider;
+    private LinearLayout photosViewSlider;
     private TextInputLayout commentTextInputLayout;
     private TextInputEditText commentTextView;
     private CardView cardView;
@@ -126,6 +127,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private Context context;
     private LinearLayout photoLayout;
     private boolean isImageFitToScreen;
+    private ArrayList<String> mediaURLList = new ArrayList<>();
 
 
     @Override
@@ -301,18 +303,49 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setPhotoSlider(AllCarWashResponse carWash) {
         List<MediaItem> mediumList = carWash.getMedia();
-        ArrayList<String> mediaURLList = new ArrayList<>();
         for (int i = 0; i < mediumList.size(); i++) {
             mediaURLList.add(mediumList.get(i).getUrl());
-        }
+            View view = LayoutInflater.from(this).inflate(R.layout.image_view_for_slider, photoScrollView, false);
+            ImageView imageView = view.findViewById(R.id.imageView6);
+            Picasso.get().load(mediumList.get(i).getUrl())
+                    .fit()
+                    .into(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Dialog dialog = new PopopDialogBuilder(CarWashActivity.this)
+                            .setList(mediaURLList)
+                            // Set dialog header color
+                            .setHeaderBackgroundColor(R.color.accent)
+                            // Set dialog background color
+//                            .setDialogBackgroundColor(R.color.color_dialog_bg)
+                            // Set close icon drawable
+                            .setCloseDrawable(R.drawable.ic_close_white_24dp)
+                            // Set loading view for pager image and preview image
+//                .setLoadingView(R.layout.loading_view)
+                            // Set dialog style
+//                .setDialogStyle(R.style.DialogStyle)
+                            // Choose selector type, indicator or thumbnail
+                            .showThumbSlider(true)
+                            // Set image scale type for slider image
+//                            .setSliderImageScaleType(ImageView.ScaleType.FIT_XY)
+                            // Set indicator drawable
+//                .setSelectorIndicator(R.drawable.sample_indicator_selector)
+                            // Enable or disable zoomable
+                            .setIsZoomable(true)
+                            // Build Km Slider Popup Dialog
+                            .build();
+                    dialog.show();
+                }
+            });
+            photosViewSlider.addView(view);
 
-        if (mediaURLList.size() != 0) {
-            photosViewSlider.setGridColumns(mediaURLList.size());
-            photosViewSlider.initializePhotosUrls(mediaURLList);
-            photosViewSlider.setTechniqueAnimation(Techniques.BounceIn);
-            photoScrollView.setVisibility(View.VISIBLE);
-        } else {
-            photoScrollView.setVisibility(View.GONE);
+            if (mediaURLList.size() != 0) {
+                photoScrollView.setVisibility(View.VISIBLE);
+            } else {
+                photoScrollView.setVisibility(View.GONE);
+            }
+
         }
     }
 
