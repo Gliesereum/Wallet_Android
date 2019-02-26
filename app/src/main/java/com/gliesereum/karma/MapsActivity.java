@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.adapter.CustomInfoWindowAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
@@ -137,7 +138,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
                         startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
                     } else {
-                        startActivity(new Intent(MapsActivity.this, CarListActivity2.class));
+                        startActivity(new Intent(MapsActivity.this, CarListActivity.class));
                     }
                 } else {
                     startActivity(new Intent(MapsActivity.this, LoginActivity.class));
@@ -436,7 +437,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());

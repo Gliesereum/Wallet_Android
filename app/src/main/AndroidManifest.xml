@@ -20,8 +20,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SingleRecordActivity"></activity>
-        <activity android:name=".CarListActivity2" />
+        <activity
+            android:name=".SingleRecordActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".CarListActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -33,11 +35,9 @@
 
         <activity android:name=".RecordListActivity" />
         <activity android:name=".MapsActivity" />
-        <activity android:name=".MarkerDemoActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".AddCarActivity" />
-        <activity android:name=".CarListActivity" />
         <activity android:name=".CarWashActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".OrderActivity" />

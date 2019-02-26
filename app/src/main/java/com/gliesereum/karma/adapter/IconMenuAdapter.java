@@ -1,4 +1,4 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gliesereum.karma.IconPowerMenuItem;
+import com.gliesereum.karma.R;
 import com.skydoves.powermenu.MenuBaseAdapter;
 
 public class IconMenuAdapter extends MenuBaseAdapter<IconPowerMenuItem> {

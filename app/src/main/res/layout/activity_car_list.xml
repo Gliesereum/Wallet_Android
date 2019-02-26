@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_drawer_background"
     tools:context=".CarListActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -15,48 +14,83 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <com.gliesereum.karma.WrapContentHeightViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/addCarBtn"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="32dp"
+        android:paddingTop="20dp"
+        android:paddingRight="32dp"
+        android:paddingBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
+    <com.github.vivchar.viewpagerindicator.ViewPagerIndicator
+        android:id="@+id/view_pager_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:delimiterSize="8dp"
+        app:itemIcon="@drawable/ic_directions_car_black_24dp"
+        app:itemScale="1.5"
+        app:itemSelectedTint="@color/colorAccent"
+        app:itemSize="16dp"
+        app:itemTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewPager" />
+
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/addCarBtn"
+        android:id="@+id/orderButton"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:text="Добавить авто"
+        android:layout_height="75dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Выбрать эту машину"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.632"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addFirstCarBtn"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Добавить первое авто"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp" />
 
     <TextView
         android:id="@+id/splashTextView"
         android:layout_width="0dp"
-        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:text="У вас пока что нет добавленых автомобилей. \n\nПожайлуста, добавте свой первый автомобиль"
         android:textAlignment="center"
-        android:text="У вас пока что нет добавленых автомобилей. \n\nПодайлуста, добавте свой первый автомобиль."
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/addCarBtn"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                             if (response.code() == 200) {
                                 FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
                                 FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
-                                startActivity(new Intent(RegisterActivity.this, CarListActivity2.class));
+                                startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
                                 finish();
                             } else {
                                 try {

@@ -1,4 +1,4 @@
-package com.gliesereum.karma.data.network.adapter;
+package com.gliesereum.karma.adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;

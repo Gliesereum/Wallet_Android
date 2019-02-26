@@ -266,7 +266,6 @@ public class AddCarActivity extends AppCompatActivity {
                     }
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -430,7 +429,7 @@ public class AddCarActivity extends AppCompatActivity {
                     addCarFilter(response.body().getId(), interiorHashMap.get(interiorSpinner.getSelectedItem().toString()));
                     addCarFilter(response.body().getId(), carBodyHashMap.get(carBodySpinner.getSelectedItem().toString()));
                     addCarFilter(response.body().getId(), colorHashMap.get(colourSpinner.getSelectedItem().toString()));
-                    startActivity(new Intent(AddCarActivity.this, CarListActivity2.class));
+                    startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
                     finish();
                     Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
                 } else {
@@ -461,7 +460,6 @@ public class AddCarActivity extends AppCompatActivity {
 
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -491,7 +489,6 @@ public class AddCarActivity extends AppCompatActivity {
 
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -783,12 +780,4 @@ public class AddCarActivity extends AppCompatActivity {
             addCarBtn.setEnabled(false);
         }
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
-//        finish();
-//        Toast.makeText(this, "11111111", Toast.LENGTH_SHORT).show();
-//    }
 }

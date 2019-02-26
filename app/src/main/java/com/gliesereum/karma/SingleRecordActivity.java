@@ -160,7 +160,6 @@ public class SingleRecordActivity extends AppCompatActivity implements LocationL
                     car.setText(response.body().getBrand().getName() + "  " + response.body().getModel().getName());
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());

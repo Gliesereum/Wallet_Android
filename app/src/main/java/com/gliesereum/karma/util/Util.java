@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.gliesereum.karma.CarListActivity2;
+import com.gliesereum.karma.CarListActivity;
 import com.gliesereum.karma.LoginActivity;
 import com.gliesereum.karma.MapsActivity;
 import com.gliesereum.karma.ProfileActivity;
@@ -103,7 +103,7 @@ public class Util {
                         result.closeDrawer();
                         break;
                     case "car_list":
-                        activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity2.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        activity.startActivity(new Intent(activity.getApplicationContext(), CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                         result.closeDrawer();
                         break;
                     case "record_list":

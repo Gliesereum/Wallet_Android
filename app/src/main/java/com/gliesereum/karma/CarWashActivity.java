@@ -16,9 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.adapter.CommentListAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
-import com.gliesereum.karma.data.network.adapter.CommentListAdapter;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.data.network.json.carwash.MediaItem;
@@ -96,7 +96,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_car_wash_test);
+        setContentView(R.layout.activity_car_wash);
         initView();
         initData();
         getCarWash();
@@ -206,6 +206,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void setCommentList() {
+        commentsItemList.clear();
         Call<CommentsItem> call = apiInterface.getMyComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId);
         call.enqueue(new Callback<CommentsItem>() {
             @Override

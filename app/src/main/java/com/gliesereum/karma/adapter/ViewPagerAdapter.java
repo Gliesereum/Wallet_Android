@@ -1,4 +1,4 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.CarListActivity;
+import com.gliesereum.karma.IconPowerMenuItem;
+import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
@@ -103,10 +106,9 @@ public class ViewPagerAdapter extends PagerAdapter {
             public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
                 if (response.code() == 200) {
                     Toast.makeText(context, "Машина удалена успешно", Toast.LENGTH_SHORT).show();
-                    context.startActivity(new Intent(context, CarListActivity2.class));
+                    context.startActivity(new Intent(context, CarListActivity.class));
                 } else {
                     if (response.code() == 204) {
-//                        Toast.makeText(CarListActivity.this, "", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());

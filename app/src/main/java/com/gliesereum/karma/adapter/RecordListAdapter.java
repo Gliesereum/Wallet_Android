@@ -1,4 +1,4 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.GlideApp;
+import com.gliesereum.karma.R;
+import com.gliesereum.karma.SingleRecordActivity;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.Util;
 

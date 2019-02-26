@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.adapter.RecordListAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
