@@ -24,6 +24,7 @@ import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
+import com.gliesereum.karma.ui.LoginActivity;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;

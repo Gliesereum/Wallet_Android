@@ -97,8 +97,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_wash);
-        initView();
         initData();
+        initView();
         getCarWash();
     }
 
@@ -118,6 +118,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         orderButton.setOnClickListener(this);
         workTimeImage.setOnClickListener(this);
         sendCommentBtn.setOnClickListener(this);
+        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
     }
 
     private void initData() {
@@ -133,7 +134,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         mediaURLList = new ArrayList<>();
         commentsItemList = new ArrayList<>();
         mediumList = new ArrayList<>();
-        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
     }
 
     @Override
