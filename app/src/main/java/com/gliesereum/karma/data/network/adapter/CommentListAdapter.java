@@ -156,7 +156,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                                         if (response.code() == 200) {
                                                             closeProgressDialog();
                                                             commentDialog.dismiss();
-                                                            activity.setCommentList(activity.getCarWashObjact());
+                                                            activity.setCommentList();
                                                         } else {
                                                             try {
                                                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -205,7 +205,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                 public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
                                     if (response.code() == 200) {
                                         closeProgressDialog();
-                                        activity.setCommentList(activity.getCarWashObjact());
+                                        activity.setCommentList();
                                     } else {
                                         try {
                                             JSONObject jObjError = new JSONObject(response.errorBody().string());

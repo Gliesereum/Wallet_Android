@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +23,6 @@ import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.data.network.json.carwash.MediaItem;
 import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
-import com.gliesereum.karma.data.network.json.carwash.RecordsItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
 import com.gliesereum.karma.util.ErrorHandler;
@@ -33,7 +31,6 @@ import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.kodmap.app.library.PopopDialogBuilder;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
@@ -45,19 +42,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import de.ehsun.coloredtimebar.TimelinePickerView;
-import de.ehsun.coloredtimebar.TimelineView;
 import hakobastvatsatryan.DropdownTextView;
-import iammert.com.expandablelib.ExpandableLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,139 +58,103 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CARWASHA_CTIVITY;
+import static com.gliesereum.karma.util.Constants.CARWASH_ID;
 
 public class CarWashActivity extends AppCompatActivity implements View.OnClickListener {
 
-    String carWashId;
-    AllCarWashResponse carWash;
-    private MaterialButton addCarBtn;
+    private String carWashId;
+    private AllCarWashResponse carWash;
     private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
     private ProgressDialog progressDialog;
-    private TimelinePickerView timelinePicker;
-    private String TAG = "TAG";
-    private TimelineView timelineBox01;
-    private TimelineView timelineBox02;
-    private TimelineView timelineBox03;
-    private TextView name;
-    private TextView adres;
-    private TextView description;
-    private TextView workTimes;
-    private LinearLayout boxBlock;
-    private DropdownTextView descriptionDropdown;
-    private MaterialButton materialButton;
-    private MaterialButton orderButton;
-    //    private CollapsibleCalendar collapsibleCalendar;
-    private Set<String> idSet = new HashSet<>();
-    private Map<String, String> customServiceMap = new HashMap<>();
-    //    private Toolbar toolbar;
-    private TextView address;
-    private LinearLayout packagesBlock;
-    private ImageView workTimeImage;
-    private ImageView imageView3;
-    private ScrollView scrollView2;
-    private HorizontalScrollView horizontalScrollView;
-    private LinearLayout linearLayout;
-    private LinearLayout linearLayout2;
-    private LinearLayout servicePricesBlock;
-    //    private ExpandableLayout expandablePackage;
-    private ExpandableLayout expandableWorkTime;
-    private ExpandableLayout expandableBoxBlock;
-    private Map<String, WorkTimesItem> workTimeMap = new HashMap<>();
     private PowerMenu packagePowerMenu;
-    private PowerMenu powerMenu1;
-    private PowerMenu editCommentMenu;
-    //    private LinearLayout boxLinearLayout;
-    private LinearLayout packageScroll;
-    private Map<String, PackagesItem> packageMap = new HashMap<>();
-    private Map<String, ServicePricesItem> servicePriceMap = new HashMap<>();
-    private LinearLayout photosViewSlider;
-    private TextInputLayout commentTextInputLayout;
+    private PowerMenu workTimePowerMenu;
+    private Map<String, String> customServiceMap;
+    private Map<String, WorkTimesItem> workTimeMap;
+    private Map<String, PackagesItem> packageMap;
+    private Map<String, ServicePricesItem> servicePriceMap;
+    private List<MediaItem> mediumList;
+    private List<CommentsItem> commentsItemList;
+    private ArrayList<String> mediaURLList;
     private TextInputEditText commentTextView;
-    private CardView cardView;
-    private TextView textView15;
-    private HorizontalScrollView photoScrollView;
-    private Button sendCommentBtn;
-    private RecyclerView commentList;
     private CommentListAdapter commentListAdapter;
     private ScaleRatingBar scaleRatingBar;
-    private String commentString = "";
+    private ErrorHandler errorHandler;
     private Context context;
-    private LinearLayout photoLayout;
-    private boolean isImageFitToScreen;
-    private ArrayList<String> mediaURLList = new ArrayList<>();
-
+    private TextView name;
+    private TextView address;
+    private ImageView logoImageView;
+    private ImageView workTimeImage;
+    private HorizontalScrollView horizontalScrollView;
+    private LinearLayout packageScroll;
+    private DropdownTextView descriptionDropdown;
+    private HorizontalScrollView photoScrollView;
+    private LinearLayout photosViewSlider;
+    private Button sendCommentBtn;
+    private RecyclerView commentList;
+    private MaterialButton orderButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_wash_test);
-        FastSave.init(getApplicationContext());
-        context = this;
-        carWashId = getIntent().getStringExtra("carWashId");
         initView();
+        initData();
         getCarWash();
-        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(imageView3);
     }
 
-    private void showTutorial() {
-        if (FastSave.getInstance().getBoolean(CARWASHA_CTIVITY, true)) {
-            new GuideView.Builder(CarWashActivity.this)
-                    .setTitle("Расписание")
-                    .setContentText("Тут Вы можете посмотреть расписание мойки")
-                    .setTargetView(workTimeImage)
-                    .setDismissType(DismissType.anywhere)
-                    .setGuideListener(new GuideListener() {
-                        @Override
-                        public void onDismiss(View view) {
-                            new GuideView.Builder(CarWashActivity.this)
-                                    .setTitle("Пакеты услуг")
-                                    .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
-                                    .setTargetView(horizontalScrollView)
-                                    .setDismissType(DismissType.anywhere)
-                                    .setGuideListener(new GuideListener() {
-                                        @Override
-                                        public void onDismiss(View view) {
-                                            new GuideView.Builder(CarWashActivity.this)
-                                                    .setTitle("Фото мойки")
-                                                    .setContentText("Тут можно посмотреть фотографии мойки")
-                                                    .setTargetView(photoScrollView)
-                                                    .setDismissType(DismissType.anywhere)
-                                                    .setGuideListener(new GuideListener() {
-                                                        @Override
-                                                        public void onDismiss(View view) {
-                                                            new GuideView.Builder(CarWashActivity.this)
-                                                                    .setTitle("Заказать мойку")
-                                                                    .setContentText("Перейти к заказу мойки")
-                                                                    .setTargetView(orderButton)
-                                                                    .setDismissType(DismissType.anywhere)
-                                                                    .setGuideListener(new GuideListener() {
-                                                                        @Override
-                                                                        public void onDismiss(View view) {
-                                                                            FastSave.getInstance().saveBoolean(CARWASHA_CTIVITY, false);
-                                                                        }
-                                                                    })
-                                                                    .build()
-                                                                    .show();
-                                                        }
-                                                    })
-                                                    .build()
-                                                    .show();
-                                        }
-                                    })
-                                    .build()
-                                    .show();
-                        }
-                    })
-                    .build()
-                    .show();
-        }
+    private void initView() {
+        name = findViewById(R.id.name);
+        address = findViewById(R.id.address);
+        logoImageView = findViewById(R.id.logoImageView);
+        workTimeImage = findViewById(R.id.workTimeImage);
+        horizontalScrollView = findViewById(R.id.horizontalScrollView);
+        packageScroll = findViewById(R.id.packageScroll);
+        descriptionDropdown = findViewById(R.id.descriptionDropdown);
+        photoScrollView = findViewById(R.id.photoScrollView);
+        photosViewSlider = findViewById(R.id.photosViewSlider);
+        sendCommentBtn = findViewById(R.id.sendCommentBtn);
+        commentList = findViewById(R.id.commentList);
+        orderButton = findViewById(R.id.orderButton);
+        orderButton.setOnClickListener(this);
+        workTimeImage.setOnClickListener(this);
+        sendCommentBtn.setOnClickListener(this);
+    }
 
+    private void initData() {
+        FastSave.init(getApplicationContext());
+        context = this;
+        carWashId = FastSave.getInstance().getString(CARWASH_ID, "");
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        errorHandler = new ErrorHandler(this, this);
+        customServiceMap = new HashMap<>();
+        workTimeMap = new HashMap<>();
+        packageMap = new HashMap<>();
+        servicePriceMap = new HashMap<>();
+        mediaURLList = new ArrayList<>();
+        commentsItemList = new ArrayList<>();
+        mediumList = new ArrayList<>();
+        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.orderButton:
+                carWash.setId(carWashId);
+                FastSave.getInstance().saveObject("carWash", carWash);
+                startActivity(new Intent(CarWashActivity.this, OrderActivity.class));
+                break;
+            case R.id.workTimeImage:
+                workTimePowerMenu.showAsDropDown(workTimeImage);
+                break;
+            case R.id.sendCommentBtn:
+                openCommentDialog();
+                break;
+        }
     }
 
     private void getCarWash() {
         showProgressDialog();
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<AllCarWashResponse> call = apiInterface.getCarWashFull(carWashId);
         call.enqueue(new Callback<AllCarWashResponse>() {
             @Override
@@ -212,30 +167,21 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     for (int i = 0; i < carWash.getServicePrices().size(); i++) {
                         servicePriceMap.put(carWash.getServicePrices().get(i).getId(), carWash.getServicePrices().get(i));
                     }
-
                     workTimeMap.clear();
                     for (int i = 0; i < response.body().getWorkTimes().size(); i++) {
                         workTimeMap.put(response.body().getWorkTimes().get(i).getDayOfWeek(), response.body().getWorkTimes().get(i));
                     }
                     name.setText(carWash.getName());
-                    adres.setText(carWash.getAddress());
+                    address.setText(carWash.getAddress());
                     descriptionDropdown.setContentText(carWash.getDescription());
-                    setWorkTime(carWash);
-                    setPackages(carWash);
-                    setPhotoSlider(carWash);
-                    setCommentList(carWash);
+                    setWorkTime();
+                    setPackages();
+                    setPhotoSlider();
+                    setCommentList();
 
                     for (int i = 0; i < carWash.getServicePrices().size(); i++) {
                         if (carWash.getServicePrices().get(i).getName() != null) {
                             customServiceMap.put(carWash.getServicePrices().get(i).getName(), carWash.getServicePrices().get(i).getServiceId());
-                        } else {
-//                            customServiceMap.put(carWash.getServicePrices().get(i).getOriginalName(), carWash.getServicePrices().get(i).getServiceId());
-                        }
-
-                        if (idSet.contains(carWash.getServicePrices().get(i).getCorporationServiceId())) {
-                            //set checked
-                        } else {
-
                         }
                     }
                     closeProgressDialog();
@@ -259,9 +205,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    public void setCommentList(AllCarWashResponse carWash) {
-        List<CommentsItem> commentsItemList = new ArrayList<>();
-        apiInterface = APIClient.getClient().create(APIInterface.class);
+    public void setCommentList() {
         Call<CommentsItem> call = apiInterface.getMyComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId);
         call.enqueue(new Callback<CommentsItem>() {
             @Override
@@ -301,55 +245,36 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    private void setPhotoSlider(AllCarWashResponse carWash) {
-        List<MediaItem> mediumList = carWash.getMedia();
+    private void setPhotoSlider() {
+        mediumList = carWash.getMedia();
         for (int i = 0; i < mediumList.size(); i++) {
             mediaURLList.add(mediumList.get(i).getUrl());
             View view = LayoutInflater.from(this).inflate(R.layout.image_view_for_slider, photoScrollView, false);
             ImageView imageView = view.findViewById(R.id.imageView6);
-            Picasso.get().load(mediumList.get(i).getUrl())
-                    .fit()
-                    .into(imageView);
+            Picasso.get().load(mediumList.get(i).getUrl()).fit().into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Dialog dialog = new PopopDialogBuilder(CarWashActivity.this)
                             .setList(mediaURLList)
-                            // Set dialog header color
                             .setHeaderBackgroundColor(R.color.accent)
-                            // Set dialog background color
-//                            .setDialogBackgroundColor(R.color.color_dialog_bg)
-                            // Set close icon drawable
                             .setCloseDrawable(R.drawable.ic_close_white_24dp)
-                            // Set loading view for pager image and preview image
-//                .setLoadingView(R.layout.loading_view)
-                            // Set dialog style
-//                .setDialogStyle(R.style.DialogStyle)
-                            // Choose selector type, indicator or thumbnail
                             .showThumbSlider(true)
-                            // Set image scale type for slider image
-//                            .setSliderImageScaleType(ImageView.ScaleType.FIT_XY)
-                            // Set indicator drawable
-//                .setSelectorIndicator(R.drawable.sample_indicator_selector)
-                            // Enable or disable zoomable
                             .setIsZoomable(true)
-                            // Build Km Slider Popup Dialog
                             .build();
                     dialog.show();
                 }
             });
             photosViewSlider.addView(view);
-
-            if (mediaURLList.size() != 0) {
-                photoScrollView.setVisibility(View.VISIBLE);
-            } else {
-                photoScrollView.setVisibility(View.GONE);
-            }
-
+        }
+        if (mediaURLList.size() != 0) {
+            photoScrollView.setVisibility(View.VISIBLE);
+        } else {
+            photoScrollView.setVisibility(View.GONE);
         }
     }
 
-    private void setWorkTime(AllCarWashResponse carWash) {
+    private void setWorkTime() {
         String monday, tuesday, wednesday, thursday, friday, saturday, sunday;
         if (workTimeMap.get("MONDAY").isIsWork()) {
             monday = "Пн: " + Util.getStringTime(workTimeMap.get("MONDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("MONDAY").getTo());
@@ -387,7 +312,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             sunday = "Вс: Не работает";
         }
 
-        powerMenu1 = new PowerMenu.Builder(CarWashActivity.this)
+        workTimePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
                 .addItem(new PowerMenuItem(monday, false))
                 .addItem(new PowerMenuItem(tuesday, false))
                 .addItem(new PowerMenuItem(wednesday, false))
@@ -395,58 +320,13 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                 .addItem(new PowerMenuItem(friday, false))
                 .addItem(new PowerMenuItem(saturday, false))
                 .addItem(new PowerMenuItem(sunday, false))
-                .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT) // Animation start point (TOP | LEFT)
+                .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
                 .setMenuRadius(10f)
                 .setMenuShadow(10f)
-                .setWidth(600) // set popup width size
-//                .setTextColor(context.getResources().getColor(R.color.md_grey_800))
+                .setWidth(600)
                 .setSelectedTextColor(Color.WHITE)
                 .setMenuColor(Color.WHITE)
                 .build();
-    }
-
-    private void initView() {
-        photosViewSlider = findViewById(R.id.photosViewSlider);
-        name = (TextView) findViewById(R.id.name);
-        adres = (TextView) findViewById(R.id.address);
-        description = (TextView) findViewById(R.id.description);
-        boxBlock = (LinearLayout) findViewById(R.id.boxBlock);
-        orderButton = (MaterialButton) findViewById(R.id.orderButton);
-        orderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                carWash.setId(carWashId);
-                FastSave.getInstance().saveObject("carWash", carWash);
-                startActivity(new Intent(CarWashActivity.this, OrderActivity.class));
-            }
-        });
-//        boxLinearLayout = (LinearLayout) findViewById(R.id.boxLinearLayout);
-        address = (TextView) findViewById(R.id.address);
-        packagesBlock = (LinearLayout) findViewById(R.id.packagesBlock);
-        workTimeImage = (ImageView) findViewById(R.id.imageView2);
-        imageView3 = (ImageView) findViewById(R.id.imageView3);
-        workTimeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                powerMenu1.showAsDropDown(workTimeImage); // view is an anchor
-            }
-        });
-        packageScroll = (LinearLayout) findViewById(R.id.packageScroll);
-        descriptionDropdown = findViewById(R.id.descriptionDropdown);
-        commentTextInputLayout = findViewById(R.id.commentTextInputLayout);
-        commentTextView = findViewById(R.id.commentTextView);
-        cardView = findViewById(R.id.cardView);
-        textView15 = findViewById(R.id.textView15);
-        photoScrollView = findViewById(R.id.photoScrollView);
-        sendCommentBtn = findViewById(R.id.sendCommentBtn);
-        sendCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCommentDialog();
-            }
-        });
-        commentList = findViewById(R.id.commentList);
-        horizontalScrollView = findViewById(R.id.horizontalScrollView);
     }
 
     private void openCommentDialog() {
@@ -469,7 +349,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                         @Override
                         public void onClick(View v) {
                             showProgressDialog();
-                            apiInterface = APIClient.getClient().create(APIInterface.class);
                             Call<CommentsItem> call = apiInterface.sendComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId, new CommentsItem((int) scaleRatingBar.getRating(), commentTextView.getText().toString()));
                             call.enqueue(new Callback<CommentsItem>() {
                                 @Override
@@ -480,7 +359,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                             @Override
                                             public void onResponse(Call<AllCarWashResponse> call1, Response<AllCarWashResponse> response) {
                                                 if (response.code() == 200) {
-                                                    setCommentList(response.body());
+                                                    carWash = response.body();
+                                                    setCommentList();
                                                     closeProgressDialog();
                                                 } else {
                                                     try {
@@ -540,79 +420,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         commentDialog.show();
     }
 
-    private String getCurrentDayOfWeek(int intDay) {
-        String dayOfWeek = "";
-        switch (intDay) {
-            case 1:
-                dayOfWeek = "SUNDAY";
-                break;
-            case 2:
-                dayOfWeek = "MONDAY";
-                break;
-            case 3:
-                dayOfWeek = "TUESDAY";
-                break;
-            case 4:
-                dayOfWeek = "WEDNESDAY";
-                break;
-            case 5:
-                dayOfWeek = "THURSDAY";
-                break;
-            case 6:
-                dayOfWeek = "FRIDAY";
-                break;
-            case 7:
-                dayOfWeek = "SATURDAY";
-                break;
-        }
-
-        return dayOfWeek;
-    }
-
-    private List<String> getTimeInBox(List<RecordsItem> records, String id) {
-        List<String> timeRange = new ArrayList<>();
-        for (int i = 0; i < records.size(); i++) {
-            if (records.get(i).getWorkingSpaceId().equals(id)) {
-                timeRange.add(Util.getStringTime(records.get(i).getBegin()) + "-" + Util.getStringTime(records.get(i).getFinish()));
-            }
-        }
-        return timeRange;
-    }
-
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-
-    }
-
-    public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case 0:
-                Toast.makeText(this, "0", Toast.LENGTH_SHORT).show();
-                break;
-            case 1:
-                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
-                break;
-            case 2:
-                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
-                break;
-            case 3:
-                Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
-                break;
-            case 4:
-                Toast.makeText(this, "4", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    private void setPackages(AllCarWashResponse carWash) {
+    private void setPackages() {
         for (int i = 0; i < carWash.getPackages().size(); i++) {
             View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn, packageScroll, false);
             MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
@@ -621,30 +429,22 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             packageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    List<String> serviceNameList = new ArrayList<>();
                     List<PowerMenuItem> powerMenuItemList = new ArrayList<>();
                     for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-//                        serviceNameList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
                         powerMenuItemList.add(new PowerMenuItem(packageMap.get(v.getTag()).getServices().get(j).getName()));
                     }
 
                     packagePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
                             .addItem(new PowerMenuItem("Скидка = " + packageMap.get(v.getTag()).getDiscount() + "%", false))
                             .addItemList(powerMenuItemList)
-                            .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT) // Animation start point (TOP | LEFT)
+                            .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
                             .setMenuRadius(10f)
                             .setMenuShadow(10f)
-                            .setWidth(600) // set popup width size
-//                .setTextColor(context.getResources().getColor(R.color.md_grey_800))
+                            .setWidth(600)
                             .setSelectedTextColor(Color.WHITE)
                             .setMenuColor(Color.WHITE)
-//                .setSelectedMenuColor(context.getResources().getColor(R.color.colorPrimary))
-//                .setOnMenuItemClickListener(onMenuItemClickListener)
                             .build();
-
-                    packagePowerMenu.showAsDropDown(v); // view is an anchor
-
-
+                    packagePowerMenu.showAsDropDown(v);
                 }
             });
             packageScroll.addView(layout2);
@@ -652,11 +452,72 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    public AllCarWashResponse getCarWashObjact() {
-        return carWash;
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
+    }
+
+    public void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void showTutorial() {
+        if (FastSave.getInstance().getBoolean(CARWASHA_CTIVITY, true)) {
+            new GuideView.Builder(CarWashActivity.this)
+                    .setTitle("Расписание")
+                    .setContentText("Тут Вы можете посмотреть расписание мойки")
+                    .setTargetView(workTimeImage)
+                    .setDismissType(DismissType.anywhere)
+                    .setGuideListener(new GuideListener() {
+                        @Override
+                        public void onDismiss(View view) {
+                            new GuideView.Builder(CarWashActivity.this)
+                                    .setTitle("Пакеты услуг")
+                                    .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
+                                    .setTargetView(horizontalScrollView)
+                                    .setDismissType(DismissType.anywhere)
+                                    .setGuideListener(new GuideListener() {
+                                        @Override
+                                        public void onDismiss(View view) {
+                                            new GuideView.Builder(CarWashActivity.this)
+                                                    .setTitle("Фото мойки")
+                                                    .setContentText("Тут можно посмотреть фотографии мойки")
+                                                    .setTargetView(photoScrollView)
+                                                    .setDismissType(DismissType.anywhere)
+                                                    .setGuideListener(new GuideListener() {
+                                                        @Override
+                                                        public void onDismiss(View view) {
+                                                            new GuideView.Builder(CarWashActivity.this)
+                                                                    .setTitle("Заказать мойку")
+                                                                    .setContentText("Перейти к заказу мойки")
+                                                                    .setTargetView(orderButton)
+                                                                    .setDismissType(DismissType.anywhere)
+                                                                    .setGuideListener(new GuideListener() {
+                                                                        @Override
+                                                                        public void onDismiss(View view) {
+                                                                            FastSave.getInstance().saveBoolean(CARWASHA_CTIVITY, false);
+                                                                        }
+                                                                    })
+                                                                    .build()
+                                                                    .show();
+                                                        }
+                                                    })
+                                                    .build()
+                                                    .show();
+                                        }
+                                    })
+                                    .build()
+                                    .show();
+                        }
+                    })
+                    .build()
+                    .show();
+        }
     }
 
     public Context getContext() {
         return context;
     }
+
 }

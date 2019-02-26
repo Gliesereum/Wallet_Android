@@ -10,6 +10,7 @@ public class Constants {
     public static final String SERVICE_TYPE = "CAR_WASH";
     public static final String CARWASHA_CTIVITY = "CarWashActivity";
     public static final String ORDER_ACTIVITY = "OrderActivity";
+    public static final String CARWASH_ID = "carWashId";
 
     public static final String CAR_ID = "carId";
     public static final String CAR_BRAND = "carBrand";

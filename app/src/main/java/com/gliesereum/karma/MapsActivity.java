@@ -59,6 +59,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.gliesereum.karma.util.Constants.CARWASH_ID;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
@@ -133,15 +134,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onInfoWindowClick(Marker marker) {
                 if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
                     if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class) != null) {
-                        Intent intent = new Intent(MapsActivity.this, CarWashActivity.class);
-                        intent.putExtra("carWashId", marker.getSnippet());
-                        startActivity(intent);
+                        FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
+                        startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
                     } else {
-//                        Toast.makeText(MapsActivity.this, "Добавте свою первую машину", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(MapsActivity.this, CarListActivity2.class));
-//                        finish();
                     }
-
                 } else {
                     startActivity(new Intent(MapsActivity.this, LoginActivity.class));
                     finish();
