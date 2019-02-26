@@ -12,7 +12,7 @@ public class SampleClusterItem implements ClusterItem {
     private String title;
     private String snippet;
 
-    SampleClusterItem(@NonNull LatLng location, String title, String snippet) {
+    public SampleClusterItem(@NonNull LatLng location, String title, String snippet) {
         this.location = location;
         this.title = title;
         this.snippet = snippet;

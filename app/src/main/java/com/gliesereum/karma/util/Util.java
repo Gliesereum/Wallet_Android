@@ -6,11 +6,11 @@ import android.view.View;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.CarListActivity;
-import com.gliesereum.karma.MapsActivity;
 import com.gliesereum.karma.ProfileActivity;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.ui.LoginActivity;
+import com.gliesereum.karma.ui.MapsActivity;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -173,4 +173,5 @@ public class Util {
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(new Date(millisecond));
     }
+
 }

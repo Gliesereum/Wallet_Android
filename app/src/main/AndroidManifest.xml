@@ -34,10 +34,10 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".RecordListActivity" />
-        <activity android:name=".MapsActivity" />
+        <activity android:name=".ui.MapsActivity" />
         <activity android:name=".ui.LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".AddCarActivity" />
+        <activity android:name=".ui.AddCarActivity" />
         <activity android:name=".CarWashActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".OrderActivity" />

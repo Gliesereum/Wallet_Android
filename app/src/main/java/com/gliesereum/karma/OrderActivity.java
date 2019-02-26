@@ -324,7 +324,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
-
+        errorHandler = new ErrorHandler(this, this);
         cardView2 = findViewById(R.id.cardView2);
         textView22 = findViewById(R.id.textView22);
         textView23 = findViewById(R.id.textView23);

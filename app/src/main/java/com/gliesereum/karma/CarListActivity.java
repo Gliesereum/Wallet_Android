@@ -15,6 +15,8 @@ import com.gliesereum.karma.adapter.ViewPagerAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
+import com.gliesereum.karma.ui.AddCarActivity;
+import com.gliesereum.karma.ui.MapsActivity;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;

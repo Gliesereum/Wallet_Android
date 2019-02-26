@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddCarActivity">
+    tools:context=".ui.AddCarActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -41,7 +41,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SearchableSpinner"
+                app:layout_constraintTop_toTopOf="parent"
                 app:ms_alignLabels="false"
                 app:ms_arrowColor="@color/material_drawer_secondary_text"
                 app:ms_arrowSize="16dp"
@@ -186,25 +186,6 @@
                 app:ms_hintView="@layout/car_hint_item_layout"
                 app:ms_multiline="false"
                 app:ms_thickness="2dp" />
-
-            <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
-                android:id="@+id/SearchableSpinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:gravity="center_horizontal"
-                android:visibility="gone"
-                app:DoneSearchTintColor="@android:color/holo_purple"
-                app:RevealEmptyText="Touch to select"
-                app:RevealViewBackgroundColor="@android:color/holo_purple"
-                app:SearchViewBackgroundColor="@android:color/secondary_text_dark"
-                app:ShowBorders="false"
-                app:SpinnerExpandHeight="300dp"
-                app:StartSearchTintColor="@android:color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationNumberTextInputLayout"

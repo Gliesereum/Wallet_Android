@@ -1,9 +1,8 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.ui;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.CarListActivity;
+import com.gliesereum.karma.CarWashActivity;
+import com.gliesereum.karma.R;
+import com.gliesereum.karma.SampleClusterItem;
 import com.gliesereum.karma.adapter.CustomInfoWindowAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -24,7 +27,6 @@ import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
-import com.gliesereum.karma.ui.LoginActivity;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -71,36 +73,37 @@ import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
 
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1101;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
     private GoogleMap mMap;
     private boolean mLocationPermissionGranted;
     private String TAG = "TAG";
     private Location mLastKnownLocation;
-    private LatLng mDefaultLocation = new LatLng(50, 30);
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LatLng mDefaultLocation;
     private FusedLocationProviderClient mFusedLocationClient;
-    Bitmap bitmapSource;
     private Toolbar toolbar;
     private MapView mapView;
-    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
     private List<AllCarWashResponse> carWashList;
-    private MaterialButton addCarBtn;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
-    private List<ServiceResponse> serviceList = new ArrayList<>();
-    private Map<String, String> mapServise = new HashMap<>();
-    private Set<String> serviceIdList = new HashSet<>();
-    private Menu menu;
-    boolean doubleBackToExitPressedOnce = false;
+    private List<ServiceResponse> serviceList;
+    private Map<String, String> mapServise;
+    private Set<String> serviceIdList;
+    boolean doubleBack = false;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+    private void initData() {
         FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        serviceIdList = new HashSet<>();
+        mapServise = new HashMap<>();
+        serviceList = new ArrayList<>();
+        mDefaultLocation = new LatLng(50, 30);
+    }
+
+    private void initView() {
+        mapView = findViewById(R.id.mapView);
         toolbar = findViewById(R.id.toolbar);
         if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") && FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
             toolbar.setTitle("KARMA");
@@ -109,26 +112,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             toolbar.setSubtitle("Выбранный автомобиль");
         }
         setSupportActionBar(toolbar);
+        new Util(this, toolbar, 1).addNavigation();
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+        initData();
+        initView();
+        initMap(savedInstanceState);
+        getLocationPermission();
+        getAllService();
+    }
+
+    private void initMap(Bundle savedInstanceState) {
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
-
-        mapView = findViewById(R.id.map);
         mapView.getMapAsync(this);
         mapView.onCreate(mapViewBundle);
-
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        getLocationPermission();
-        new Util(this, toolbar, 1).addNavigation();
-
-        getAllService();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "onMapReady: ");
         mMap = googleMap;
         getAllCarWash(new FilterCarWashBody());
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -148,11 +157,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
     }
 
     private void getAllCarWash(FilterCarWashBody filterCarWashBody) {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<List<AllCarWashResponse>> call = apiInterface.getAllCarWash(filterCarWashBody);
         call.enqueue(new Callback<List<AllCarWashResponse>>() {
             @Override
@@ -160,9 +167,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (response.code() == 200) {
                     carWashList = response.body();
                     mMap.clear();
-                    List<LatLng> coordinateList = new ArrayList<>();
                     List<SampleClusterItem> clusterItems = new ArrayList<>();
-
                     ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
                     mMap.setOnCameraIdleListener(clusterManager);
                     clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
@@ -179,8 +184,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             return false;
                         }
                     });
-
-
                     for (AllCarWashResponse coordinate : carWashList) {
                         clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
                     }
@@ -224,7 +227,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void getLocationPermission() {
-        Log.d(TAG, "getLocationPermission: ");
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -232,12 +234,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         } else {
-            Log.d(TAG, "getLocation: permissions granted");
             mLocationPermissionGranted = true;
-//            updateLocationUI();
             updateLocationUI();
             getDeviceLocation();
-
         }
     }
 
@@ -280,7 +279,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, "getDeviceLocation: ");
         try {
             if (mLocationPermissionGranted) {
-                Task locationResult = mFusedLocationProviderClient.getLastLocation();
+                Task locationResult = mFusedLocationClient.getLastLocation();
                 locationResult.addOnCompleteListener(this, new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
@@ -359,29 +358,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 NDialog nDialog = new NDialog(MapsActivity.this, ButtonType.NO_BUTTON);
                 nDialog.setTitle("Фильтр");
                 nDialog.setMessage("Накликай фильтров");
-//                ButtonClickListener buttonClickListener = new ButtonClickListener() {
-//                    @Override
-//                    public void onClick(int button) {
-//                        switch (button) {
-//                            case NDialog.BUTTON_POSITIVE:
-//                                FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
-//                                filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, null));
-//                                filterCarWashBody.setServiceType(SERVICE_TYPE);
-//                                filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
-//                                getAllCarWash(filterCarWashBody);
-//                                break;
-//                        }
-//                    }
-//                };
-//                nDialog.setPositiveButtonText("Применить фильтр");
-//                nDialog.setPositiveButtonTextColor(Color.BLUE);
-//                nDialog.setPositiveButtonOnClickDismiss(true); // default : true
-//                nDialog.setPositiveButtonClickListener(buttonClickListener);
-
                 nDialog.isCancelable(true);
-
                 nDialog.setCustomView(R.layout.service_chip_view);
-
                 List<View> childViews = nDialog.getCustomViewChildren();
                 for (View childView : childViews) {
                     switch (childView.getId()) {
@@ -413,11 +391,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             break;
                     }
                 }
-
-// SHOW DIALOG
                 nDialog.show();
-
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -425,8 +399,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getAllService() {
-        Log.d(TAG, "getAllService: ");
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<List<ServiceResponse>> call = apiInterface.getAllService();
         call.enqueue(new Callback<List<ServiceResponse>>() {
             @Override
@@ -456,36 +428,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            Log.d(TAG, "onCheckedChanged: TRUE");
             serviceIdList.add(mapServise.get(buttonView.getText().toString()));
-            Log.d(TAG, "onCheckedChanged: " + serviceIdList.size());
         } else {
-            Log.d(TAG, "onCheckedChanged: FALSE");
             serviceIdList.remove(mapServise.get(buttonView.getText().toString()));
-            Log.d(TAG, "onCheckedChanged: " + serviceIdList.size());
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
+        if (doubleBack) {
             super.onBackPressed();
             return;
         }
-
-        this.doubleBackToExitPressedOnce = true;
+        this.doubleBack = true;
         Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
-
         new Handler().postDelayed(new Runnable() {
-
             @Override
             public void run() {
-                doubleBackToExitPressedOnce = false;
+                doubleBack = false;
             }
         }, 2000);
     }
+
+
 }
