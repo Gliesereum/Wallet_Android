@@ -274,6 +274,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void addCar() {
+        showProgressDialog();
         AllCarResponse carInfo = new AllCarResponse(
                 brandHashMap.get(brandSpinner.getSelectedItem().toString()),
                 modelHashMap.get(modelSpinner.getSelectedItem().toString()),
@@ -310,13 +311,16 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                         errorHandler.showError(jObjError.getInt("code"));
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
+                        closeProgressDialog();
                     }
                 }
+                closeProgressDialog();
             }
 
             @Override
             public void onFailure(Call<AllCarResponse> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
+                closeProgressDialog();
             }
         });
     }
@@ -439,7 +443,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getBrands() {
-        showProgressDialog();
+//        showProgressDialog();
         Call<List<BrandResponse>> call = apiInterface.getBrands();
         call.enqueue(new Callback<List<BrandResponse>>() {
             @Override
@@ -453,15 +457,15 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                     spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, brandITEMS);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     brandSpinner.setAdapter(spinnerAdapter);
-                    closeProgressDialog();
+//                    closeProgressDialog();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         errorHandler.showError(jObjError.getInt("code"));
-                        closeProgressDialog();
+//                        closeProgressDialog();
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
-                        closeProgressDialog();
+//                        closeProgressDialog();
                     }
                 }
             }
@@ -469,13 +473,13 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
+//                closeProgressDialog();
             }
         });
     }
 
     private void getModel() {
-        showProgressDialog();
+//        showProgressDialog();
         Call<List<BrandResponse>> call = apiInterface.getModels(brandHashMap.get(brandSpinner.getSelectedItem()));
         call.enqueue(new Callback<List<BrandResponse>>() {
             @Override
@@ -490,15 +494,15 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                     spinnerAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, modelITEMS);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     modelSpinner.setAdapter(spinnerAdapter);
-                    closeProgressDialog();
+//                    closeProgressDialog();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         errorHandler.showError(jObjError.getInt("code"));
-                        closeProgressDialog();
+//                        closeProgressDialog();
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
-                        closeProgressDialog();
+//                        closeProgressDialog();
                     }
                 }
             }
@@ -506,13 +510,13 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
+//                closeProgressDialog();
             }
         });
     }
 
     private void getYears() {
-        showProgressDialog();
+//        showProgressDialog();
         Call<List<BrandResponse>> call = apiInterface.getYears();
         call.enqueue(new Callback<List<BrandResponse>>() {
             @Override
@@ -527,15 +531,15 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                     spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, yearITEMS);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     yearSpinner.setAdapter(spinnerAdapter);
-                    closeProgressDialog();
+//                    closeProgressDialog();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         errorHandler.showError(jObjError.getInt("code"));
-                        closeProgressDialog();
+//                        closeProgressDialog();
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
-                        closeProgressDialog();
+//                        closeProgressDialog();
                     }
                 }
             }
@@ -543,7 +547,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
+//                closeProgressDialog();
             }
         });
     }

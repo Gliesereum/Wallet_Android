@@ -26,6 +26,7 @@ import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
 import com.gliesereum.karma.util.ErrorHandler;
+import com.gliesereum.karma.util.SmartRatingBar;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
@@ -92,6 +93,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private Button sendCommentBtn;
     private RecyclerView commentList;
     private MaterialButton orderButton;
+    private SmartRatingBar carWashRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +121,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         workTimeImage.setOnClickListener(this);
         sendCommentBtn.setOnClickListener(this);
         GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
+        carWashRating = findViewById(R.id.carWashRating);
     }
 
     private void initData() {
@@ -174,6 +177,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     name.setText(carWash.getName());
                     address.setText(carWash.getAddress());
                     descriptionDropdown.setContentText(carWash.getDescription());
+                    carWashRating.setRatingNum(carWash.getRating().getRating());
                     setWorkTime();
                     setPackages();
                     setPhotoSlider();

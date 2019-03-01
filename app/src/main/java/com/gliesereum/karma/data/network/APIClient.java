@@ -11,12 +11,10 @@ public class APIClient {
 
     private static Retrofit retrofit = null;
 
-//                private static final String ROOT_URL = "http://192.168.0.102:8200/api/";  //Ura
-//    private static final String ROOT_URL = "http://192.168.0.103:8200/api/";  //Vetal
+    private static final String ROOT_URL = "https://dev.gliesereum.com/api/";
 
-    private static final String ROOT_URL = "http://207.154.239.122:8200/api/";
-
-    //            private static final String ROOT_URL = "https://karma.gliesereum.com/api/";
+    //    private static final String ROOT_URL = "http://192.168.0.103:8200/api/";
+//    private static final String ROOT_URL = "https://karma.gliesereum.com/api/";
     public static Retrofit getClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);

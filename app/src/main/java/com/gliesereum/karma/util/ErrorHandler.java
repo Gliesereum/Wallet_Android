@@ -36,6 +36,8 @@ public class ErrorHandler {
                             .accelerateDecelerate())
                     .build()
                     .show();
+
+
         } catch (Exception e) {
             new Flashbar.Builder(activity).gravity(Flashbar.Gravity.TOP)
                     .title(context.getResources().getString(R.string.error))

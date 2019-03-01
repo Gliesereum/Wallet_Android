@@ -1,10 +1,8 @@
 package com.gliesereum.karma;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
@@ -24,9 +21,14 @@ import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
@@ -35,7 +37,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 
-public class SingleRecordActivity extends AppCompatActivity implements LocationListener {
+public class SingleRecordActivity extends AppCompatActivity {
 
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
@@ -56,6 +58,8 @@ public class SingleRecordActivity extends AppCompatActivity implements LocationL
     private TextView duration;
     private TextView price;
     private TextView car;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Location mLastKnownLocation;
 
 
     @Override
@@ -66,14 +70,8 @@ public class SingleRecordActivity extends AppCompatActivity implements LocationL
         record = FastSave.getInstance().getObject("RECORD", AllRecordResponse.class);
         Log.d(TAG, "onCreate: ");
         initView();
+        getDeviceLocation();
         fillActivity(record);
-        try {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void fillActivity(AllRecordResponse record) {
@@ -178,30 +176,26 @@ public class SingleRecordActivity extends AppCompatActivity implements LocationL
         });
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged: ");
-        myLatitude = location.getLatitude();
-        myLongitude = location.getLongitude();
-        goRoad.setText("проложить маршрут");
-        goRoad.setEnabled(true);
-    }
+    private void getDeviceLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        try {
+            Task locationResult = mFusedLocationClient.getLastLocation();
+            locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()) {
+                        mLastKnownLocation = (Location) task.getResult();
+                        if (mLastKnownLocation != null) {
+                            goRoad.setText("Проложить маршрут");
+                            goRoad.setEnabled(true);
+                        }
+                    } else {
+                    }
+                }
+            });
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d(TAG, "onStatusChanged: ");
-        Toast.makeText(this, "onStatusChanged", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.d(TAG, "onProviderEnabled: ");
-        Toast.makeText(this, "onProviderEnabled", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.d(TAG, "onProviderDisabled: ");
-        Toast.makeText(this, "onProviderDisabled", Toast.LENGTH_SHORT).show();
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 }

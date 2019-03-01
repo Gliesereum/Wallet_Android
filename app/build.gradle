@@ -88,14 +88,9 @@ dependencies {
     implementation 'com.github.mreram:showcaseview:1.1'
     //https://android-arsenal.com/details/1/6713
 
-    implementation 'com.github.onurkagan:KSnack:1.0.1'
-    //https://android-arsenal.com/details/1/7533
-
     implementation 'com.github.smhdk:KM-Popup-Image-Slider:v1.2.0'
     //https://android-arsenal.com/details/1/7336
     implementation 'com.squareup.picasso:picasso:2.71828'
-
-
 
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'androidx.annotation:annotation:1.0.2'

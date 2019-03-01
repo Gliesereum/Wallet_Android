@@ -68,7 +68,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/logoImageView"
-                        app:layout_constraintTop_toBottomOf="@+id/name"
+                        app:layout_constraintTop_toBottomOf="@+id/carWashRating"
                         tools:text="Address" />
 
                     <ImageView
@@ -105,6 +105,26 @@
                         app:layout_constraintTop_toTopOf="@+id/textView15"
                         app:srcCompat="@drawable/ic_watch_later_black_24dp" />
 
+                    <com.gliesereum.karma.util.SmartRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/carWashRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toEndOf="@+id/logoImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/name"
+                        app:srb_clearRatingEnabled="false"
+                        app:srb_clickable="false"
+                        app:srb_isIndicator="false"
+                        app:srb_minimumStars="0"
+                        app:srb_numStars="5"
+                        app:srb_rating="0"
+                        app:srb_scrollable="true"
+                        app:srb_starHeight="30dp"
+                        app:srb_starPadding="15dp"
+                        app:srb_starWidth="30dp"
+                        app:srb_stepSize="0.1"></com.gliesereum.karma.util.SmartRatingBar>
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -126,8 +146,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
-
-
                 </LinearLayout>
             </HorizontalScrollView>
 
