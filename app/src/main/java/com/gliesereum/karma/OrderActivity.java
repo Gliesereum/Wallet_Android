@@ -439,10 +439,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         }
         orderBody.setDescription("Android");
         List<String> list = new ArrayList<>();
-        for (int i = 0; i < servicePriceBlock.getChildCount(); i++) {
+        for (int i = 0; i < servicePriceItem.getChildCount(); i++) {
             if (((CheckableChipView) servicePriceItem.getChildAt(i)).isChecked()) {
                 list.add((String) ((CheckableChipView) servicePriceItem.getChildAt(i)).getTag());
             }
+            Log.d(TAG, "getRecordFreeTime: ");
         }
         orderBody.setServicesIds(list);
         apiInterface = APIClient.getClient().create(APIInterface.class);

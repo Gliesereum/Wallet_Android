@@ -56,7 +56,7 @@
         app:layout_constraintTop_toTopOf="@+id/dataTextView"
         app:maxRating="5"
         app:orientation="vertical"
-        app:rating="3.5" />
+        app:rating="5" />
 
     <ImageView
         android:id="@+id/editComment"
