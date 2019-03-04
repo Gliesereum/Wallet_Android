@@ -124,9 +124,9 @@ public class SingleRecordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?saddr=" +
-                                myLatitude
+                                mLastKnownLocation.getLatitude()
                                 + "," +
-                                myLongitude
+                                mLastKnownLocation.getLongitude()
                                 + "&daddr=" + record.getBusiness().getLatitude() + "," + record.getBusiness().getLongitude()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);

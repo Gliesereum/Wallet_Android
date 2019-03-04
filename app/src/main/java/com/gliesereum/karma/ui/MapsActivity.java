@@ -148,7 +148,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
                         startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
                     } else {
-                        startActivity(new Intent(MapsActivity.this, CarListActivity.class));
+                        startActivity(new Intent(MapsActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                     }
                 } else {
                     startActivity(new Intent(MapsActivity.this, LoginActivity.class));

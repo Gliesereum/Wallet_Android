@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
@@ -19,6 +21,7 @@ import com.gliesereum.karma.util.Util;
 import org.json.JSONObject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +39,8 @@ public class SplashActivity extends AppCompatActivity {
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private ConstraintLayout errorBlock;
+    private Button refreshBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +49,12 @@ public class SplashActivity extends AppCompatActivity {
         getLocationPermission();
         FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
-
+        initView();
         checkAccessToken();
     }
 
     public void checkAccessToken() {
+        errorBlock.setVisibility(View.GONE);
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<UserResponse> call = apiInterface.checkAccessToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""));
         call.enqueue(new Callback<UserResponse>() {
@@ -62,27 +68,29 @@ public class SplashActivity extends AppCompatActivity {
                         finish();
                     }
                 } else {
-                    FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                    FastSave.getInstance().saveString(ACCESS_TOKEN, "");
-                    FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
-                    FastSave.getInstance().saveString(REFRESH_TOKEN, "");
-                    FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
-                    FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
-                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
-                    finish();
+//                    FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+//                    FastSave.getInstance().saveString(ACCESS_TOKEN, "");
+//                    FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
+//                    FastSave.getInstance().saveString(REFRESH_TOKEN, "");
+//                    FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
+//                    FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
+//                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+//                    finish();
+                    errorBlock.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                FastSave.getInstance().saveString(ACCESS_TOKEN, "");
-                FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
-                FastSave.getInstance().saveString(REFRESH_TOKEN, "");
-                FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
-                FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
-                startActivity(new Intent(SplashActivity.this, MapsActivity.class));
-                finish();
+//                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+//                FastSave.getInstance().saveString(ACCESS_TOKEN, "");
+//                FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
+//                FastSave.getInstance().saveString(REFRESH_TOKEN, "");
+//                FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
+//                FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
+//                startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+//                finish();
+                errorBlock.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -170,4 +178,14 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
+    private void initView() {
+        errorBlock = findViewById(R.id.errorBlock);
+        refreshBtn = findViewById(R.id.refreshBtn);
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkAccessToken();
+            }
+        });
+    }
 }
