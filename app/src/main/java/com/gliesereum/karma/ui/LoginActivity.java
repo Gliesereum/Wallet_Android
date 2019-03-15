@@ -1,5 +1,6 @@
 package com.gliesereum.karma.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -62,6 +63,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ErrorHandler errorHandler;
     private ImageView mapImageBtn;
     boolean doubleBackToExitPressedOnce;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,10 +142,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.registerBtn:
+                v.setEnabled(false);
                 getPhoneCode(ccp.getFullNumber() + phoneTextView.getText().toString());
                 break;
             case R.id.loginBtn:
-                    signIn(new SigninBody(ccp.getFullNumber() + phoneTextView.getText().toString(), code, "PHONE"));
+                v.setEnabled(false);
+                signIn(new SigninBody(ccp.getFullNumber() + phoneTextView.getText().toString(), code, "PHONE"));
                 break;
             case R.id.mapImageBtn:
                 startActivity(new Intent(LoginActivity.this, MapsActivity.class));
@@ -175,6 +180,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void signIn(SigninBody signinBody) {
+        showProgressDialog();
         Call<UserResponse> call = apiInterface.signIn(signinBody);
         call.enqueue(new Callback<UserResponse>() {
             @Override
@@ -201,16 +207,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         errorHandler.showCustomError(e.getMessage());
                     }
                 }
+                closeProgressDialog();
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
+                closeProgressDialog();
             }
         });
     }
 
     public void getPhoneCode(String phone) {
+        showProgressDialog();
         Call<CodeResponse> call = apiInterface.getPhoneCode(phone);
         call.enqueue(new Callback<CodeResponse>() {
             @Override
@@ -227,11 +236,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         errorHandler.showCustomError(e.getMessage());
                     }
                 }
+                closeProgressDialog();
             }
 
             @Override
             public void onFailure(Call<CodeResponse> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
+                closeProgressDialog();
             }
         });
     }
@@ -284,5 +295,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 doubleBackToExitPressedOnce = false;
             }
         }, 2000);
+    }
+
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
+
+    }
+
+    public void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }
