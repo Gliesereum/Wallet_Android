@@ -4,6 +4,8 @@ public class Constants {
 
     public static final String ANDROID_APP = "Не заполенно";
 
+    public static final String STATUS_UP = "UP";
+
     public static final String USER_NAME = "userName";
     public static final String USER_SECOND_NAME = "userSecondName";
     public static final String IS_LOGIN = "isLogin";

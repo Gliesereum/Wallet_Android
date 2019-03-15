@@ -1,9 +1,11 @@
 package com.gliesereum.karma;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.json.status.StatusResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
 import com.gliesereum.karma.ui.LoginActivity;
@@ -33,6 +36,8 @@ import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
+import static com.gliesereum.karma.util.Constants.STATUS_UP;
+import static com.gliesereum.karma.util.Constants.USER_ID;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -41,6 +46,9 @@ public class SplashActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private ConstraintLayout errorBlock;
     private Button refreshBtn;
+    private ProgressDialog progressDialog;
+    private String TAG = "test_log";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +58,7 @@ public class SplashActivity extends AppCompatActivity {
         FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
         initView();
-        checkAccessToken();
-
-
+        checkStatus();
 //        FirebaseInstanceId.getInstance().getInstanceId()
 //                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
 //                    @Override
@@ -72,14 +78,42 @@ public class SplashActivity extends AppCompatActivity {
 //                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
 //                    }
 //                });
+    }
 
+    public void checkStatus() {
+        Log.d(TAG, "checkStatus: ");
+        errorBlock.setVisibility(View.GONE);
+        showProgressDialog();
+        Call<StatusResponse> call = apiInterface.checkStatus();
+        call.enqueue(new Callback<StatusResponse>() {
+            @Override
+            public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                if (response.code() == 200) {
+                    if (response.body().getAccountService() != null && response.body().getAccountService().equals(STATUS_UP)
+                            && response.body().getMailService() != null && response.body().getMailService().equals(STATUS_UP)
+                            && response.body().getKarmaService() != null && response.body().getKarmaService().equals(STATUS_UP)
+                            && response.body().getSocketService() != null && response.body().getSocketService().equals(STATUS_UP)) {
+                        checkAccessToken();
+                    } else {
+                        errorBlock.setVisibility(View.VISIBLE);
+                        closeProgressDialog();
+                    }
+                } else {
+                    errorBlock.setVisibility(View.VISIBLE);
+                    closeProgressDialog();
+                }
+            }
 
-
+            @Override
+            public void onFailure(Call<StatusResponse> call, Throwable t) {
+                errorBlock.setVisibility(View.VISIBLE);
+                closeProgressDialog();
+            }
+        });
     }
 
     public void checkAccessToken() {
-        errorBlock.setVisibility(View.GONE);
-        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Log.d(TAG, "checkAccessToken: ");
         Call<UserResponse> call = apiInterface.checkAccessToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""));
         call.enqueue(new Callback<UserResponse>() {
             @Override
@@ -88,12 +122,12 @@ public class SplashActivity extends AppCompatActivity {
                     if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
                         checkToken();
                     } else {
+//                        closeProgressDialog();
                         startActivity(new Intent(SplashActivity.this, MapsActivity.class));
                         finish();
                     }
                 } else {
                     checkToken();
-                    errorBlock.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -105,12 +139,14 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void checkToken() {
+        Log.d(TAG, "checkToken: ");
         Long accessExpirationDate = FastSave.getInstance().getLong(ACCESS_EXPIRATION_DATE, 0);
         Long refreshExpirationDate = FastSave.getInstance().getLong(REFRESH_EXPIRATION_DATE, 0);
 
-        if (!accessExpirationDate.equals("")) {
+        if (accessExpirationDate != 0) {
             if (Util.checkExpirationToken(accessExpirationDate)) {
                 FastSave.getInstance().saveBoolean(IS_LOGIN, true);
+//                closeProgressDialog();
                 startActivity(new Intent(SplashActivity.this, MapsActivity.class));
                 finish();
             } else {
@@ -118,18 +154,21 @@ public class SplashActivity extends AppCompatActivity {
                     refreshToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""), FastSave.getInstance().getString(REFRESH_TOKEN, ""));
                 } else {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+//                    closeProgressDialog();
                     startActivity(new Intent(SplashActivity.this, MapsActivity.class));
                     finish();
                 }
             }
         } else {
             FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+//            closeProgressDialog();
             startActivity(new Intent(SplashActivity.this, MapsActivity.class));
             finish();
         }
     }
 
     public void refreshToken(String accessToken, String refreshToken) {
+        Log.d(TAG, "refreshToken: ");
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<TokenInfo> call = apiInterface.refreshAccessToken(accessToken, refreshToken);
         call.enqueue(new Callback<TokenInfo>() {
@@ -155,10 +194,12 @@ public class SplashActivity extends AppCompatActivity {
                         finish();
                     }
                 }
+//                closeProgressDialog();
             }
 
             @Override
             public void onFailure(Call<TokenInfo> call, Throwable t) {
+//                closeProgressDialog();
                 errorHandler.showCustomError(t.getMessage());
                 startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 finish();
@@ -168,12 +209,16 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void setTokenInfo(Response<TokenInfo> response) {
+        Log.d(TAG, "setTokenInfo: ");
         FastSave.getInstance().saveBoolean(IS_LOGIN, true);
         FastSave.getInstance().saveString(ACCESS_TOKEN, "Bearer " + response.body().getAccessToken());
         FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, response.body().getAccessToken());
         FastSave.getInstance().saveString(REFRESH_TOKEN, response.body().getRefreshToken());
+        FastSave.getInstance().saveString(USER_ID, response.body().getUserId());
         FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, response.body().getAccessExpirationDate());
         FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, response.body().getRefreshExpirationDate());
+
+
     }
 
     private void getLocationPermission() {
@@ -188,13 +233,25 @@ public class SplashActivity extends AppCompatActivity {
 
 
     private void initView() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
         errorBlock = findViewById(R.id.errorBlock);
         refreshBtn = findViewById(R.id.refreshBtn);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkAccessToken();
+                checkStatus();
             }
         });
+    }
+
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
+
+    }
+
+    public void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }

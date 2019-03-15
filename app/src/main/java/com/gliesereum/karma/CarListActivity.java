@@ -104,7 +104,6 @@ public class CarListActivity extends AppCompatActivity {
     }
 
     private void getAllCars() {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<List<AllCarResponse>> call = apiInterface.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         call.enqueue(new Callback<List<AllCarResponse>>() {
             @Override
@@ -160,12 +159,17 @@ public class CarListActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
         splashTextView = findViewById(R.id.splashTextView);
         chooseCarBtn = findViewById(R.id.orderButton);
         chooseCarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MaterialButton) v).setTextColor(getResources().getColor(R.color.black));
+
+                setFavoriteCar(carsList.get(selectPosition).getId());
+
+
                 FastSave.getInstance().saveString(CAR_ID, carsList.get(selectPosition).getId());
                 FastSave.getInstance().saveString(CAR_BRAND, carsList.get(selectPosition).getBrand().getName());
                 FastSave.getInstance().saveString(CAR_MODEL, carsList.get(selectPosition).getModel().getName());
@@ -190,6 +194,34 @@ public class CarListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(CarListActivity.this, AddCarActivity.class));
+            }
+        });
+    }
+
+    private void setFavoriteCar(String carId) {
+        Call<AllCarResponse> call = apiInterface.setFavoriteCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carId);
+        call.enqueue(new Callback<AllCarResponse>() {
+            @Override
+            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+                if (response.code() == 200) {
+                    Toast.makeText(CarListActivity.this, "OK!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (response.code() == 204) {
+                        Toast.makeText(CarListActivity.this, "204", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AllCarResponse> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
             }
         });
     }

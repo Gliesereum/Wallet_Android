@@ -15,6 +15,7 @@ import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
+import com.gliesereum.karma.data.network.json.status.StatusResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.User;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
@@ -32,6 +33,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIInterface {
+
+    //STATUS
+    @GET("status")
+    Call<StatusResponse> checkStatus();
 
     //ACCOUNT
     @GET("account/v1/phone/code")
@@ -83,6 +88,11 @@ public interface APIInterface {
 
     @POST("karma/v1/car/filter-attribute/{idCar}/{idAttribute}")
     Call<CarDeleteResponse> addCarFilter(@Path("idCar") String idCar, @Path("idAttribute") String idAttribute, @Header("Authorization") String accessToken);
+
+    @POST("karma/v1/car/set-favorite/{idCar}")
+    Call<AllCarResponse> setFavoriteCar(@Header("Authorization") String accessToken, @Path("idCar") String idCar);
+
+
 
 
     //FILTER
