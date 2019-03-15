@@ -113,7 +113,7 @@ public class RecordListActivity extends AppCompatActivity {
                             if (recordsList.get(i).getId().equals(jsonJavaRootObject.getId())) {
                                 Log.d(TEST_LOG, "run: ");
                                 recordsList.set(i, jsonJavaRootObject);
-//                                recordListAdapter = new RecordListAdapter(RecordListActivity.this);
+                                recordListAdapter = new RecordListAdapter(RecordListActivity.this);
                                 recyclerView.setAdapter(recordListAdapter);
                                 recordListAdapter.setItems(recordsList);
                             }
