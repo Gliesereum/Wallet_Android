@@ -5,6 +5,7 @@ import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Generated;
 
@@ -38,8 +39,8 @@ public class AllRecordResponse {
     @SerializedName("targetId")
     private String targetId;
 
-    @SerializedName("statusWashing")
-    private Object statusWashing;
+    @SerializedName("statusProcess")
+    private String statusProcess;
 
     @SerializedName("workingSpaceId")
     private String workingSpaceId;
@@ -131,12 +132,12 @@ public class AllRecordResponse {
         this.targetId = targetId;
     }
 
-    public Object getStatusWashing() {
-        return statusWashing;
+    public String getStatusProcess() {
+        return statusProcess;
     }
 
-    public void setStatusWashing(Object statusWashing) {
-        this.statusWashing = statusWashing;
+    public void setStatusProcess(String statusProcess) {
+        this.statusProcess = statusProcess;
     }
 
     public String getWorkingSpaceId() {
@@ -185,5 +186,18 @@ public class AllRecordResponse {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AllRecordResponse that = (AllRecordResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -34,6 +34,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ua.naiksoftware.stomp.StompClient;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 
@@ -60,6 +61,8 @@ public class SingleRecordActivity extends AppCompatActivity {
     private TextView car;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastKnownLocation;
+    private StompClient mStompClient;
+
 
 
     @Override
@@ -68,7 +71,6 @@ public class SingleRecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single_record);
         FastSave.init(getApplicationContext());
         record = FastSave.getInstance().getObject("RECORD", AllRecordResponse.class);
-        Log.d(TAG, "onCreate: ");
         initView();
         getDeviceLocation();
         fillActivity(record);

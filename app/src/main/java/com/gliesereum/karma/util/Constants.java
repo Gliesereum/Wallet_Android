@@ -25,6 +25,9 @@ public class Constants {
     public static final String CAR_BODY_ID = "carBodyId";
     public static final String CAR_COLOR_ID = "carColorId";
 
+
+    public static final String TEST_LOG = "test_log";
+
     public static final String CAR_BODY_VALUE = "carColorValue";
     public static final String CAR_INTERIOR_VALUE = "carColorValue";
     public static final String CAR_SERVICE_CLASS_VALUE = "carColorValue";

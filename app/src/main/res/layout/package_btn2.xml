@@ -21,6 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:rippleColor="@color/accent"
         app:strokeColor="@color/black"
+        app:backgroundTint="@color/white"
         app:strokeWidth="1dp"
         tools:text="Button" />
 

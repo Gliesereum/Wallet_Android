@@ -4,13 +4,18 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
+         location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -20,10 +25,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_directions_car_black_24dp" />
+
         <activity
             android:name=".SingleRecordActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".CarListActivity" />
+        <activity
+            android:name=".CarListActivity"
+            android:screenOrientation="portrait" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -33,21 +45,47 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".RecordListActivity" />
-        <activity android:name=".ui.MapsActivity" />
-        <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".ui.AddCarActivity" />
-        <activity android:name=".CarWashActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".OrderActivity" />
-        <activity android:name=".SplashActivity">
+        <activity
+            android:name=".RecordListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.MapsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.AddCarActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CarWashActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".OrderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.RecordService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver android:name=".service.RestartServiceReceiver" />
+
     </application>
 
 </manifest>

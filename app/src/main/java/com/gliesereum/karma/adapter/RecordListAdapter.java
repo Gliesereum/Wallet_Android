@@ -35,9 +35,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
                 .inflate(R.layout.record_item, parent, false);
         view.setOnClickListener(v -> {
             FastSave.getInstance().saveObject("RECORD", allRecordList.get(Integer.parseInt(((TextView) v.findViewById(R.id.recordId)).getText().toString())));
-//            Toast.makeText(context, ((TextView) v.findViewById(R.id.recordId)).getText().toString(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, SingleRecordActivity.class);
-//            intent.putExtra("recordId", ((TextView) v.findViewById(R.id.recordId)).getText().toString());
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
         });
         return new RecordListAdapter.ViewHolder(view);
@@ -53,12 +51,13 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         return allRecordList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private TextView dataTextView;
         private TextView timeTextView;
         private TextView priceTextView;
         private TextView carWashName;
         private TextView recordId;
+        private TextView statusLabel;
         private ImageView carWashLogo;
 
 
@@ -70,29 +69,46 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
             priceTextView = itemView.findViewById(R.id.priceTextView);
             carWashName = itemView.findViewById(R.id.carWashName);
             carWashLogo = itemView.findViewById(R.id.carWashLogo);
+            statusLabel = itemView.findViewById(R.id.statusLabel);
         }
 
         public void bind(AllRecordResponse recordInfo) {
             dataTextView.setText(Util.getStringDate(recordInfo.getBegin()));
             timeTextView.setText(Util.getStringTime(recordInfo.getBegin()));
+            if (recordInfo.getStatusRecord().equals("CANCELED")) {
+                statusLabel.setText("Отменена");
+                statusLabel.setTextColor(context.getResources().getColor(R.color.md_red_A200));
+            } else {
+                switch (recordInfo.getStatusProcess()) {
+                    case "WAITING":
+                        statusLabel.setText("В ожидании");
+                        statusLabel.setTextColor(context.getResources().getColor(R.color.material_drawer_selected));
+                        break;
+                    case "IN_PROCESS":
+                        statusLabel.setText("В процессе");
+                        statusLabel.setTextColor(context.getResources().getColor(R.color.accent));
+                        break;
+                    case "COMPLETED":
+                        statusLabel.setText("Завершена");
+                        statusLabel.setTextColor(context.getResources().getColor(R.color.md_green_300));
+                        break;
+                    default:
+                        statusLabel.setText("");
+                        break;
+                }
+            }
             priceTextView.setText(recordInfo.getPrice() + "грн");
-            if (recordInfo.getBusiness().getName() != null) {
+            if (recordInfo.getBusiness() != null && recordInfo.getBusiness().getName() != null) {
                 carWashName.setText(recordInfo.getBusiness().getName());
             }
             recordId.setText(String.valueOf(i));
             GlideApp.with(context).load(R.mipmap.ic_launcher_round).circleCrop().into(carWashLogo);
             i++;
         }
-
-        @Override
-        public boolean onLongClick(View v) {
-            return false;
-        }
     }
 
     public void setItems(List<AllRecordResponse> cars) {
         allRecordList.addAll(cars);
-//        this.carWashNameMap = carWashNameMap;
         notifyDataSetChanged();
     }
 

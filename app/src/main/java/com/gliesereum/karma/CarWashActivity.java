@@ -427,7 +427,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setPackages() {
         for (int i = 0; i < carWash.getPackages().size(); i++) {
-            View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn, packageScroll, false);
+            View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
             MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());

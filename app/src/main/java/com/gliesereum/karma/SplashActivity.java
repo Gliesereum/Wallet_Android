@@ -51,6 +51,30 @@ public class SplashActivity extends AppCompatActivity {
         errorHandler = new ErrorHandler(this, this);
         initView();
         checkAccessToken();
+
+
+//        FirebaseInstanceId.getInstance().getInstanceId()
+//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                        if (!task.isSuccessful()) {
+//                            Log.w(TEST_LOG, "getInstanceId failed", task.getException());
+//                            return;
+//                        }
+//
+//                        // Get new Instance ID token
+//                        String token = task.getResult().getToken();
+//                        Log.d(TEST_LOG, token);
+//
+//                        // Log and toast
+//                        String msg = "tetstest";
+//                        Log.d(TEST_LOG, msg);
+//                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+
+
+
     }
 
     public void checkAccessToken() {
@@ -68,28 +92,13 @@ public class SplashActivity extends AppCompatActivity {
                         finish();
                     }
                 } else {
-//                    FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-//                    FastSave.getInstance().saveString(ACCESS_TOKEN, "");
-//                    FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
-//                    FastSave.getInstance().saveString(REFRESH_TOKEN, "");
-//                    FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
-//                    FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
-//                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
-//                    finish();
+                    checkToken();
                     errorBlock.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-//                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-//                FastSave.getInstance().saveString(ACCESS_TOKEN, "");
-//                FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, "");
-//                FastSave.getInstance().saveString(REFRESH_TOKEN, "");
-//                FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, 0L);
-//                FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, 0L);
-//                startActivity(new Intent(SplashActivity.this, MapsActivity.class));
-//                finish();
                 errorBlock.setVisibility(View.VISIBLE);
             }
         });

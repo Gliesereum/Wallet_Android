@@ -20,12 +20,14 @@ import com.gliesereum.karma.CarListActivity;
 import com.gliesereum.karma.CarWashActivity;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.SampleClusterItem;
+import com.gliesereum.karma.SingleRecordActivity;
 import com.gliesereum.karma.adapter.CustomInfoWindowAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.filter.AttributesItem;
+import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
@@ -63,6 +65,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CARWASH_ID;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
@@ -70,6 +73,7 @@ import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
+import static com.gliesereum.karma.util.Constants.TEST_LOG;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
 
@@ -100,6 +104,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapServise = new HashMap<>();
         serviceList = new ArrayList<>();
         mDefaultLocation = new LatLng(50, 30);
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+//            startService(new Intent(this, RecordService.class));
+            Log.d(TEST_LOG, "sendBroadcast: ");
+//            sendBroadcast(new Intent(this, RestartServiceReceiver.class));
+        }
     }
 
     private void initView() {
@@ -115,10 +124,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new Util(this, toolbar, 1).addNavigation();
     }
 
+    private void getSingleRecord(String recordId) {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        Call<List<AllRecordResponse>> call = apiInterface.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE);
+        call.enqueue(new Callback<List<AllRecordResponse>>() {
+            @Override
+            public void onResponse(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
+                if (response.code() == 200) {
+                    List<AllRecordResponse> recordsList = response.body();
+                    if (recordsList != null && recordsList.size() > 0) {
+                        for (int i = 0; i < recordsList.size(); i++) {
+                            if (recordsList.get(i).getId().equals(recordId)) {
+                                FastSave.getInstance().saveObject("RECORD", recordsList.get(i));
+                                Intent intent = new Intent(MapsActivity.this, SingleRecordActivity.class);
+                                MapsActivity.this.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                            }
+                        }
+                    }
+
+                } else {
+                    if (response.code() == 204) {
+                        Toast.makeText(MapsActivity.this, "У вас пока нет записей", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            errorHandler.showError(jObjError.getInt("code"));
+                        } catch (Exception e) {
+                            errorHandler.showCustomError(e.getMessage());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AllRecordResponse>> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+//        if (FastSave.getInstance().getBoolean("openRecord", false)) {
+//            getSingleRecord(FastSave.getInstance().getString("recordId", ""));
+//            FastSave.getInstance().deleteValue("openRecord");
+//            FastSave.getInstance().deleteValue("recordId");
+//        }
+
         initData();
         initView();
         initMap(savedInstanceState);

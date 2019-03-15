@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.karma"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10
-        versionName "0.0.10"
+        versionCode 11
+        versionName "0.0.11"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -92,9 +92,15 @@ dependencies {
     //https://android-arsenal.com/details/1/7336
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    //Socket
+    implementation 'org.java-websocket:Java-WebSocket:1.4.0'
+    implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.4'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.5'
+
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'androidx.annotation:annotation:1.0.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.7'

@@ -47,6 +47,7 @@ import java.util.TimeZone;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -260,28 +261,33 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         packageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: NOW");
                 for (int j = 0; j < packageScroll.getChildCount(); j++) {
                     ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                     if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                        ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.black));
+                        Log.d(TAG, "onClick: 1");
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
+
+
                     } else {
-                        ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
+                        Log.d(TAG, "onClick: 2");
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
+
+
                     }
                 }
                 serviceMap.clear();
                 nameOfServiceList.clear();
                 priceLabel.setText("0");
                 durationLabel.setText("0");
+                discountTextView.setText("0%");
                 textView19.setText("Выберите услуги");
                 packageBlock.setVisibility(View.GONE);
                 setServicePrices(carWash);
             }
         });
-        packageBtn.performClick();
         packageScroll.addView(layout2);
         for (int i = 0; i < carWash.getPackages().size(); i++) {
-            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn3, packageScroll, false);
+            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
             packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
@@ -294,9 +300,14 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     for (int j = 0; j < packageScroll.getChildCount(); j++) {
                         ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                         if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.black));
+                            Log.d(TAG, "onClick: 3");
+                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
+
+
                         } else {
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
+                            Log.d(TAG, "onClick: 4");
+                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
+
                         }
                     }
                     for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
@@ -317,6 +328,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
             packageScroll.addView(layout2);
+            ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(0));
+            ((MaterialButton) constraintLayout.getChildAt(0)).performClick();
         }
 
         setServicePrices(carWash);
