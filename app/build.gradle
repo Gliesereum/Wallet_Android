@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.karma"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11
-        versionName "0.0.11"
+        versionCode 12
+        versionName "0.0.12"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
