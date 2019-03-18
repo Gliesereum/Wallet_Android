@@ -15,7 +15,6 @@ import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONObject;
 
@@ -33,11 +32,8 @@ import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Toolbar toolbar;
-    private TextInputLayout secondNameTextInputLayout;
     private TextInputEditText secondNameTextView;
-    private TextInputLayout nameTextInputLayout;
     private TextInputEditText nameTextView;
-    private TextInputLayout thirdNameTextInputLayout;
     private TextInputEditText thirdNameTextView;
     private MaterialButton registerBtn;
     private APIInterface apiInterface;
@@ -49,36 +45,36 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        errorHandler = new ErrorHandler(this, this);
-        new Util(this, toolbar, 4).addNavigation();
+        initData();
         initView();
         getUser();
     }
 
+    private void initData() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        errorHandler = new ErrorHandler(this, this);
+    }
+
 
     private void initView() {
-        secondNameTextInputLayout = (TextInputLayout) findViewById(R.id.secondNameTextInputLayout);
-        secondNameTextView = (TextInputEditText) findViewById(R.id.secondNameTextView);
-        nameTextInputLayout = (TextInputLayout) findViewById(R.id.nameTextInputLayout);
-        nameTextView = (TextInputEditText) findViewById(R.id.nameTextView);
-        thirdNameTextInputLayout = (TextInputLayout) findViewById(R.id.thirdNameTextInputLayout);
-        thirdNameTextView = (TextInputEditText) findViewById(R.id.thirdNameTextView);
-        registerBtn = (MaterialButton) findViewById(R.id.registerBtn);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        new Util(this, toolbar, 4).addNavigation();
+        secondNameTextView = findViewById(R.id.secondNameTextView);
+        nameTextView = findViewById(R.id.nameTextView);
+        thirdNameTextView = findViewById(R.id.thirdNameTextView);
+        registerBtn = findViewById(R.id.registerBtn);
         registerBtn.setOnClickListener(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.edit_menu:
                 Toast.makeText(this, "Edit", Toast.LENGTH_SHORT).show();
@@ -94,7 +90,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void getUser() {
         showProgressDialog();
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<User> call = apiInterface.getUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
         call.enqueue(new Callback<User>() {
             @Override
@@ -104,29 +99,28 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     secondNameTextView.setText(response.body().getLastName());
                     thirdNameTextView.setText(response.body().getMiddleName());
                     FastSave.getInstance().saveObject("userInfo", response.body());
-                    closeProgressDialog();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         errorHandler.showError(jObjError.getInt("code"));
-                        closeProgressDialog();
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
                         closeProgressDialog();
                     }
                 }
+                closeProgressDialog();
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
+                closeProgressDialog();
             }
         });
     }
 
     public void showProgressDialog() {
         progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-
     }
 
     public void closeProgressDialog() {
@@ -149,7 +143,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         user.setAddAddress(ANDROID_APP);
         user.setPosition(ANDROID_APP);
 
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<User> call = apiInterface.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
         call.enqueue(new Callback<User>() {
             @Override
