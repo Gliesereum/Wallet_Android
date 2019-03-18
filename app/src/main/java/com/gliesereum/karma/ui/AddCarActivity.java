@@ -64,44 +64,76 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private ProgressDialog progressDialog;
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
-
-    HashMap<String, String> brandHashMap = new HashMap<>();
-    HashMap<String, String> modelHashMap = new HashMap<>();
-    HashMap<String, String> yearHashMap = new HashMap<>();
-    HashMap<String, String> interiorHashMap = new HashMap<>();
-    HashMap<String, String> carBodyHashMap = new HashMap<>();
-    HashMap<String, String> colorHashMap = new HashMap<>();
-    ArrayAdapter<String> spinnerAdapter;
+    private HashMap<String, String> brandHashMap;
+    private HashMap<String, String> modelHashMap;
+    private HashMap<String, String> yearHashMap;
+    private HashMap<String, String> interiorHashMap;
+    private HashMap<String, String> carBodyHashMap;
+    private HashMap<String, String> colorHashMap;
+    private ArrayAdapter<String> spinnerAdapter;
     private ChipGroup chipGroup;
-    Map<String, String> mapClassServise;
-    List<Chip> selectedChip = new ArrayList<>();
+    private Map<String, String> mapClassServise;
+    private List<Chip> selectedChip;
     private Map<String, FilterResponse> filterMap;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_car);
-        FastSave.init(getApplicationContext());
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle("Добавление авто");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         initData();
         initView();
         enableSpinner(brandSpinner);
         getAllClassService();
         getAllFilter();
+
     }
 
     private void initData() {
+        FastSave.init(getApplicationContext());
         apiInterface = APIClient.getClient().create(APIInterface.class);
         spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
         filterMap = new HashMap<>();
         mapClassServise = new HashMap<>();
+        brandHashMap = new HashMap<>();
+        modelHashMap = new HashMap<>();
+        yearHashMap = new HashMap<>();
+        interiorHashMap = new HashMap<>();
+        carBodyHashMap = new HashMap<>();
+        colorHashMap = new HashMap<>();
+        selectedChip = new ArrayList<>();
+    }
+
+    private void initView() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("Добавление авто");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        errorHandler = new ErrorHandler(this, this);
+        brandSpinner = findViewById(R.id.brandSpinner);
+        modelSpinner = findViewById(R.id.modelSpinner);
+        yearSpinner = findViewById(R.id.yearSpinner);
+        interiorSpinner = findViewById(R.id.interiorSpinner);
+        carBodySpinner = findViewById(R.id.carBodySpinner);
+        colourSpinner = findViewById(R.id.colourSpinner);
+        brandSpinner.setOnItemSelectedListener(brandSpinnerItemSelectedListener);
+        modelSpinner.setOnItemSelectedListener(modelSpinnerItemSelectedListener);
+        yearSpinner.setOnItemSelectedListener(yearSpinnerItemSelectedListener);
+        interiorSpinner.setOnItemSelectedListener(interiorSpinnerItemSelectedListener);
+        carBodySpinner.setOnItemSelectedListener(carBodySpinnerItemSelectedListener);
+        colourSpinner.setOnItemSelectedListener(colourSpinnerItemSelectedListener);
+        brandSpinner.setAdapter(spinnerAdapter);
+        modelSpinner.setAdapter(spinnerAdapter);
+        yearSpinner.setAdapter(spinnerAdapter);
+        interiorSpinner.setAdapter(spinnerAdapter);
+        carBodySpinner.setAdapter(spinnerAdapter);
+        colourSpinner.setAdapter(spinnerAdapter);
+        registrationNumberTextView = findViewById(R.id.registrationNumberTextView);
+        descriptionNumberTextView = findViewById(R.id.descriptionNumberTextView);
+        addCarBtn = findViewById(R.id.addCarBtn);
+        addCarBtn.setOnClickListener(this);
+        chipGroup = findViewById(R.id.chipGroup);
     }
 
     private void getAllClassService() {
@@ -144,134 +176,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    private void initView() {
-        errorHandler = new ErrorHandler(this, this);
-        brandSpinner = findViewById(R.id.brandSpinner);
-        modelSpinner = findViewById(R.id.modelSpinner);
-        yearSpinner = findViewById(R.id.yearSpinner);
-        interiorSpinner = findViewById(R.id.interiorSpinner);
-        carBodySpinner = findViewById(R.id.carBodySpinner);
-        colourSpinner = findViewById(R.id.colourSpinner);
-        brandSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (id != 0) {
-                    enableSpinner(modelSpinner);
-                    brandFlag = true;
-                } else {
-                    brandFlag = false;
-                }
-                checkFillFields();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                brandFlag = false;
-                checkFillFields();
-            }
-        });
-        modelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (id != 0) {
-                    enableSpinner(yearSpinner);
-                    modelFlag = true;
-                } else {
-                    modelFlag = false;
-                }
-                checkFillFields();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                modelFlag = false;
-                checkFillFields();
-            }
-        });
-        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (id != 0) {
-                    enableSpinner(interiorSpinner);
-                    yearFlag = true;
-                } else {
-                    yearFlag = false;
-                }
-                checkFillFields();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                yearFlag = false;
-                checkFillFields();
-            }
-        });
-        interiorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (id != 0) {
-                    enableSpinner(carBodySpinner);
-                    interiorFlag = true;
-                } else {
-                    interiorFlag = false;
-                }
-                checkFillFields();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                interiorFlag = false;
-                checkFillFields();
-            }
-        });
-        carBodySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (id != 0) {
-                    enableSpinner(colourSpinner);
-                    carBodyFlag = true;
-                } else {
-                    carBodyFlag = false;
-                }
-                checkFillFields();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                carBodyFlag = false;
-                checkFillFields();
-            }
-        });
-        colourSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (id != 0) {
-                    colourFlag = true;
-                } else {
-                    colourFlag = false;
-                }
-                checkFillFields();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                colourFlag = false;
-                checkFillFields();
-            }
-        });
-        brandSpinner.setAdapter(spinnerAdapter);
-        modelSpinner.setAdapter(spinnerAdapter);
-        yearSpinner.setAdapter(spinnerAdapter);
-        interiorSpinner.setAdapter(spinnerAdapter);
-        carBodySpinner.setAdapter(spinnerAdapter);
-        colourSpinner.setAdapter(spinnerAdapter);
-        registrationNumberTextView = findViewById(R.id.registrationNumberTextView);
-        descriptionNumberTextView = findViewById(R.id.descriptionNumberTextView);
-        addCarBtn = findViewById(R.id.addCarBtn);
-        addCarBtn.setOnClickListener(this);
-        chipGroup = findViewById(R.id.chipGroup);
-    }
-
     private void addCar() {
         showProgressDialog();
         AllCarResponse carInfo = new AllCarResponse(
@@ -281,7 +185,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                 registrationNumberTextView.getText().toString(),
                 descriptionNumberTextView.getText().toString()
         );
-
         Call<AllCarResponse> call = apiInterface.addCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
         call.enqueue(new Callback<AllCarResponse>() {
             @Override
@@ -437,12 +340,9 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                 colourSpinner.setEnabled(true);
                 break;
         }
-
-
     }
 
     private void getBrands() {
-//        showProgressDialog();
         Call<List<BrandResponse>> call = apiInterface.getBrands();
         call.enqueue(new Callback<List<BrandResponse>>() {
             @Override
@@ -456,15 +356,12 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                     spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, brandITEMS);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     brandSpinner.setAdapter(spinnerAdapter);
-//                    closeProgressDialog();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         errorHandler.showError(jObjError.getInt("code"));
-//                        closeProgressDialog();
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
-//                        closeProgressDialog();
                     }
                 }
             }
@@ -472,13 +369,11 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
-//                closeProgressDialog();
             }
         });
     }
 
     private void getModel() {
-//        showProgressDialog();
         Call<List<BrandResponse>> call = apiInterface.getModels(brandHashMap.get(brandSpinner.getSelectedItem()));
         call.enqueue(new Callback<List<BrandResponse>>() {
             @Override
@@ -493,15 +388,12 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                     spinnerAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, modelITEMS);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     modelSpinner.setAdapter(spinnerAdapter);
-//                    closeProgressDialog();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         errorHandler.showError(jObjError.getInt("code"));
-//                        closeProgressDialog();
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
-//                        closeProgressDialog();
                     }
                 }
             }
@@ -509,13 +401,11 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
-//                closeProgressDialog();
             }
         });
     }
 
     private void getYears() {
-//        showProgressDialog();
         Call<List<BrandResponse>> call = apiInterface.getYears();
         call.enqueue(new Callback<List<BrandResponse>>() {
             @Override
@@ -530,15 +420,12 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                     spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, yearITEMS);
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     yearSpinner.setAdapter(spinnerAdapter);
-//                    closeProgressDialog();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         errorHandler.showError(jObjError.getInt("code"));
-//                        closeProgressDialog();
                     } catch (Exception e) {
                         errorHandler.showCustomError(e.getMessage());
-//                        closeProgressDialog();
                     }
                 }
             }
@@ -546,7 +433,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
                 errorHandler.showCustomError(t.getMessage());
-//                closeProgressDialog();
             }
         });
     }
@@ -568,7 +454,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
             carBodyITEMS.add(filterMap.get("CAR_BODY").getAttributes().get(i).getTitle());
             carBodyHashMap.put(filterMap.get("CAR_BODY").getAttributes().get(i).getTitle(), filterMap.get("CAR_BODY").getAttributes().get(i).getId());
         }
-
         spinnerAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, carBodyITEMS);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         carBodySpinner.setAdapter(spinnerAdapter);
@@ -647,4 +532,112 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
+
+    AdapterView.OnItemSelectedListener brandSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 0) {
+                enableSpinner(modelSpinner);
+                brandFlag = true;
+            } else {
+                brandFlag = false;
+            }
+            checkFillFields();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            brandFlag = false;
+            checkFillFields();
+        }
+    };
+    AdapterView.OnItemSelectedListener modelSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 0) {
+                enableSpinner(yearSpinner);
+                modelFlag = true;
+            } else {
+                modelFlag = false;
+            }
+            checkFillFields();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            modelFlag = false;
+            checkFillFields();
+        }
+    };
+    AdapterView.OnItemSelectedListener yearSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 0) {
+                enableSpinner(interiorSpinner);
+                yearFlag = true;
+            } else {
+                yearFlag = false;
+            }
+            checkFillFields();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            yearFlag = false;
+            checkFillFields();
+        }
+    };
+    AdapterView.OnItemSelectedListener interiorSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 0) {
+                enableSpinner(carBodySpinner);
+                interiorFlag = true;
+            } else {
+                interiorFlag = false;
+            }
+            checkFillFields();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            interiorFlag = false;
+            checkFillFields();
+        }
+    };
+    AdapterView.OnItemSelectedListener carBodySpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 0) {
+                enableSpinner(colourSpinner);
+                carBodyFlag = true;
+            } else {
+                carBodyFlag = false;
+            }
+            checkFillFields();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            carBodyFlag = false;
+            checkFillFields();
+        }
+    };
+    AdapterView.OnItemSelectedListener colourSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 0) {
+                colourFlag = true;
+            } else {
+                colourFlag = false;
+            }
+            checkFillFields();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            colourFlag = false;
+            checkFillFields();
+        }
+    };
 }
