@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        FastSave.init(getApplicationContext());
         initData();
         initView();
     }
@@ -91,51 +90,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginBtn.setOnClickListener(this);
         ccp = findViewById(R.id.ccp);
         phoneTextView = findViewById(R.id.phoneTextView);
-        phoneTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().length() > 5) {
-                    getCodeBtn.setEnabled(true);
-                } else {
-                    getCodeBtn.setEnabled(false);
-                }
-            }
-        });
         valueBlock = findViewById(R.id.valueBlock);
         codeView = findViewById(R.id.codeView);
-        codeView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                code = String.valueOf(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() < 6) {
-                    loginBtn.setEnabled(false);
-                } else {
-                    loginBtn.setEnabled(true);
-                }
-
-            }
-        });
         codeLabel1 = findViewById(R.id.codeLabel1);
         codeLabel2 = findViewById(R.id.codeLabel2);
         timerLabel = findViewById(R.id.timerLabel);
+        phoneTextView.addTextChangedListener(phoneTextViewChangedListener);
+        codeView.addTextChangedListener(codeViewChangedListener);
     }
 
     @Override
@@ -285,6 +246,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             return;
         }
         this.doubleBackToExitPressedOnce = true;
@@ -307,4 +272,46 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressDialog.dismiss();
         }
     }
+
+    TextWatcher phoneTextViewChangedListener = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.toString().length() > 5) {
+                getCodeBtn.setEnabled(true);
+            } else {
+                getCodeBtn.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+    };
+
+    TextWatcher codeViewChangedListener = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() < 6) {
+                loginBtn.setEnabled(false);
+            } else {
+                loginBtn.setEnabled(true);
+            }
+
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            code = String.valueOf(s);
+        }
+    };
 }
