@@ -61,7 +61,7 @@ public class RecordListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_records);
-        FastSave.init(getApplicationContext());
+//        FastSave.init(getApplicationContext());
         initView();
         getAllRecord();
         connectSocket();

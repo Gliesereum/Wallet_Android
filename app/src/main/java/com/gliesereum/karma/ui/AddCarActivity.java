@@ -90,7 +90,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initData() {
-        FastSave.init(getApplicationContext());
+//        FastSave.init(getApplicationContext());
         apiInterface = APIClient.getClient().create(APIInterface.class);
         spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
         filterMap = new HashMap<>();

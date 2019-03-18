@@ -11,12 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.gliesereum.karma.CarWashActivity;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
+import com.gliesereum.karma.ui.CarWashActivity;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.SmartRatingBar;
 import com.gliesereum.karma.util.Util;

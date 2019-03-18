@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initData() {
-        FastSave.init(getApplicationContext());
+//        FastSave.init(getApplicationContext());
         apiInterface = APIClient.getClient().create(APIInterface.class);
         errorHandler = new ErrorHandler(this, this);
         doubleBackToExitPressedOnce = false;

@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.gliesereum.karma.CarWashActivity;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.SampleClusterItem;
 import com.gliesereum.karma.SingleRecordActivity;
@@ -96,7 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void initData() {
-        FastSave.init(getApplicationContext());
+//        FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
         apiInterface = APIClient.getClient().create(APIInterface.class);
         serviceIdList = new HashSet<>();

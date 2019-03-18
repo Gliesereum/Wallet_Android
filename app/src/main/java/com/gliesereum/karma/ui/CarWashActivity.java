@@ -1,4 +1,4 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.ui;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.GlideApp;
+import com.gliesereum.karma.OrderActivity;
+import com.gliesereum.karma.R;
 import com.gliesereum.karma.adapter.CommentListAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -94,6 +97,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private RecyclerView commentList;
     private MaterialButton orderButton;
     private SmartRatingBar carWashRating;
+    private NDialog commentDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +106,21 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         initData();
         initView();
         getCarWash();
+    }
+
+    private void initData() {
+//        FastSave.init(getApplicationContext());
+        context = this;
+        carWashId = FastSave.getInstance().getString(CARWASH_ID, "");
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        errorHandler = new ErrorHandler(this, this);
+        customServiceMap = new HashMap<>();
+        workTimeMap = new HashMap<>();
+        packageMap = new HashMap<>();
+        servicePriceMap = new HashMap<>();
+        mediaURLList = new ArrayList<>();
+        commentsItemList = new ArrayList<>();
+        mediumList = new ArrayList<>();
     }
 
     private void initView() {
@@ -122,21 +141,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         sendCommentBtn.setOnClickListener(this);
         GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
         carWashRating = findViewById(R.id.carWashRating);
-    }
-
-    private void initData() {
-        FastSave.init(getApplicationContext());
-        context = this;
-        carWashId = FastSave.getInstance().getString(CARWASH_ID, "");
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        errorHandler = new ErrorHandler(this, this);
-        customServiceMap = new HashMap<>();
-        workTimeMap = new HashMap<>();
-        packageMap = new HashMap<>();
-        servicePriceMap = new HashMap<>();
-        mediaURLList = new ArrayList<>();
-        commentsItemList = new ArrayList<>();
-        mediumList = new ArrayList<>();
     }
 
     @Override
@@ -335,7 +339,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void openCommentDialog() {
-        NDialog commentDialog = new NDialog(CarWashActivity.this, ButtonType.NO_BUTTON);
+        commentDialog = new NDialog(CarWashActivity.this, ButtonType.NO_BUTTON);
         commentDialog.isCancelable(false);
         commentDialog.setCustomView(R.layout.comment_dialog);
         List<View> childViews = commentDialog.getCustomViewChildren();
@@ -348,81 +352,76 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     scaleRatingBar = childView.findViewById(R.id.simpleRatingBar);
                     scaleRatingBar.setRating(5);
                     break;
-                case R.id.timeOrderBtn:
-                    Button okBtn = childView.findViewById(R.id.timeOrderBtn);
-                    okBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showProgressDialog();
-                            Call<CommentsItem> call = apiInterface.sendComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId, new CommentsItem((int) scaleRatingBar.getRating(), commentTextView.getText().toString()));
-                            call.enqueue(new Callback<CommentsItem>() {
-                                @Override
-                                public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
-                                    if (response.code() == 200) {
-                                        Call<AllCarWashResponse> call1 = apiInterface.getCarWashFull(carWashId);
-                                        call1.enqueue(new Callback<AllCarWashResponse>() {
-                                            @Override
-                                            public void onResponse(Call<AllCarWashResponse> call1, Response<AllCarWashResponse> response) {
-                                                if (response.code() == 200) {
-                                                    carWash = response.body();
-                                                    setCommentList();
-                                                    closeProgressDialog();
-                                                } else {
-                                                    try {
-                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                                        errorHandler.showError(jObjError.getInt("code"));
-                                                        closeProgressDialog();
-                                                    } catch (Exception e) {
-                                                        errorHandler.showCustomError(e.getMessage());
-                                                        closeProgressDialog();
-                                                    }
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
-                                                errorHandler.showCustomError(t.getMessage());
-                                            }
-                                        });
-                                        closeProgressDialog();
-                                        commentDialog.dismiss();
-                                        Toast.makeText(CarWashActivity.this, "Комментарий добавлен", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        try {
-                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                            errorHandler.showError(jObjError.getInt("code"));
-                                            closeProgressDialog();
-                                            commentDialog.dismiss();
-                                        } catch (Exception e) {
-                                            errorHandler.showCustomError(e.getMessage());
-                                            closeProgressDialog();
-                                            commentDialog.dismiss();
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<CommentsItem> call, Throwable t) {
-                                    errorHandler.showCustomError(t.getMessage());
-                                    closeProgressDialog();
-                                    commentDialog.dismiss();
-                                }
-                            });
-                        }
-                    });
+                case R.id.sendCommentBtn:
+                    Button sendCommentBtn = childView.findViewById(R.id.sendCommentBtn);
+                    sendCommentBtn.setOnClickListener(this);
+                    sendCommentBtn.setOnClickListener(v -> sendComment());
                     break;
-                case R.id.nowOrderBtn:
-                    Button backBtn = childView.findViewById(R.id.nowOrderBtn);
-                    backBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            commentDialog.dismiss();
-                        }
-                    });
+                case R.id.cancelBtn:
+                    Button cancelBtn = childView.findViewById(R.id.cancelBtn);
+                    cancelBtn.setOnClickListener(v -> commentDialog.dismiss());
                     break;
             }
         }
         commentDialog.show();
+    }
+
+    private void sendComment() {
+        showProgressDialog();
+        Call<CommentsItem> call = apiInterface.sendComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId, new CommentsItem((int) scaleRatingBar.getRating(), commentTextView.getText().toString()));
+        call.enqueue(new Callback<CommentsItem>() {
+            @Override
+            public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
+                if (response.code() == 200) {
+                    Call<AllCarWashResponse> call1 = apiInterface.getCarWashFull(carWashId);
+                    call1.enqueue(new Callback<AllCarWashResponse>() {
+                        @Override
+                        public void onResponse(Call<AllCarWashResponse> call1, Response<AllCarWashResponse> response) {
+                            if (response.code() == 200) {
+                                carWash = response.body();
+                                setCommentList();
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    errorHandler.showError(jObjError.getInt("code"));
+                                } catch (Exception e) {
+                                    errorHandler.showCustomError(e.getMessage());
+                                    closeProgressDialog();
+                                }
+                            }
+                            closeProgressDialog();
+                        }
+
+                        @Override
+                        public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
+                            errorHandler.showCustomError(t.getMessage());
+                            closeProgressDialog();
+                        }
+                    });
+
+                    commentDialog.dismiss();
+                    Toast.makeText(CarWashActivity.this, "Комментарий добавлен", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        errorHandler.showError(jObjError.getInt("code"));
+                        closeProgressDialog();
+                        commentDialog.dismiss();
+                    } catch (Exception e) {
+                        errorHandler.showCustomError(e.getMessage());
+                        closeProgressDialog();
+                        commentDialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommentsItem> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+                closeProgressDialog();
+                commentDialog.dismiss();
+            }
+        });
     }
 
     private void setPackages() {
@@ -474,48 +473,43 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     .setContentText("Тут Вы можете посмотреть расписание мойки")
                     .setTargetView(workTimeImage)
                     .setDismissType(DismissType.anywhere)
-                    .setGuideListener(new GuideListener() {
-                        @Override
-                        public void onDismiss(View view) {
-                            new GuideView.Builder(CarWashActivity.this)
-                                    .setTitle("Пакеты услуг")
-                                    .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
-                                    .setTargetView(horizontalScrollView)
-                                    .setDismissType(DismissType.anywhere)
-                                    .setGuideListener(new GuideListener() {
-                                        @Override
-                                        public void onDismiss(View view) {
-                                            new GuideView.Builder(CarWashActivity.this)
-                                                    .setTitle("Фото мойки")
-                                                    .setContentText("Тут можно посмотреть фотографии мойки")
-                                                    .setTargetView(photoScrollView)
-                                                    .setDismissType(DismissType.anywhere)
-                                                    .setGuideListener(new GuideListener() {
-                                                        @Override
-                                                        public void onDismiss(View view) {
-                                                            new GuideView.Builder(CarWashActivity.this)
-                                                                    .setTitle("Заказать мойку")
-                                                                    .setContentText("Перейти к заказу мойки")
-                                                                    .setTargetView(orderButton)
-                                                                    .setDismissType(DismissType.anywhere)
-                                                                    .setGuideListener(new GuideListener() {
-                                                                        @Override
-                                                                        public void onDismiss(View view) {
-                                                                            FastSave.getInstance().saveBoolean(CARWASHA_CTIVITY, false);
-                                                                        }
-                                                                    })
-                                                                    .build()
-                                                                    .show();
-                                                        }
-                                                    })
-                                                    .build()
-                                                    .show();
-                                        }
-                                    })
-                                    .build()
-                                    .show();
-                        }
-                    })
+                    .setGuideListener(view -> new GuideView.Builder(CarWashActivity.this)
+                            .setTitle("Пакеты услуг")
+                            .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
+                            .setTargetView(horizontalScrollView)
+                            .setDismissType(DismissType.anywhere)
+                            .setGuideListener(new GuideListener() {
+                                @Override
+                                public void onDismiss(View view) {
+                                    new GuideView.Builder(CarWashActivity.this)
+                                            .setTitle("Фото мойки")
+                                            .setContentText("Тут можно посмотреть фотографии мойки")
+                                            .setTargetView(photoScrollView)
+                                            .setDismissType(DismissType.anywhere)
+                                            .setGuideListener(new GuideListener() {
+                                                @Override
+                                                public void onDismiss(View view) {
+                                                    new GuideView.Builder(CarWashActivity.this)
+                                                            .setTitle("Заказать мойку")
+                                                            .setContentText("Перейти к заказу мойки")
+                                                            .setTargetView(orderButton)
+                                                            .setDismissType(DismissType.anywhere)
+                                                            .setGuideListener(new GuideListener() {
+                                                                @Override
+                                                                public void onDismiss(View view) {
+                                                                    FastSave.getInstance().saveBoolean(CARWASHA_CTIVITY, false);
+                                                                }
+                                                            })
+                                                            .build()
+                                                            .show();
+                                                }
+                                            })
+                                            .build()
+                                            .show();
+                                }
+                            })
+                            .build()
+                            .show())
                     .build()
                     .show();
         }

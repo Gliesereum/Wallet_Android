@@ -61,7 +61,7 @@
             android:name=".ui.AddCarActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CarWashActivity"
+            android:name=".ui.CarWashActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileActivity"
