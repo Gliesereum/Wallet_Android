@@ -67,7 +67,7 @@
             android:name=".ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".OrderActivity"
+            android:name=".ui.OrderActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SplashActivity"

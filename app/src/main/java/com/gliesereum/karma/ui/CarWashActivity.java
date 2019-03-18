@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.GlideApp;
-import com.gliesereum.karma.OrderActivity;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.adapter.CommentListAdapter;
 import com.gliesereum.karma.data.network.APIClient;

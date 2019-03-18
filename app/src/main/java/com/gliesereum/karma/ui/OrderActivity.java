@@ -1,4 +1,4 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.ui;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
+import com.gliesereum.karma.R;
+import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
@@ -36,7 +38,6 @@ import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -56,7 +57,6 @@ import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
-import static com.gliesereum.karma.util.Constants.CAR_BODY;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.ORDER_ACTIVITY;
@@ -66,30 +66,23 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "TAG";
     private APIInterface apiInterface;
     private ErrorHandler errorHandler;
-    private OrderBody orderBody = new OrderBody();
+    private OrderBody orderBody;
     private ProgressDialog progressDialog;
     private AllCarWashResponse carWash;
     private Long begin = 0L;
-    private Map<String, PackagesItem> packageMap = new HashMap<>();
-    private Map<String, ServicePricesItem> servicePriceMap = new HashMap<>();
-    private Map<String, ServicesItem> serviceMap = new HashMap<>();
-    private List<String> nameOfServiceList = new ArrayList<>();
+    private Map<String, PackagesItem> packageMap;
+    private Map<String, ServicePricesItem> servicePriceMap;
+    private Map<String, ServicesItem> serviceMap;
+    private List<String> nameOfServiceList;
     private Calendar date;
     private CardView cardView2;
-    private TextView textView22;
-    private TextView textView23;
     private TextView durationLabel;
     private TextView priceLabel;
-    private TextView textView2;
-    private TextView textView11;
     private TextView discountTextView;
-    private TextView textView10;
     private HorizontalScrollView horizontalScrollView;
     private LinearLayout packageScroll;
     private ConstraintLayout packageBlock;
-    private TextView textView18;
     private LinearLayout packageItems;
-    private ConstraintLayout servicePriceBlock;
     private TextView textView19;
     private LinearLayout servicePriceItem;
     private Button orderButton;
@@ -98,19 +91,38 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FastSave.init(getApplicationContext());
         setContentView(R.layout.activity_order);
-        carWash = FastSave.getInstance().getObject("carWash", AllCarWashResponse.class);
-
-        for (int i = 0; i < carWash.getPackages().size(); i++) {
-            packageMap.put(carWash.getPackages().get(i).getId(), carWash.getPackages().get(i));
-        }
-        for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            servicePriceMap.put(carWash.getServicePrices().get(i).getId(), carWash.getServicePrices().get(i));
-        }
+        initData();
         initView();
         setPackages(carWash);
         showTutorial();
+    }
+
+    private void initData() {
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+        errorHandler = new ErrorHandler(this, this);
+        carWash = FastSave.getInstance().getObject("carWash", AllCarWashResponse.class);
+        orderBody = new OrderBody();
+        packageMap = new HashMap<>();
+        servicePriceMap = new HashMap<>();
+        serviceMap = new HashMap<>();
+        nameOfServiceList = new ArrayList<>();
+        fillServicePackageMap();
+    }
+
+    private void initView() {
+        cardView2 = findViewById(R.id.cardView2);
+        durationLabel = findViewById(R.id.durationLabel);
+        priceLabel = findViewById(R.id.priceLabel);
+        discountTextView = findViewById(R.id.discountTextView);
+        horizontalScrollView = findViewById(R.id.horizontalScrollView);
+        packageScroll = findViewById(R.id.packageScroll);
+        packageBlock = findViewById(R.id.packageBlock);
+        packageItems = findViewById(R.id.packageItems);
+        textView19 = findViewById(R.id.textView19);
+        servicePriceItem = findViewById(R.id.servicePriceItem);
+        orderButton = findViewById(R.id.orderButton);
+        orderButton.setOnClickListener(this);
     }
 
     private void showTutorial() {
@@ -120,36 +132,31 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     .setContentText("Тут отображается время и цена выбранных вами услуг")
                     .setTargetView(cardView2)
                     .setDismissType(DismissType.anywhere)
-                    .setGuideListener(new GuideListener() {
-                        @Override
-                        public void onDismiss(View view) {
-                            new GuideView.Builder(OrderActivity.this)
-                                    .setTitle("Пакеты услуг")
-                                    .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
-                                    .setTargetView(horizontalScrollView)
-                                    .setDismissType(DismissType.anywhere)
-                                    .setGuideListener(new GuideListener() {
-                                        @Override
-                                        public void onDismiss(View view) {
-                                            new GuideView.Builder(OrderActivity.this)
-                                                    .setTitle("Заказать мойку")
-                                                    .setContentText("После того как Вы все выбрали, можете заказывать мойку. У Вас будет возмодность заказать мойку на ближайшее вермя или забронировать на удобное для Вас")
-                                                    .setTargetView(orderButton)
-                                                    .setDismissType(DismissType.anywhere)
-                                                    .setGuideListener(new GuideListener() {
-                                                        @Override
-                                                        public void onDismiss(View view) {
-                                                            FastSave.getInstance().saveBoolean(ORDER_ACTIVITY, false);
-                                                        }
-                                                    })
-                                                    .build()
-                                                    .show();
-                                        }
-                                    })
-                                    .build()
-                                    .show();
-                        }
-                    })
+                    .setGuideListener(view -> new GuideView.Builder(OrderActivity.this)
+                            .setTitle("Пакеты услуг")
+                            .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
+                            .setTargetView(horizontalScrollView)
+                            .setDismissType(DismissType.anywhere)
+                            .setGuideListener(new GuideListener() {
+                                @Override
+                                public void onDismiss(View view) {
+                                    new GuideView.Builder(OrderActivity.this)
+                                            .setTitle("Заказать мойку")
+                                            .setContentText("После того как Вы все выбрали, можете заказывать мойку. У Вас будет возмодность заказать мойку на ближайшее вермя или забронировать на удобное для Вас")
+                                            .setTargetView(orderButton)
+                                            .setDismissType(DismissType.anywhere)
+                                            .setGuideListener(new GuideListener() {
+                                                @Override
+                                                public void onDismiss(View view) {
+                                                    FastSave.getInstance().saveBoolean(ORDER_ACTIVITY, false);
+                                                }
+                                            })
+                                            .build()
+                                            .show();
+                                }
+                            })
+                            .build()
+                            .show())
                     .build()
                     .show();
         }
@@ -207,83 +214,43 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private boolean checkCarBody(ServicePricesItem servicePricesItem, String carBody) {
-        if (servicePricesItem.getCarBodies().size() == 0) {
-            Log.d(TAG, "servicePricesItem.getCarBodies().size()==0");
-            return true;
-        } else {
-            Log.d(TAG, "contains(carBody): " + servicePricesItem.getCarBodies().contains(carBody) + " " + servicePricesItem.getCarBodies().toString() + " " + FastSave.getInstance().getString(CAR_BODY, ""));
-            return servicePricesItem.getCarBodies().contains(carBody);
+    private void fillServicePackageMap() {
+        for (int i = 0; i < carWash.getPackages().size(); i++) {
+            packageMap.put(carWash.getPackages().get(i).getId(), carWash.getPackages().get(i));
+        }
+        for (int i = 0; i < carWash.getServicePrices().size(); i++) {
+            servicePriceMap.put(carWash.getServicePrices().get(i).getId(), carWash.getServicePrices().get(i));
         }
     }
-
-    private boolean checkCarInterior(ServicePricesItem servicePricesItem, String carInterior) {
-        if (servicePricesItem.getAttributes().size() == 0) {
-            return true;
-        } else {
-            for (int i = 0; i < servicePricesItem.getAttributes().size(); i++) {
-                if (servicePricesItem.getAttributes().get(i).getValue().equals(carInterior)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-//        if (servicePricesItem.getInteriorTypes().size() == 0) {
-//            Log.d(TAG, "servicePricesItem.getInteriorTypes().size()==0");
-//            return true;
-//        } else {
-//            Log.d(TAG, "contains(carInterior): " + servicePricesItem.getInteriorTypes().contains(carInterior) + " " + servicePricesItem.getInteriorTypes().toString() + " " + FastSave.getInstance().getString(CAR_INTERIOR, ""));
-//            return servicePricesItem.getInteriorTypes().contains(carInterior);
-//        }
-    }
-
-//    private boolean checkCarParametr(List<ServicePricesItem> servicePricesItemList, String carBody, String carInterior) {
-//        boolean result = false;
-//
-//        if (servicePricesItemList.size()!=0){
-//            for (int i = 0; i < servicePricesItemList.size(); i++) {
-//                if (servicePricesItemList.get(i).getCarBodies().size()==0 || servicePricesItemList.get(i).getCarBodies().contains(carBody)){
-//                    if ()
-//                }
-//            }
-//        }else {
-//            result = false;
-//        }
-//        return result;
-//
-//    }
 
     private void setPackages(AllCarWashResponse carWash) {
         View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
         MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
         packageBtn.setText("Не выбран");
         packageBtn.setTag("default");
-        packageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for (int j = 0; j < packageScroll.getChildCount(); j++) {
-                    ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
-                    if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                        Log.d(TAG, "onClick: 1");
-                        ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
+        packageBtn.setOnClickListener(v -> {
+            for (int j = 0; j < packageScroll.getChildCount(); j++) {
+                ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
+                if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
+                    Log.d(TAG, "onClick: 1");
+                    ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
 
 
-                    } else {
-                        Log.d(TAG, "onClick: 2");
-                        ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
+                } else {
+                    Log.d(TAG, "onClick: 2");
+                    ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
 
 
-                    }
                 }
-                serviceMap.clear();
-                nameOfServiceList.clear();
-                priceLabel.setText("0");
-                durationLabel.setText("0");
-                discountTextView.setText("0%");
-                textView19.setText("Выберите услуги");
-                packageBlock.setVisibility(View.GONE);
-                setServicePrices(carWash);
             }
+            serviceMap.clear();
+            nameOfServiceList.clear();
+            priceLabel.setText("0");
+            durationLabel.setText("0");
+            discountTextView.setText("0%");
+            textView19.setText("Выберите услуги");
+            packageBlock.setVisibility(View.GONE);
+            setServicePrices(carWash);
         });
         packageScroll.addView(layout2);
         for (int i = 0; i < carWash.getPackages().size(); i++) {
@@ -291,41 +258,38 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             packageBtn = layout2.findViewById(R.id.packageBtn);
             packageBtn.setText(carWash.getPackages().get(i).getName());
             packageBtn.setTag(carWash.getPackages().get(i).getId());
-            packageBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    serviceMap.clear();
-                    nameOfServiceList.clear();
-                    orderBody.setPackageId((String) v.getTag());
-                    for (int j = 0; j < packageScroll.getChildCount(); j++) {
-                        ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
-                        if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                            Log.d(TAG, "onClick: 3");
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
+            packageBtn.setOnClickListener(v -> {
+                serviceMap.clear();
+                nameOfServiceList.clear();
+                orderBody.setPackageId((String) v.getTag());
+                for (int j = 0; j < packageScroll.getChildCount(); j++) {
+                    ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
+                    if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
+                        Log.d(TAG, "onClick: 3");
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
 
 
-                        } else {
-                            Log.d(TAG, "onClick: 4");
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
+                    } else {
+                        Log.d(TAG, "onClick: 4");
+                        ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
 
-                        }
                     }
-                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                        nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
-                        serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
-                    }
-                    discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
-                    setServicePrices(carWash);
-                    String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
-                    durationLabel.setText(duration);
-                    double price = 0;
-                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                        price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
-                    }
-                    priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
-                    packageBlock.setVisibility(View.VISIBLE);
-                    textView19.setText("Дополнительные услуги");
                 }
+                for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                    nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
+                    serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
+                }
+                discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
+                setServicePrices(carWash);
+                String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
+                durationLabel.setText(duration);
+                double price = 0;
+                for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                    price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
+                }
+                priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
+                packageBlock.setVisibility(View.VISIBLE);
+                textView19.setText("Дополнительные услуги");
             });
             packageScroll.addView(layout2);
             ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(0));
@@ -334,39 +298,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
         setServicePrices(carWash);
 
-    }
-
-    private void initView() {
-        errorHandler = new ErrorHandler(this, this);
-        cardView2 = findViewById(R.id.cardView2);
-        textView22 = findViewById(R.id.textView22);
-        textView23 = findViewById(R.id.textView23);
-        durationLabel = findViewById(R.id.durationLabel);
-        priceLabel = findViewById(R.id.priceLabel);
-        textView2 = findViewById(R.id.textView2);
-        textView11 = findViewById(R.id.textView11);
-        discountTextView = findViewById(R.id.discountTextView);
-        textView10 = findViewById(R.id.textView10);
-        horizontalScrollView = findViewById(R.id.horizontalScrollView);
-        packageScroll = findViewById(R.id.packageScroll);
-        packageBlock = findViewById(R.id.packageBlock);
-        textView18 = findViewById(R.id.textView18);
-        packageItems = findViewById(R.id.packageItems);
-        servicePriceBlock = findViewById(R.id.servicePriceBlock);
-        textView19 = findViewById(R.id.textView19);
-        servicePriceItem = findViewById(R.id.servicePriceItem);
-        orderButton = findViewById(R.id.orderButton);
-        orderButton.setOnClickListener(this);
-    }
-
-    public static String getStringTime(Long millisecond) {
-        if (millisecond != null) {
-            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(millisecond);
-            return format.format(calendar.getTime());
-        }
-        return "";
     }
 
     public void showProgressDialog() {
@@ -379,7 +310,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             progressDialog.dismiss();
         }
     }
-
 
     public void showDateTimePicker() {
         final Calendar currentDate = Calendar.getInstance();
@@ -420,12 +350,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             switch (childView.getId()) {
                 case R.id.timeOrderBtn:
                     Button okBtn = childView.findViewById(R.id.timeOrderBtn);
-                    okBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            preOrderNewDialog.dismiss();
-                            showDateTimePicker();
-                        }
+                    okBtn.setOnClickListener(v -> {
+                        preOrderNewDialog.dismiss();
+                        showDateTimePicker();
                     });
                     break;
                 case R.id.nowOrderBtn:
@@ -459,7 +386,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             Log.d(TAG, "getRecordFreeTime: ");
         }
         orderBody.setServicesIds(list);
-        apiInterface = APIClient.getClient().create(APIInterface.class);
         Call<OrderResponse> call = apiInterface.preOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
         call.enqueue(new Callback<OrderResponse>() {
             @Override
@@ -484,7 +410,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onClick(View v) {
                                             showProgressDialog();
-                                            apiInterface = APIClient.getClient().create(APIInterface.class);
                                             Call<OrderResponse> call = apiInterface.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody);
                                             call.enqueue(new Callback<OrderResponse>() {
                                                 @Override
