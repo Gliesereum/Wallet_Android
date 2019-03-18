@@ -70,7 +70,7 @@
             android:name=".ui.OrderActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

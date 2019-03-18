@@ -1,4 +1,4 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.ui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -11,13 +11,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.status.StatusResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
-import com.gliesereum.karma.ui.LoginActivity;
-import com.gliesereum.karma.ui.MapsActivity;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 
@@ -38,6 +37,8 @@ import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.karma.util.Constants.STATUS_UP;
 import static com.gliesereum.karma.util.Constants.USER_ID;
+import static com.gliesereum.karma.util.Constants.USER_NAME;
+import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -55,8 +56,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         getLocationPermission();
-        FastSave.init(getApplicationContext());
-        errorHandler = new ErrorHandler(this, this);
+        initData();
         initView();
         checkStatus();
 //        FirebaseInstanceId.getInstance().getInstanceId()
@@ -78,6 +78,18 @@ public class SplashActivity extends AppCompatActivity {
 //                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
 //                    }
 //                });
+    }
+
+    private void initData() {
+        FastSave.init(getApplicationContext());
+        errorHandler = new ErrorHandler(this, this);
+        apiInterface = APIClient.getClient().create(APIInterface.class);
+    }
+
+    private void initView() {
+        errorBlock = findViewById(R.id.errorBlock);
+        refreshBtn = findViewById(R.id.refreshBtn);
+        refreshBtn.setOnClickListener(v -> checkStatus());
     }
 
     public void checkStatus() {
@@ -122,7 +134,6 @@ public class SplashActivity extends AppCompatActivity {
                     if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
                         checkToken();
                     } else {
-//                        closeProgressDialog();
                         startActivity(new Intent(SplashActivity.this, MapsActivity.class));
                         finish();
                     }
@@ -146,22 +157,24 @@ public class SplashActivity extends AppCompatActivity {
         if (accessExpirationDate != 0) {
             if (Util.checkExpirationToken(accessExpirationDate)) {
                 FastSave.getInstance().saveBoolean(IS_LOGIN, true);
-//                closeProgressDialog();
-                startActivity(new Intent(SplashActivity.this, MapsActivity.class));
-                finish();
+                if (FastSave.getInstance().getString(USER_NAME, "").equals("") || FastSave.getInstance().getString(USER_SECOND_NAME, "").equals("")) {
+                    startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                    finish();
+                }
             } else {
                 if (Util.checkExpirationToken(refreshExpirationDate)) {
                     refreshToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""), FastSave.getInstance().getString(REFRESH_TOKEN, ""));
                 } else {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-//                    closeProgressDialog();
                     startActivity(new Intent(SplashActivity.this, MapsActivity.class));
                     finish();
                 }
             }
         } else {
             FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-//            closeProgressDialog();
             startActivity(new Intent(SplashActivity.this, MapsActivity.class));
             finish();
         }
@@ -178,8 +191,13 @@ public class SplashActivity extends AppCompatActivity {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, true);
                     Toast.makeText(SplashActivity.this, "Refresh!", Toast.LENGTH_SHORT).show();
                     setTokenInfo(response);
-                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
-                    finish();
+                    if (FastSave.getInstance().getString(USER_NAME, "").equals("") || FastSave.getInstance().getString(USER_SECOND_NAME, "").equals("")) {
+                        startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
+                        finish();
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                        finish();
+                    }
                 } else {
                     try {
                         FastSave.getInstance().saveBoolean(IS_LOGIN, false);
@@ -231,18 +249,6 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-
-    private void initView() {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        errorBlock = findViewById(R.id.errorBlock);
-        refreshBtn = findViewById(R.id.refreshBtn);
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkStatus();
-            }
-        });
-    }
 
     public void showProgressDialog() {
         progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
