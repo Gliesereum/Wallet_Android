@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.chaos.view.PinView;
 import com.gliesereum.karma.R;
-import com.gliesereum.karma.RegisterActivity;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
