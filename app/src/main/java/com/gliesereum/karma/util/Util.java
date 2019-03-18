@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.view.View;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.gliesereum.karma.CarListActivity;
 import com.gliesereum.karma.ProfileActivity;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.RecordListActivity;
+import com.gliesereum.karma.ui.CarListActivity;
 import com.gliesereum.karma.ui.LoginActivity;
 import com.gliesereum.karma.ui.MapsActivity;
 import com.mikepenz.materialdrawer.AccountHeader;

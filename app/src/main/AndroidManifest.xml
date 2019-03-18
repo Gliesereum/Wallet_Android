@@ -34,7 +34,7 @@
             android:name=".SingleRecordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CarListActivity"
+            android:name=".ui.CarListActivity"
             android:screenOrientation="portrait" />
 
         <uses-library

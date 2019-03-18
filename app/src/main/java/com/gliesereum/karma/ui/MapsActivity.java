@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
-import com.gliesereum.karma.CarListActivity;
 import com.gliesereum.karma.CarWashActivity;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.SampleClusterItem;
