@@ -185,7 +185,7 @@
 
 
             <Button
-                android:id="@+id/sendCommentBtn"
+                android:id="@+id/writeCommentBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -207,7 +207,7 @@
                 android:dividerHeight="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sendCommentBtn">
+                app:layout_constraintTop_toBottomOf="@+id/writeCommentBtn">
 
 
             </androidx.recyclerview.widget.RecyclerView>

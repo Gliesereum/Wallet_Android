@@ -92,6 +92,13 @@ dependencies {
     //https://android-arsenal.com/details/1/7336
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    implementation 'com.airbnb.android:lottie:2.7.0'
+    implementation 'com.github.mayuce:LottieAlertDialog:1.0'
+    //https://android-arsenal.com/details/1/7557
+
+    implementation 'com.jgb.lordsaac.igb.progresslitieigb:progresslottieigb:0.0.2'
+    //https://android-arsenal.com/details/1/7471
+
     //Socket
     implementation 'org.java-websocket:Java-WebSocket:1.4.0'
     implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.4'

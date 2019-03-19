@@ -14,11 +14,14 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.status.StatusResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
+import com.labters.lottiealertdialoglibrary.DialogTypes;
+import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 
 import org.json.JSONObject;
 
@@ -42,13 +45,15 @@ import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private APIInterface apiInterface;
+    private APIInterface API;
     private ErrorHandler errorHandler;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private ConstraintLayout errorBlock;
     private Button refreshBtn;
     private ProgressDialog progressDialog;
     private String TAG = "test_log";
+    private CustomCallback customCallback;
+    private LottieAlertDialog alertDialog;
 
 
     @Override
@@ -83,7 +88,8 @@ public class SplashActivity extends AppCompatActivity {
     private void initData() {
         FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
-        apiInterface = APIClient.getClient().create(APIInterface.class);
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(this, this);
     }
 
     private void initView() {
@@ -93,10 +99,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void checkStatus() {
-        Log.d(TAG, "checkStatus: ");
         errorBlock.setVisibility(View.GONE);
         showProgressDialog();
-        Call<StatusResponse> call = apiInterface.checkStatus();
+        Call<StatusResponse> call = API.checkStatus();
         call.enqueue(new Callback<StatusResponse>() {
             @Override
             public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
@@ -108,12 +113,11 @@ public class SplashActivity extends AppCompatActivity {
                         checkAccessToken();
                     } else {
                         errorBlock.setVisibility(View.VISIBLE);
-                        closeProgressDialog();
                     }
                 } else {
                     errorBlock.setVisibility(View.VISIBLE);
-                    closeProgressDialog();
                 }
+                closeProgressDialog();
             }
 
             @Override
@@ -126,7 +130,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void checkAccessToken() {
         Log.d(TAG, "checkAccessToken: ");
-        Call<UserResponse> call = apiInterface.checkAccessToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""));
+        Call<UserResponse> call = API.checkAccessToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""));
         call.enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
@@ -145,6 +149,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
                 errorBlock.setVisibility(View.VISIBLE);
+                closeProgressDialog();
             }
         });
     }
@@ -182,8 +187,8 @@ public class SplashActivity extends AppCompatActivity {
 
     public void refreshToken(String accessToken, String refreshToken) {
         Log.d(TAG, "refreshToken: ");
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<TokenInfo> call = apiInterface.refreshAccessToken(accessToken, refreshToken);
+        API = APIClient.getClient().create(APIInterface.class);
+        Call<TokenInfo> call = API.refreshAccessToken(accessToken, refreshToken);
         call.enqueue(new Callback<TokenInfo>() {
             @Override
             public void onResponse(Call<TokenInfo> call, Response<TokenInfo> response) {
@@ -251,13 +256,25 @@ public class SplashActivity extends AppCompatActivity {
 
 
     public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
+//        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
+//        ProgressLoadingJIGB.startLoadingJIGB(this, R.raw.loading,"Загрузка",1000,200,200);
+
+        alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_LOADING)
+                .setTitle("Загрузка")
+                .setDescription("Загружается контент, подождите")
+                .build();
+        alertDialog.setCancelable(false);
+        alertDialog.show();
 
     }
 
     public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+//        ProgressLoadingJIGB.finishLoadingJIGB(this);
+
+        alertDialog.dismiss();
+
+//        if (progressDialog != null) {
+//            progressDialog.dismiss();
+//        }
     }
 }

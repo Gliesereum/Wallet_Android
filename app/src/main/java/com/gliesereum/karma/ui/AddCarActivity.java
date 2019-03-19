@@ -14,6 +14,7 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
@@ -25,8 +26,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +35,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
@@ -62,7 +60,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private MaterialButton addCarBtn;
     private List<ClassServiceResponse> classServiceList;
     private ProgressDialog progressDialog;
-    private APIInterface apiInterface;
+    private APIInterface API;
     private ErrorHandler errorHandler;
     private HashMap<String, String> brandHashMap;
     private HashMap<String, String> modelHashMap;
@@ -75,6 +73,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private Map<String, String> mapClassServise;
     private List<Chip> selectedChip;
     private Map<String, FilterResponse> filterMap;
+    private CustomCallback customCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +90,8 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initData() {
 //        FastSave.init(getApplicationContext());
-        apiInterface = APIClient.getClient().create(APIInterface.class);
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(this, this);
         spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
         filterMap = new HashMap<>();
         mapClassServise = new HashMap<>();
@@ -137,47 +137,29 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getAllClassService() {
-        Call<List<ClassServiceResponse>> call = apiInterface.getAllClassService();
-        call.enqueue(new Callback<List<ClassServiceResponse>>() {
-            @Override
-            public void onResponse(Call<List<ClassServiceResponse>> call, Response<List<ClassServiceResponse>> response) {
-                if (response.code() == 200) {
-                    classServiceList = response.body();
-                    for (int i = 0; i < classServiceList.size(); i++) {
-                        mapClassServise.put(classServiceList.get(i).getName(), classServiceList.get(i).getId());
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View rowView = inflater.inflate(R.layout.chip_class_service, null);
-                        ((Chip) rowView).setText(classServiceList.get(i).getName());
-                        rowView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                checkFillFields();
-                            }
-                        });
-                        chipGroup.addView(rowView);
-                    }
-                } else {
-                    if (response.code() == 204) {
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
+        API.getAllClassService()
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<ClassServiceResponse>>() {
+                    @Override
+                    public void onSuccessful(Call<List<ClassServiceResponse>> call, Response<List<ClassServiceResponse>> response) {
+                        classServiceList = response.body();
+                        for (int i = 0; i < classServiceList.size(); i++) {
+                            mapClassServise.put(classServiceList.get(i).getName(), classServiceList.get(i).getId());
+                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                            View rowView = inflater.inflate(R.layout.chip_class_service, null);
+                            ((Chip) rowView).setText(classServiceList.get(i).getName());
+                            rowView.setOnClickListener(v -> checkFillFields());
+                            chipGroup.addView(rowView);
                         }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<ClassServiceResponse>> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<List<ClassServiceResponse>> call, Response<List<ClassServiceResponse>> response) {
+
+                    }
+                }));
     }
 
     private void addCar() {
-        showProgressDialog();
         AllCarResponse carInfo = new AllCarResponse(
                 brandHashMap.get(brandSpinner.getSelectedItem().toString()),
                 modelHashMap.get(modelSpinner.getSelectedItem().toString()),
@@ -185,102 +167,64 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                 registrationNumberTextView.getText().toString(),
                 descriptionNumberTextView.getText().toString()
         );
-        Call<AllCarResponse> call = apiInterface.addCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo);
-        call.enqueue(new Callback<AllCarResponse>() {
-            @Override
-            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
-                if (response.code() == 200) {
-                    for (int j = 0; j < chipGroup.getChildCount(); j++) {
-                        Chip chip = (Chip) chipGroup.getChildAt(j);
-                        if (chip.isChecked()) {
-                            selectedChip.add(chip);
+        API.addCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carInfo)
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<AllCarResponse>() {
+                    @Override
+                    public void onSuccessful(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+                        for (int j = 0; j < chipGroup.getChildCount(); j++) {
+                            Chip chip = (Chip) chipGroup.getChildAt(j);
+                            if (chip.isChecked()) {
+                                selectedChip.add(chip);
+                            }
                         }
+
+                        for (int i = 0; i < selectedChip.size(); i++) {
+                            addClassService(response.body().getId(), mapClassServise.get(selectedChip.get(i).getText().toString()));
+                        }
+
+                        addCarFilter(response.body().getId(), interiorHashMap.get(interiorSpinner.getSelectedItem().toString()));
+                        addCarFilter(response.body().getId(), carBodyHashMap.get(carBodySpinner.getSelectedItem().toString()));
+                        addCarFilter(response.body().getId(), colorHashMap.get(colourSpinner.getSelectedItem().toString()));
+                        startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
+                        finish();
+                        Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
                     }
 
-                    for (int i = 0; i < selectedChip.size(); i++) {
-                        addClassService(response.body().getId(), mapClassServise.get(selectedChip.get(i).getText().toString()));
-                    }
+                    @Override
+                    public void onEmpty(Call<AllCarResponse> call, Response<AllCarResponse> response) {
 
-                    addCarFilter(response.body().getId(), interiorHashMap.get(interiorSpinner.getSelectedItem().toString()));
-                    addCarFilter(response.body().getId(), carBodyHashMap.get(carBodySpinner.getSelectedItem().toString()));
-                    addCarFilter(response.body().getId(), colorHashMap.get(colourSpinner.getSelectedItem().toString()));
-                    startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
-                    finish();
-                    Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                        closeProgressDialog();
                     }
-                }
-                closeProgressDialog();
-            }
-
-            @Override
-            public void onFailure(Call<AllCarResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
-            }
-        });
+                }));
     }
 
     private void addClassService(String idCar, String idService) {
-        Call<CarDeleteResponse> call = apiInterface.addClassService(idCar, idService, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
-        call.enqueue(new Callback<CarDeleteResponse>() {
-            @Override
-            public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
-                if (response.code() == 200) {
+        API.addClassService(idCar, idService, FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CarDeleteResponse>() {
+                    @Override
+                    public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
 
-
-                } else {
-                    if (response.code() == 204) {
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<CarDeleteResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
+
+                    }
+                }));
     }
 
     private void addCarFilter(String idCar, String idAttribute) {
-        Call<CarDeleteResponse> call = apiInterface.addCarFilter(idCar, idAttribute, FastSave.getInstance().getString(ACCESS_TOKEN, ""));
-        call.enqueue(new Callback<CarDeleteResponse>() {
-            @Override
-            public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
-                if (response.code() == 200) {
+        API.addCarFilter(idCar, idAttribute, FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CarDeleteResponse>() {
+                    @Override
+                    public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
 
-
-                } else {
-                    if (response.code() == 204) {
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<CarDeleteResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
+
+                    }
+                }));
     }
 
     private void enableSpinner(MaterialSpinner materialSpinner) {
@@ -343,98 +287,71 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getBrands() {
-        Call<List<BrandResponse>> call = apiInterface.getBrands();
-        call.enqueue(new Callback<List<BrandResponse>>() {
-            @Override
-            public void onResponse(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
-                if (response.code() == 200) {
-                    ArrayList<String> brandITEMS = new ArrayList<>();
-                    for (int i = 0; i < response.body().size(); i++) {
-                        brandITEMS.add(response.body().get(i).getName());
-                        brandHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+        API.getBrands()
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<BrandResponse>>() {
+                    @Override
+                    public void onSuccessful(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
+                        ArrayList<String> brandITEMS = new ArrayList<>();
+                        for (int i = 0; i < response.body().size(); i++) {
+                            brandITEMS.add(response.body().get(i).getName());
+                            brandHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+                        }
+                        spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, brandITEMS);
+                        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        brandSpinner.setAdapter(spinnerAdapter);
                     }
-                    spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, brandITEMS);
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    brandSpinner.setAdapter(spinnerAdapter);
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
+
+                    }
+                }));
     }
 
     private void getModel() {
-        Call<List<BrandResponse>> call = apiInterface.getModels(brandHashMap.get(brandSpinner.getSelectedItem()));
-        call.enqueue(new Callback<List<BrandResponse>>() {
-            @Override
-            public void onResponse(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
-                if (response.code() == 200) {
-                    ArrayList<String> modelITEMS = new ArrayList<>();
-                    for (int i = 0; i < response.body().size(); i++) {
-                        modelITEMS.add(response.body().get(i).getName());
-                        modelHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+        API.getModels(brandHashMap.get(brandSpinner.getSelectedItem()))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<BrandResponse>>() {
+                    @Override
+                    public void onSuccessful(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
+                        ArrayList<String> modelITEMS = new ArrayList<>();
+                        for (int i = 0; i < response.body().size(); i++) {
+                            modelITEMS.add(response.body().get(i).getName());
+                            modelHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+
+                        }
+                        spinnerAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, modelITEMS);
+                        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        modelSpinner.setAdapter(spinnerAdapter);
+                    }
+
+                    @Override
+                    public void onEmpty(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
 
                     }
-                    spinnerAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, modelITEMS);
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    modelSpinner.setAdapter(spinnerAdapter);
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                }));
     }
 
     private void getYears() {
-        Call<List<BrandResponse>> call = apiInterface.getYears();
-        call.enqueue(new Callback<List<BrandResponse>>() {
-            @Override
-            public void onResponse(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
-                if (response.code() == 200) {
-                    ArrayList<String> yearITEMS = new ArrayList<>();
-                    for (int i = 0; i < response.body().size(); i++) {
-                        yearITEMS.add(response.body().get(i).getName());
-                        yearHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+        API.getYears()
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<BrandResponse>>() {
+                    @Override
+                    public void onSuccessful(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
+                        ArrayList<String> yearITEMS = new ArrayList<>();
+                        for (int i = 0; i < response.body().size(); i++) {
+                            yearITEMS.add(response.body().get(i).getName());
+                            yearHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+
+                        }
+                        spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, yearITEMS);
+                        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        yearSpinner.setAdapter(spinnerAdapter);
+                    }
+
+                    @Override
+                    public void onEmpty(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
 
                     }
-                    spinnerAdapter = new ArrayAdapter<>(AddCarActivity.this, R.layout.car_hint_item_layout, yearITEMS);
-                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    yearSpinner.setAdapter(spinnerAdapter);
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<BrandResponse>> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                }));
     }
 
     public void getInterior() {
@@ -460,29 +377,20 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void getAllFilter() {
-        Call<List<FilterResponse>> call = apiInterface.getFilters(SERVICE_TYPE);
-        call.enqueue(new Callback<List<FilterResponse>>() {
-            @Override
-            public void onResponse(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {
-                if (response.code() == 200) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        filterMap.put(response.body().get(i).getValue(), response.body().get(i));
+        API.getFilters(SERVICE_TYPE)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<FilterResponse>>() {
+                    @Override
+                    public void onSuccessful(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            filterMap.put(response.body().get(i).getValue(), response.body().get(i));
+                        }
                     }
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<FilterResponse>> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {
+
+                    }
+                }));
     }
 
     public void getColor() {
@@ -494,16 +402,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         spinnerAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, colorITEMS);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colourSpinner.setAdapter(spinnerAdapter);
-    }
-
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-    }
-
-    public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     private void checkFillFields() {

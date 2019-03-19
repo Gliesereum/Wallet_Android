@@ -13,12 +13,11 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.adapter.RecordListAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
@@ -48,12 +46,13 @@ public class RecordListActivity extends AppCompatActivity {
     private RecordListAdapter recordListAdapter;
     private List<AllRecordResponse> recordsList;
     private Map<String, String> carWashNameMap = new HashMap<>();
-    private APIInterface apiInterface;
+    private APIInterface API;
     private ErrorHandler errorHandler;
     private TextView splashTextView;
     private ProgressDialog progressDialog;
     private StompClient mStompClient;
     private NotificationManager notifManager;
+    private CustomCallback customCallback;
 
 
     @SuppressLint("CheckResult")
@@ -130,44 +129,27 @@ public class RecordListActivity extends AppCompatActivity {
 
 
     private void getAllRecord() {
-        showProgressDialog();
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<List<AllRecordResponse>> call = apiInterface.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE);
-        call.enqueue(new Callback<List<AllRecordResponse>>() {
-            @Override
-            public void onResponse(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
-                if (response.code() == 200) {
-                    recordsList = response.body();
-                    if (recordsList != null && recordsList.size() > 0) {
-                        recordListAdapter.setItems(recordsList);
-                    }
-
-                } else {
-                    if (response.code() == 204) {
-                        splashTextView.setVisibility(View.VISIBLE);
-                        Toast.makeText(RecordListActivity.this, "У вас пока нет записей", Toast.LENGTH_SHORT).show();
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                            closeProgressDialog();
+        API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE)
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<List<AllRecordResponse>>() {
+                    @Override
+                    public void onSuccessful(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
+                        recordsList = response.body();
+                        if (recordsList != null && recordsList.size() > 0) {
+                            recordListAdapter.setItems(recordsList);
                         }
                     }
-                }
-                closeProgressDialog();
-            }
 
-            @Override
-            public void onFailure(Call<List<AllRecordResponse>> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
+                        splashTextView.setVisibility(View.VISIBLE);
+                        Toast.makeText(RecordListActivity.this, "У вас пока нет записей", Toast.LENGTH_SHORT).show();
+                    }
+                }));
     }
 
     private void initView() {
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(this, this);
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Список записей");

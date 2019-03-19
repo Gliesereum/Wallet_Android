@@ -16,12 +16,10 @@ import com.gliesereum.karma.WrapContentHeightViewPager;
 import com.gliesereum.karma.adapter.ViewPagerAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -29,7 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
@@ -43,13 +40,14 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
     private ViewPagerIndicator viewPagerIndicator;
     private Toolbar toolbar;
     private List<AllCarResponse> carsList;
-    private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
+    private APIInterface API;
+    //    private ErrorHandler errorHandler;
     private TextView splashTextView;
     private WrapContentHeightViewPager viewPager;
     private MaterialButton chooseCarBtn;
     private MaterialButton addFirstCarBtn;
     private int selectPosition = 0;
+    private CustomCallback customCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +60,10 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initData() {
-//        FastSave.init(getApplicationContext());
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        errorHandler = new ErrorHandler(this, this);
+        API = APIClient.getClient().create(APIInterface.class);
+//        errorHandler = new ErrorHandler(this, this);
+        customCallback = new CustomCallback(this, this);
+
     }
 
     private void initView() {
@@ -106,85 +105,60 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getAllCars() {
-        Call<List<AllCarResponse>> call = apiInterface.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
-        call.enqueue(new Callback<List<AllCarResponse>>() {
-            @Override
-            public void onResponse(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
-                if (response.code() == 200) {
-                    carsList = response.body();
-                    viewPager.setAdapter(new ViewPagerAdapter(CarListActivity.this, carsList));
-                    viewPagerIndicator.setupWithViewPager(viewPager);
-                    if (carsList != null && carsList.size() > 0) {
-                        if (carsList.size() == 1) {
-                            FastSave.getInstance().saveString(CAR_ID, carsList.get(0).getId());
-                            FastSave.getInstance().saveString(CAR_BRAND, carsList.get(0).getBrand().getName());
-                            FastSave.getInstance().saveString(CAR_MODEL, carsList.get(0).getModel().getName());
-                            FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carsList.get(0).getServices());
-                            FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, carsList.get(0).getAttributes());
-                            chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
-                            chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
-                            chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
-                        }
-                        if (FastSave.getInstance().getString(CAR_ID, "").equals(carsList.get(0).getId())) {
-                            chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
-                            chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
-                            chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
-                        } else {
-                            chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
-                            chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.ADD);
-                            chooseCarBtn.setText("Пересесть на " + carsList.get(0).getBrand().getName());
+        API.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, "")).enqueue(
+                customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarResponse>>() {
+                    @Override
+                    public void onSuccessful(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
+                        carsList = response.body();
+                        viewPager.setAdapter(new ViewPagerAdapter(CarListActivity.this, carsList));
+                        viewPagerIndicator.setupWithViewPager(viewPager);
+                        if (carsList != null && carsList.size() > 0) {
+                            if (carsList.size() == 1) {
+                                FastSave.getInstance().saveString(CAR_ID, carsList.get(0).getId());
+                                FastSave.getInstance().saveString(CAR_BRAND, carsList.get(0).getBrand().getName());
+                                FastSave.getInstance().saveString(CAR_MODEL, carsList.get(0).getModel().getName());
+                                FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carsList.get(0).getServices());
+                                FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, carsList.get(0).getAttributes());
+                                chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                                chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
+                                chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
+                            }
+                            if (FastSave.getInstance().getString(CAR_ID, "").equals(carsList.get(0).getId())) {
+                                chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                                chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
+                                chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
+                            } else {
+                                chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
+                                chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.ADD);
+                                chooseCarBtn.setText("Пересесть на " + carsList.get(0).getBrand().getName());
+                            }
                         }
                     }
-                } else {
-                    if (response.code() == 204) {
+
+                    @Override
+                    public void onEmpty(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
                         splashTextView.setVisibility(View.VISIBLE);
                         addFirstCarBtn.setVisibility(View.VISIBLE);
                         chooseCarBtn.setVisibility(View.GONE);
                         viewPagerIndicator.setVisibility(View.GONE);
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                        }
                     }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<AllCarResponse>> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                })
+        );
     }
 
     private void setFavoriteCar(String carId) {
-        Call<AllCarResponse> call = apiInterface.setFavoriteCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carId);
-        call.enqueue(new Callback<AllCarResponse>() {
-            @Override
-            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
-                if (response.code() == 200) {
-                    Toast.makeText(CarListActivity.this, "OK!", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (response.code() == 204) {
-                        Toast.makeText(CarListActivity.this, "204", Toast.LENGTH_SHORT).show();
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                        }
-                    }
-                }
-            }
+        API.setFavoriteCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carId)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllCarResponse>() {
+                    @Override
+                    public void onSuccessful(Call<AllCarResponse> call, Response<AllCarResponse> response) {
 
-            @Override
-            public void onFailure(Call<AllCarResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    }
+
+                    @Override
+                    public void onEmpty(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+
+                    }
+                }));
     }
 
     @Override

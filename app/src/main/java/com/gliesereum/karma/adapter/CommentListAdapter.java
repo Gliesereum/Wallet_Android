@@ -142,9 +142,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                         scaleRatingBar = childView.findViewById(R.id.simpleRatingBar);
                                         scaleRatingBar.setRating(commentsItem.getRating());
                                         break;
-                                    case R.id.timeOrderBtn:
-                                        Button okBtn = childView.findViewById(R.id.timeOrderBtn);
-                                        okBtn.setOnClickListener(new View.OnClickListener() {
+                                    case R.id.sendCommentBtn:
+                                        Button sendCommentBtn = childView.findViewById(R.id.sendCommentBtn);
+                                        sendCommentBtn.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                                 showProgressDialog();
@@ -181,14 +181,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                             }
                                         });
                                         break;
-                                    case R.id.nowOrderBtn:
+                                    case R.id.cancelBtn:
                                         Button backBtn = childView.findViewById(R.id.nowOrderBtn);
-                                        backBtn.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                commentDialog.dismiss();
-                                            }
-                                        });
+                                        backBtn.setOnClickListener(v -> commentDialog.dismiss());
                                         break;
                                 }
                             }
