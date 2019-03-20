@@ -10,16 +10,13 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.user.User;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONObject;
-
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
@@ -34,8 +31,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private TextInputEditText thirdNameTextView;
     private MaterialButton registrationBtn;
     private User user;
-    private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
+    private APIInterface API;
+    private CustomCallback customCallback;
     private boolean doubleBackToExitPressedOnce;
 
     @Override
@@ -47,8 +44,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initData() {
-        errorHandler = new ErrorHandler(this, this);
-        apiInterface = APIClient.getClient().create(APIInterface.class);
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(this, this);
         user = FastSave.getInstance().getObject("userInfo", User.class);
         doubleBackToExitPressedOnce = false;
     }
@@ -110,32 +107,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             user.setAddAddress(ANDROID_APP);
             user.setPosition(ANDROID_APP);
 
-            Call<User> call = apiInterface.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.code() == 200) {
-                        FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
-                        FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
-                        startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
-                        finish();
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
+            API.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user)
+                    .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<User>() {
+                        @Override
+                        public void onSuccessful(Call<User> call, Response<User> response) {
+                            FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
+                            FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
+                            startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
+                            finish();
                         }
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    errorHandler.showCustomError(t.getMessage());
-                }
-            });
+                        @Override
+                        public void onEmpty(Call<User> call, Response<User> response) {
+
+                        }
+                    }));
         } else {
-            Toast.makeText(RegisterActivity.this, "Enter value", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Заполните все поля", Toast.LENGTH_SHORT).show();
         }
     }
 }
