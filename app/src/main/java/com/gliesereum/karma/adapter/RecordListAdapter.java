@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.GlideApp;
 import com.gliesereum.karma.R;
-import com.gliesereum.karma.SingleRecordActivity;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
+import com.gliesereum.karma.ui.SingleRecordActivity;
 import com.gliesereum.karma.util.Util;
 
 import java.util.ArrayList;

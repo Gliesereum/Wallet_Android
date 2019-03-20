@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.SampleClusterItem;
-import com.gliesereum.karma.SingleRecordActivity;
 import com.gliesereum.karma.adapter.CustomInfoWindowAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;

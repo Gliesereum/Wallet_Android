@@ -31,7 +31,7 @@
             android:resource="@drawable/ic_directions_car_black_24dp" />
 
         <activity
-            android:name=".SingleRecordActivity"
+            android:name=".ui.SingleRecordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.CarListActivity"

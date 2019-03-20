@@ -1,6 +1,5 @@
 package com.gliesereum.karma.adapter;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -14,10 +13,10 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.ui.CarWashActivity;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.SmartRatingBar;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -28,15 +27,12 @@ import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 import com.willy.ratingbar.ScaleRatingBar;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
@@ -44,20 +40,21 @@ import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
 
     private List<CommentsItem> allCommentList = new ArrayList<>();
-    private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
+    private APIInterface API;
+    private CustomCallback customCallback;
     private String TAG = "TAG";
     private boolean myComment;
     private PowerMenu editCommentMenu;
     private CarWashActivity activity;
     private Context context;
     private ScaleRatingBar scaleRatingBar;
-    private ProgressDialog progressDialog;
 
     public CommentListAdapter(boolean myComment, CarWashActivity activity) {
         this.myComment = myComment;
         this.activity = activity;
         this.context = activity.getContext();
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(activity.getContext(), activity);
     }
 
     @NonNull
@@ -128,6 +125,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 public void onItemClick(int position, PowerMenuItem item) {
                     switch (position) {
                         case 0:
+                            editCommentMenu.onDestroy();
                             NDialog commentDialog = new NDialog(context, ButtonType.NO_BUTTON);
                             commentDialog.isCancelable(false);
                             commentDialog.setCustomView(R.layout.comment_dialog);
@@ -147,37 +145,19 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                         sendCommentBtn.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                showProgressDialog();
-                                                apiInterface = APIClient.getClient().create(APIInterface.class);
-                                                Call<CommentsItem> call = apiInterface.editComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), new CommentsItem((int) scaleRatingBar.getRating(), commentTextView.getText().toString(), commentsItem.getId()));
-                                                call.enqueue(new Callback<CommentsItem>() {
-                                                    @Override
-                                                    public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
-                                                        if (response.code() == 200) {
-                                                            closeProgressDialog();
-                                                            commentDialog.dismiss();
-                                                            activity.setCommentList();
-                                                        } else {
-                                                            try {
-                                                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                                                errorHandler.showError(jObjError.getInt("code"));
-                                                                closeProgressDialog();
+                                                API.editComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), new CommentsItem((int) scaleRatingBar.getRating(), commentTextView.getText().toString(), commentsItem.getId()))
+                                                        .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<CommentsItem>() {
+                                                            @Override
+                                                            public void onSuccessful(Call<CommentsItem> call, Response<CommentsItem> response) {
                                                                 commentDialog.dismiss();
-                                                            } catch (Exception e) {
-                                                                errorHandler.showCustomError(e.getMessage());
-                                                                closeProgressDialog();
-                                                                commentDialog.dismiss();
+                                                                activity.setCommentList();
                                                             }
-                                                        }
-                                                    }
 
-                                                    @Override
-                                                    public void onFailure(Call<CommentsItem> call, Throwable t) {
-                                                        errorHandler.showCustomError(t.getMessage());
-                                                        closeProgressDialog();
-                                                        commentDialog.dismiss();
-                                                    }
-                                                });
+                                                            @Override
+                                                            public void onEmpty(Call<CommentsItem> call, Response<CommentsItem> response) {
+
+                                                            }
+                                                        }));
                                             }
                                         });
                                         break;
@@ -188,38 +168,21 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                 }
                             }
                             commentDialog.show();
-                            editCommentMenu.onDestroy();
                             break;
                         case 1:
                             editCommentMenu.onDestroy();
-                            showProgressDialog();
-                            apiInterface = APIClient.getClient().create(APIInterface.class);
-                            Call<CarDeleteResponse> call = apiInterface.deleteComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), commentsItem.getId());
-                            call.enqueue(new Callback<CarDeleteResponse>() {
-                                @Override
-                                public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
-                                    if (response.code() == 200) {
-                                        closeProgressDialog();
-                                        activity.setCommentList();
-                                    } else {
-                                        try {
-                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                            errorHandler.showError(jObjError.getInt("code"));
-                                            closeProgressDialog();
-                                        } catch (Exception e) {
-                                            errorHandler.showCustomError(e.getMessage());
-                                            closeProgressDialog();
+                            API.deleteComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), commentsItem.getId())
+                                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<CarDeleteResponse>() {
+                                        @Override
+                                        public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
+                                            activity.setCommentList();
                                         }
-                                    }
-                                }
 
-                                @Override
-                                public void onFailure(Call<CarDeleteResponse> call, Throwable t) {
-                                    errorHandler.showCustomError(t.getMessage());
-                                    closeProgressDialog();
-                                }
-                            });
+                                        @Override
+                                        public void onEmpty(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
 
+                                        }
+                                    }));
                             break;
                     }
                 }
@@ -244,16 +207,4 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         allCommentList.addAll(commentsItems);
         notifyDataSetChanged();
     }
-
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(context, "Ща сек...", "Ща все сделаю...");
-
-    }
-
-    public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
 }

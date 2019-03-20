@@ -1,8 +1,7 @@
-package com.gliesereum.karma;
+package com.gliesereum.karma.ui;
 
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
+import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
@@ -38,9 +38,6 @@ public class SingleRecordActivity extends AppCompatActivity {
     private APIInterface API;
     private CustomCallback customCallback;
     private Button goRoad;
-    private LocationManager locationManager;
-    private double myLatitude = 0.0;
-    private double myLongitude = 0.0;
     private String TAG = "TAG";
     private AllRecordResponse record;
     private ConstraintLayout packageBlock;
