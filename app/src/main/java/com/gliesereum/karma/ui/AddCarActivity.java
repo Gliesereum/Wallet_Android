@@ -1,6 +1,5 @@
 package com.gliesereum.karma.ui;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.filter.FilterResponse;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -59,9 +57,8 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private TextInputEditText descriptionNumberTextView;
     private MaterialButton addCarBtn;
     private List<ClassServiceResponse> classServiceList;
-    private ProgressDialog progressDialog;
     private APIInterface API;
-    private ErrorHandler errorHandler;
+    private CustomCallback customCallback;
     private HashMap<String, String> brandHashMap;
     private HashMap<String, String> modelHashMap;
     private HashMap<String, String> yearHashMap;
@@ -73,7 +70,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private Map<String, String> mapClassServise;
     private List<Chip> selectedChip;
     private Map<String, FilterResponse> filterMap;
-    private CustomCallback customCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +85,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initData() {
-//        FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
@@ -110,7 +105,6 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         toolbar.setTitle("Добавление авто");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        errorHandler = new ErrorHandler(this, this);
         brandSpinner = findViewById(R.id.brandSpinner);
         modelSpinner = findViewById(R.id.modelSpinner);
         yearSpinner = findViewById(R.id.yearSpinner);

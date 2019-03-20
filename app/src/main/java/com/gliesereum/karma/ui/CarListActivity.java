@@ -41,13 +41,12 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
     private Toolbar toolbar;
     private List<AllCarResponse> carsList;
     private APIInterface API;
-    //    private ErrorHandler errorHandler;
+    private CustomCallback customCallback;
     private TextView splashTextView;
     private WrapContentHeightViewPager viewPager;
     private MaterialButton chooseCarBtn;
     private MaterialButton addFirstCarBtn;
     private int selectPosition = 0;
-    private CustomCallback customCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,6 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
 
     private void initData() {
         API = APIClient.getClient().create(APIInterface.class);
-//        errorHandler = new ErrorHandler(this, this);
         customCallback = new CustomCallback(this, this);
 
     }
@@ -105,8 +103,8 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getAllCars() {
-        API.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, "")).enqueue(
-                customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarResponse>>() {
+        API.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
                         carsList = response.body();

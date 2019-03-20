@@ -1,7 +1,6 @@
 package com.gliesereum.karma.ui;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -28,7 +27,6 @@ import com.gliesereum.karma.data.network.json.carwash.MediaItem;
 import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.SmartRatingBar;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -42,8 +40,6 @@ import com.skydoves.powermenu.PowerMenuItem;
 import com.squareup.picasso.Picasso;
 import com.willy.ratingbar.ScaleRatingBar;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +50,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import hakobastvatsatryan.DropdownTextView;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
@@ -70,7 +65,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private AllCarWashResponse carWash;
     private APIInterface API;
     private CustomCallback customCallback;
-    private ProgressDialog progressDialog;
     private PowerMenu packagePowerMenu;
     private PowerMenu workTimePowerMenu;
     private Map<String, String> customServiceMap;
@@ -83,7 +77,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private TextInputEditText commentTextView;
     private CommentListAdapter commentListAdapter;
     private ScaleRatingBar scaleRatingBar;
-    private ErrorHandler errorHandler;
     private Context context;
     private TextView name;
     private TextView address;
@@ -115,7 +108,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         carWashId = FastSave.getInstance().getString(CARWASH_ID, "");
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
-        errorHandler = new ErrorHandler(this, this);
         customServiceMap = new HashMap<>();
         workTimeMap = new HashMap<>();
         packageMap = new HashMap<>();
@@ -126,7 +118,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initView() {
-        progressDialog = new ProgressDialog(this);
         name = findViewById(R.id.name);
         address = findViewById(R.id.address);
         logoImageView = findViewById(R.id.logoImageView);
@@ -202,99 +193,34 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         })
                 );
-
-
-//        showProgressDialog();
-//        Call<AllCarWashResponse> call = API.getCarWashFull(carWashId);
-//        call.enqueue(new Callback<AllCarWashResponse>() {
-//            @Override
-//            public void onResponse(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
-//                if (response.code() == 200) {
-//                    carWash = response.body();
-//                    for (int i = 0; i < carWash.getPackages().size(); i++) {
-//                        packageMap.put(carWash.getPackages().get(i).getId(), carWash.getPackages().get(i));
-//                    }
-//                    for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-//                        servicePriceMap.put(carWash.getServicePrices().get(i).getId(), carWash.getServicePrices().get(i));
-//                    }
-//                    workTimeMap.clear();
-//                    for (int i = 0; i < response.body().getWorkTimes().size(); i++) {
-//                        workTimeMap.put(response.body().getWorkTimes().get(i).getDayOfWeek(), response.body().getWorkTimes().get(i));
-//                    }
-//                    name.setText(carWash.getName());
-//                    address.setText(carWash.getAddress());
-//                    descriptionDropdown.setContentText(carWash.getDescription());
-//                    carWashRating.setRatingNum(carWash.getRating().getRating());
-//                    setWorkTime();
-//                    setPackages();
-//                    setPhotoSlider();
-//                    setCommentList();
-//
-//                    for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-//                        if (carWash.getServicePrices().get(i).getName() != null) {
-//                            customServiceMap.put(carWash.getServicePrices().get(i).getName(), carWash.getServicePrices().get(i).getServiceId());
-//                        }
-//                    }
-//                    closeProgressDialog();
-//                    showTutorial();
-//                } else {
-//                    try {
-//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-//                        errorHandler.showError(jObjError.getInt("code"));
-//                        closeProgressDialog();
-//                    } catch (Exception e) {
-//                        errorHandler.showCustomError(e.getMessage());
-//                        closeProgressDialog();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
-//                errorHandler.showCustomError(t.getMessage());
-//            }
-//        });
     }
 
     public void setCommentList() {
         commentsItemList.clear();
-        Call<CommentsItem> call = API.getMyComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId);
-        call.enqueue(new Callback<CommentsItem>() {
-            @Override
-            public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
-                if (response.code() == 200) {
-                    commentListAdapter = new CommentListAdapter(true, CarWashActivity.this);
-                    commentsItemList.add(response.body());
-                    carWash.getComments().remove(response.body());
-                    commentsItemList.addAll(carWash.getComments());
-                    commentListAdapter.setItems(commentsItemList);
-                    commentList.setAdapter(commentListAdapter);
-                    commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
-                    sendCommentBtn.setVisibility(View.GONE);
-                } else {
-                    if (response.code() == 204) {
+        API.getMyComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CommentsItem>() {
+                    @Override
+                    public void onSuccessful(Call<CommentsItem> call, Response<CommentsItem> response) {
+                        commentListAdapter = new CommentListAdapter(true, CarWashActivity.this);
+                        commentsItemList.add(response.body());
+                        carWash.getComments().remove(response.body());
+                        commentsItemList.addAll(carWash.getComments());
+                        commentListAdapter.setItems(commentsItemList);
+                        commentList.setAdapter(commentListAdapter);
+                        commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+                        sendCommentBtn.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onEmpty(Call<CommentsItem> call, Response<CommentsItem> response) {
                         commentListAdapter = new CommentListAdapter(false, CarWashActivity.this);
                         commentsItemList.addAll(carWash.getComments());
                         commentListAdapter.setItems(commentsItemList);
                         commentList.setAdapter(commentListAdapter);
                         commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
                         sendCommentBtn.setVisibility(View.VISIBLE);
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                        }
                     }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CommentsItem> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                }));
     }
 
     private void setPhotoSlider() {
@@ -417,8 +343,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                         .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllCarWashResponse>() {
                                             @Override
                                             public void onSuccessful(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
-                                carWash = response.body();
-                                setCommentList();
+                                                carWash = response.body();
+                                                setCommentList();
                                             }
 
                                             @Override
@@ -436,62 +362,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         })
                 );
-
-
-//        Call<CommentsItem> call = API.sendComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId, new CommentsItem((int) scaleRatingBar.getRating(), commentTextView.getText().toString()));
-//        call.enqueue(new Callback<CommentsItem>() {
-//            @Override
-//            public void onResponse(Call<CommentsItem> call, Response<CommentsItem> response) {
-//                if (response.code() == 200) {
-//                    Call<AllCarWashResponse> call1 = API.getCarWashFull(carWashId);
-//                    call1.enqueue(new Callback<AllCarWashResponse>() {
-//                        @Override
-//                        public void onResponse(Call<AllCarWashResponse> call1, Response<AllCarWashResponse> response) {
-//                            if (response.code() == 200) {
-//                                carWash = response.body();
-//                                setCommentList();
-//                            } else {
-//                                try {
-//                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
-//                                    errorHandler.showError(jObjError.getInt("code"));
-//                                } catch (Exception e) {
-//                                    errorHandler.showCustomError(e.getMessage());
-////                                    closeProgressDialog();
-//                                }
-//                            }
-////                            closeProgressDialog();
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<AllCarWashResponse> call, Throwable t) {
-//                            errorHandler.showCustomError(t.getMessage());
-////                            closeProgressDialog();
-//                        }
-//                    });
-//
-//                    commentDialog.dismiss();
-//                    Toast.makeText(CarWashActivity.this, "Комментарий добавлен", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    try {
-//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-//                        errorHandler.showError(jObjError.getInt("code"));
-////                        closeProgressDialog();
-//                        commentDialog.dismiss();
-//                    } catch (Exception e) {
-//                        errorHandler.showCustomError(e.getMessage());
-////                        closeProgressDialog();
-//                        commentDialog.dismiss();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<CommentsItem> call, Throwable t) {
-//                errorHandler.showCustomError(t.getMessage());
-////                closeProgressDialog();
-//                commentDialog.dismiss();
-//            }
-//        });
     }
 
     private void setPackages() {
@@ -525,16 +395,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         }
 
     }
-
-//    public void showProgressDialog() {
-//        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-//    }
-//
-//    public void closeProgressDialog() {
-//        if (progressDialog != null) {
-//            progressDialog.dismiss();
-//        }
-//    }
 
     private void showTutorial() {
         if (FastSave.getInstance().getBoolean(CARWASHA_CTIVITY, true)) {
