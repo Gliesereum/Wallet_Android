@@ -1,7 +1,6 @@
 package com.gliesereum.karma.adapter;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +14,9 @@ import com.google.android.gms.maps.model.Marker;
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private final View mWindow;
     private final View mContents;
-    private Activity activity;
-    private ProgressDialog progressDialog;
 
 
     public CustomInfoWindowAdapter(Activity activity) {
-        this.activity = activity;
         Log.d("test_log", "CustomInfoWindowAdapter: ");
         mWindow = activity.getLayoutInflater().inflate(R.layout.custom_info_window, null);
         mContents = activity.getLayoutInflater().inflate(R.layout.custom_info_contents, null);

@@ -108,7 +108,7 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onSuccessful(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
                         carsList = response.body();
-                        viewPager.setAdapter(new ViewPagerAdapter(CarListActivity.this, carsList));
+                        viewPager.setAdapter(new ViewPagerAdapter(CarListActivity.this, carsList, CarListActivity.this));
                         viewPagerIndicator.setupWithViewPager(viewPager);
                         if (carsList != null && carsList.size() > 0) {
                             if (carsList.size() == 1) {

@@ -1,5 +1,6 @@
 package com.gliesereum.karma.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -14,21 +15,18 @@ import com.gliesereum.karma.IconPowerMenuItem;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.ui.CarListActivity;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
 import androidx.viewpager.widget.PagerAdapter;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
@@ -37,13 +35,15 @@ import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 public class ViewPagerAdapter extends PagerAdapter {
     private Context context;
     private List<AllCarResponse> mListData;
-    private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
+    private APIInterface API;
+    private CustomCallback customCallback;
     private String TAG = "TAG";
 
-    public ViewPagerAdapter(Context context, List<AllCarResponse> listDate) {
+    public ViewPagerAdapter(Context context, List<AllCarResponse> listDate, Activity activity) {
         this.context = context;
         mListData = listDate;
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(context, activity);
     }
 
     @Override
@@ -99,32 +99,19 @@ public class ViewPagerAdapter extends PagerAdapter {
     };
 
     private void deleteCar(String id) {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<CarDeleteResponse> call = apiInterface.deleteCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), id);
-        call.enqueue(new Callback<CarDeleteResponse>() {
-            @Override
-            public void onResponse(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
-                if (response.code() == 200) {
-                    Toast.makeText(context, "Машина удалена успешно", Toast.LENGTH_SHORT).show();
-                    context.startActivity(new Intent(context, CarListActivity.class));
-                } else {
-                    if (response.code() == 204) {
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                        }
+        API.deleteCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), id)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CarDeleteResponse>() {
+                    @Override
+                    public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
+                        Toast.makeText(context, "Машина удалена успешно", Toast.LENGTH_SHORT).show();
+                        context.startActivity(new Intent(context, CarListActivity.class));
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<CarDeleteResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
+
+                    }
+                }));
     }
 
 }
