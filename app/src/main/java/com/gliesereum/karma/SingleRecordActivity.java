@@ -1,6 +1,5 @@
 package com.gliesereum.karma;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,36 +16,31 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.json.JSONObject;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
-import ua.naiksoftware.stomp.StompClient;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 
 public class SingleRecordActivity extends AppCompatActivity {
 
-    private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
+    private APIInterface API;
+    private CustomCallback customCallback;
     private Button goRoad;
     private LocationManager locationManager;
     private double myLatitude = 0.0;
     private double myLongitude = 0.0;
-    private ProgressDialog progressDialog;
     private String TAG = "TAG";
     private AllRecordResponse record;
     private ConstraintLayout packageBlock;
@@ -61,7 +55,6 @@ public class SingleRecordActivity extends AppCompatActivity {
     private TextView car;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastKnownLocation;
-    private StompClient mStompClient;
 
 
 
@@ -69,15 +62,20 @@ public class SingleRecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_record);
-//        FastSave.init(getApplicationContext());
-        record = FastSave.getInstance().getObject("RECORD", AllRecordResponse.class);
+        initData();
         initView();
         getDeviceLocation();
+        getCar(record.getTargetId());
         fillActivity(record);
     }
 
+    private void initData() {
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(this, this);
+        record = FastSave.getInstance().getObject("RECORD", AllRecordResponse.class);
+    }
+
     private void fillActivity(AllRecordResponse record) {
-        getCar(record.getTargetId());
         date.setText(Util.getStringDate(record.getBegin()));
         time.setText(Util.getStringTime(record.getBegin()));
         duration.setText(String.valueOf((record.getFinish() - record.getBegin()) / 60000) + " мин");
@@ -119,7 +117,6 @@ public class SingleRecordActivity extends AppCompatActivity {
 
 
     private void initView() {
-        errorHandler = new ErrorHandler(this, this);
         goRoad = findViewById(R.id.goRoad);
         goRoad.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,32 +147,18 @@ public class SingleRecordActivity extends AppCompatActivity {
     }
 
     private void getCar(String targetId) {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<AllCarResponse> call = apiInterface.getCarById(FastSave.getInstance().getString(ACCESS_TOKEN, ""), targetId);
-        call.enqueue(new Callback<AllCarResponse>() {
-            @Override
-            public void onResponse(Call<AllCarResponse> call, Response<AllCarResponse> response) {
-                AllCarResponse carById = response.body();
-                if (response.code() == 200) {
-                    car.setText(response.body().getBrand().getName() + "  " + response.body().getModel().getName());
-                } else {
-                    if (response.code() == 204) {
-                    } else {
-                        try {
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            errorHandler.showError(jObjError.getInt("code"));
-                        } catch (Exception e) {
-                            errorHandler.showCustomError(e.getMessage());
-                        }
+        API.getCarById(FastSave.getInstance().getString(ACCESS_TOKEN, ""), targetId)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllCarResponse>() {
+                    @Override
+                    public void onSuccessful(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+                        car.setText(response.body().getBrand().getName() + "  " + response.body().getModel().getName());
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<AllCarResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+
+                    }
+                }));
     }
 
     private void getDeviceLocation() {
