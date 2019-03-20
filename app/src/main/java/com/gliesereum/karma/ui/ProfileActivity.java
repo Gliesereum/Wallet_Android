@@ -1,6 +1,5 @@
 package com.gliesereum.karma.ui;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,18 +10,15 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.user.User;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONObject;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
@@ -37,9 +33,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextInputEditText nameTextView;
     private TextInputEditText thirdNameTextView;
     private MaterialButton registerBtn;
-    private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
-    private ProgressDialog progressDialog;
+    private APIInterface API;
+    private CustomCallback customCallback;
 
 
     @Override
@@ -52,8 +47,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initData() {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        errorHandler = new ErrorHandler(this, this);
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(this, this);
     }
 
 
@@ -90,44 +85,21 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getUser() {
-        showProgressDialog();
-        Call<User> call = apiInterface.getUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.code() == 200) {
-                    nameTextView.setText(response.body().getFirstName());
-                    secondNameTextView.setText(response.body().getLastName());
-                    thirdNameTextView.setText(response.body().getMiddleName());
-                    FastSave.getInstance().saveObject("userInfo", response.body());
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                        closeProgressDialog();
+        API.getUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<User>() {
+                    @Override
+                    public void onSuccessful(Call<User> call, Response<User> response) {
+                        nameTextView.setText(response.body().getFirstName());
+                        secondNameTextView.setText(response.body().getLastName());
+                        thirdNameTextView.setText(response.body().getMiddleName());
+                        FastSave.getInstance().saveObject("userInfo", response.body());
                     }
-                }
-                closeProgressDialog();
-            }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
-            }
-        });
-    }
+                    @Override
+                    public void onEmpty(Call<User> call, Response<User> response) {
 
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-    }
-
-    public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+                    }
+                }));
     }
 
     @Override
@@ -144,32 +116,23 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         user.setAddAddress(ANDROID_APP);
         user.setPosition(ANDROID_APP);
 
-        Call<User> call = apiInterface.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.code() == 200) {
-                    FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
-                    FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
-                    secondNameTextView.setEnabled(false);
-                    nameTextView.setEnabled(false);
-                    thirdNameTextView.setEnabled(false);
-                    registerBtn.setEnabled(false);
-                    Toast.makeText(ProfileActivity.this, "Сохраненно", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
+        API.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<User>() {
+                    @Override
+                    public void onSuccessful(Call<User> call, Response<User> response) {
+                        FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
+                        FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
+                        secondNameTextView.setEnabled(false);
+                        nameTextView.setEnabled(false);
+                        thirdNameTextView.setEnabled(false);
+                        registerBtn.setEnabled(false);
+                        Toast.makeText(ProfileActivity.this, "Сохраненно", Toast.LENGTH_SHORT).show();
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<User> call, Response<User> response) {
+
+                    }
+                }));
     }
 }
