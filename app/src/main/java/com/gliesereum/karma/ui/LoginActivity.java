@@ -17,22 +17,19 @@ import com.chaos.view.PinView;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
-import com.gliesereum.karma.util.ErrorHandler;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.CountryCodePicker;
-
-import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_EXPIRATION_DATE;
@@ -58,8 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView timerLabel;
     private String code;
     private CountDownTimer countDownTimer;
-    private APIInterface apiInterface;
-    private ErrorHandler errorHandler;
+    private APIInterface API;
+    private CustomCallback customCallback;
     private ImageView mapImageBtn;
     boolean doubleBackToExitPressedOnce;
     private ProgressDialog progressDialog;
@@ -74,9 +71,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initData() {
-//        FastSave.init(getApplicationContext());
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        errorHandler = new ErrorHandler(this, this);
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(this, this);
         doubleBackToExitPressedOnce = false;
     }
 
@@ -140,71 +136,47 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void signIn(SigninBody signinBody) {
-        showProgressDialog();
-        Call<UserResponse> call = apiInterface.signIn(signinBody);
-        call.enqueue(new Callback<UserResponse>() {
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.code() == 200) {
-                    countDownTimer.cancel();
-                    saveUserInfo(response.body());
-                    if (response.body().getUser().getFirstName() == null ||
-                            response.body().getUser().getLastName() == null ||
-                            response.body().getUser().getMiddleName() == null) {
-                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                    } else {
-                        FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
-                        FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
-                        startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        API.signIn(signinBody)
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<UserResponse>() {
+                    @Override
+                    public void onSuccessful(Call<UserResponse> call, Response<UserResponse> response) {
+                        countDownTimer.cancel();
                         saveUserInfo(response.body());
+                        if (response.body().getUser().getFirstName() == null ||
+                                response.body().getUser().getLastName() == null ||
+                                response.body().getUser().getMiddleName() == null) {
+                            startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        } else {
+                            FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
+                            FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
+                            startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            saveUserInfo(response.body());
+                        }
+                        finish();
                     }
-                    finish();
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
-                    }
-                }
-                closeProgressDialog();
-            }
 
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<UserResponse> call, Response<UserResponse> response) {
+
+                    }
+                }));
     }
 
     public void getPhoneCode(String phone) {
-        showProgressDialog();
-        Call<CodeResponse> call = apiInterface.getPhoneCode(phone);
-        call.enqueue(new Callback<CodeResponse>() {
-            @Override
-            public void onResponse(Call<CodeResponse> call, Response<CodeResponse> response) {
-                if (response.code() == 200) {
-                    showCodeBlock();
-                    setPhoneCodeLabel(phone);
-                    startTimer();
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        errorHandler.showError(jObjError.getInt("code"));
-                    } catch (Exception e) {
-                        errorHandler.showCustomError(e.getMessage());
+        API.getPhoneCode(phone)
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<CodeResponse>() {
+                    @Override
+                    public void onSuccessful(Call<CodeResponse> call, Response<CodeResponse> response) {
+                        showCodeBlock();
+                        setPhoneCodeLabel(phone);
+                        startTimer();
                     }
-                }
-                closeProgressDialog();
-            }
 
-            @Override
-            public void onFailure(Call<CodeResponse> call, Throwable t) {
-                errorHandler.showCustomError(t.getMessage());
-                closeProgressDialog();
-            }
-        });
+                    @Override
+                    public void onEmpty(Call<CodeResponse> call, Response<CodeResponse> response) {
+
+                    }
+                }));
     }
 
     public void showValueBlock() {
@@ -259,17 +231,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 doubleBackToExitPressedOnce = false;
             }
         }, 2000);
-    }
-
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-
-    }
-
-    public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     TextWatcher phoneTextViewChangedListener = new TextWatcher() {
