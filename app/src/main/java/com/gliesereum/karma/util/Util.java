@@ -2,11 +2,13 @@ package com.gliesereum.karma.util;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.RecordListActivity;
+import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.ui.CarListActivity;
 import com.gliesereum.karma.ui.LoginActivity;
 import com.gliesereum.karma.ui.MapsActivity;
@@ -172,6 +174,47 @@ public class Util {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(new Date(millisecond));
+    }
+
+    public static boolean checkCarWashWorkTime(AllCarWashResponse carWash) {
+        String dayOfWeek = "";
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        switch (day) {
+            case Calendar.MONDAY:
+                dayOfWeek = "MONDAY";
+                break;
+            case Calendar.TUESDAY:
+                dayOfWeek = "TUESDAY";
+                break;
+            case Calendar.WEDNESDAY:
+                dayOfWeek = "WEDNESDAY";
+                break;
+            case Calendar.THURSDAY:
+                dayOfWeek = "THURSDAY";
+                break;
+            case Calendar.FRIDAY:
+                dayOfWeek = "FRIDAY";
+                break;
+            case Calendar.SATURDAY:
+                dayOfWeek = "SATURDAY";
+                break;
+            case Calendar.SUNDAY:
+                dayOfWeek = "SUNDAY";
+                break;
+        }
+
+        for (int i = 0; i < carWash.getWorkTimes().size(); i++) {
+            if (carWash.getWorkTimes().get(i).getDayOfWeek().equals(dayOfWeek)) {
+                if (carWash.getWorkTimes().get(i).getFrom() < (System.currentTimeMillis() + (carWash.getTimeZone() * 60000)) && carWash.getWorkTimes().get(i).getTo() > (System.currentTimeMillis() + (carWash.getTimeZone() * 60000))) {
+                    Log.d("test_log", "openPreOrderDialog: " + carWash.getWorkTimes().get(i).getFrom());
+                    Log.d("test_log", "openPreOrderDialog: " + (System.currentTimeMillis() + (carWash.getTimeZone() * 60000)));
+                    Log.d("test_log", "openPreOrderDialog: " + carWash.getWorkTimes().get(i).getTo());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

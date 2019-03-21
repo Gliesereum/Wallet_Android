@@ -375,7 +375,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             switch (childView.getId()) {
                 case R.id.preOrderLabel1:
                     TextView preOrderLabel1 = childView.findViewById(R.id.preOrderLabel1);
-                    if (checkCarWashWorkTime()) {
+                    if (Util.checkCarWashWorkTime(carWash)) {
                         preOrderLabel1.setText("У Вас есть возможность заказать мойку на ближайшее или на выбраное время");
                     } else {
                         preOrderLabel1.setText("Мойка сейчас не рабоатет. У Вас есть возможность заказать только мойку выбраное время");
@@ -383,7 +383,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 case R.id.preOrderLabel2:
                     TextView preOrderLabel2 = childView.findViewById(R.id.preOrderLabel2);
-                    if (checkCarWashWorkTime()) {
+                    if (Util.checkCarWashWorkTime(carWash)) {
                         preOrderLabel2.setText("Пожайлуста, сделайте свой выбор");
                     } else {
                         preOrderLabel2.setText("");
@@ -397,7 +397,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     });
                     break;
                 case R.id.nowOrderBtn:
-                    if (checkCarWashWorkTime()) {
+                    if (Util.checkCarWashWorkTime(carWash)) {
                         Button nowOrderBtn = childView.findViewById(R.id.nowOrderBtn);
                         nowOrderBtn.setOnClickListener(v -> {
                             preOrderNewDialog.dismiss();

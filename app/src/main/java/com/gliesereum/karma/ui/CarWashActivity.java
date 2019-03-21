@@ -92,6 +92,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private MaterialButton orderButton;
     private SmartRatingBar carWashRating;
     private NDialog commentDialog;
+    private TextView nowStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         sendCommentBtn.setOnClickListener(this);
         GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
         carWashRating = findViewById(R.id.carWashRating);
+        nowStatus = findViewById(R.id.nowStatus);
     }
 
     @Override
@@ -174,6 +176,13 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                 address.setText(carWash.getAddress());
                                 descriptionDropdown.setContentText(carWash.getDescription());
                                 carWashRating.setRatingNum(carWash.getRating().getRating());
+                                if (Util.checkCarWashWorkTime(carWash)) {
+                                    nowStatus.setText("работает");
+                                    nowStatus.setTextColor(getResources().getColor(R.color.md_green_300));
+                                } else {
+                                    nowStatus.setText("закрыто");
+                                    nowStatus.setTextColor(getResources().getColor(R.color.md_red_A200));
+                                }
                                 setWorkTime();
                                 setPackages();
                                 setPhotoSlider();
