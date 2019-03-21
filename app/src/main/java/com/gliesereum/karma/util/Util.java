@@ -205,15 +205,14 @@ public class Util {
         }
 
         for (int i = 0; i < carWash.getWorkTimes().size(); i++) {
-            if (carWash.getWorkTimes().get(i).getDayOfWeek().equals(dayOfWeek)) {
+            if (carWash.getWorkTimes().get(i).getDayOfWeek().equals(dayOfWeek) && carWash.getWorkTimes().get(i).isIsWork()) {
                 if (carWash.getWorkTimes().get(i).getFrom() < (System.currentTimeMillis() + (carWash.getTimeZone() * 60000)) && carWash.getWorkTimes().get(i).getTo() > (System.currentTimeMillis() + (carWash.getTimeZone() * 60000))) {
-                    Log.d("test_log", "openPreOrderDialog: " + carWash.getWorkTimes().get(i).getFrom());
-                    Log.d("test_log", "openPreOrderDialog: " + (System.currentTimeMillis() + (carWash.getTimeZone() * 60000)));
-                    Log.d("test_log", "openPreOrderDialog: " + carWash.getWorkTimes().get(i).getTo());
+                    Log.d("test_log", "car wash work");
                     return true;
                 }
             }
         }
+        Log.d("test_log", "car wash not work: ");
         return false;
     }
 
