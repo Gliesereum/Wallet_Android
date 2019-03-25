@@ -162,15 +162,21 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                             @Override
                             public void onSuccessful(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
                                 carWash = response.body();
-                                for (int i = 0; i < carWash.getPackages().size(); i++) {
-                                    packageMap.put(carWash.getPackages().get(i).getId(), carWash.getPackages().get(i));
+                                if (carWash != null) {
+                                    for (int i = 0; i < carWash.getPackages().size(); i++) {
+                                        packageMap.put(carWash.getPackages().get(i).getId(), carWash.getPackages().get(i));
+                                    }
                                 }
-                                for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-                                    servicePriceMap.put(carWash.getServicePrices().get(i).getId(), carWash.getServicePrices().get(i));
+                                if (carWash != null) {
+                                    for (int i = 0; i < carWash.getServicePrices().size(); i++) {
+                                        servicePriceMap.put(carWash.getServicePrices().get(i).getId(), carWash.getServicePrices().get(i));
+                                    }
                                 }
                                 workTimeMap.clear();
-                                for (int i = 0; i < response.body().getWorkTimes().size(); i++) {
-                                    workTimeMap.put(response.body().getWorkTimes().get(i).getDayOfWeek(), response.body().getWorkTimes().get(i));
+                                if (response.body() != null) {
+                                    for (int i = 0; i < response.body().getWorkTimes().size(); i++) {
+                                        workTimeMap.put(response.body().getWorkTimes().get(i).getDayOfWeek(), response.body().getWorkTimes().get(i));
+                                    }
                                 }
                                 name.setText(carWash.getName());
                                 address.setText(carWash.getAddress());
@@ -262,58 +268,60 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setWorkTime() {
-        String monday, tuesday, wednesday, thursday, friday, saturday, sunday;
-        if (workTimeMap.get("MONDAY").isIsWork()) {
-            monday = "Пн: " + Util.getStringTime(workTimeMap.get("MONDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("MONDAY").getTo());
-        } else {
-            monday = "Пн: Не работает";
-        }
-        if (workTimeMap.get("TUESDAY").isIsWork()) {
-            tuesday = "Вт: " + Util.getStringTime(workTimeMap.get("TUESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("TUESDAY").getTo());
-        } else {
-            tuesday = "Вт: Не работает";
-        }
-        if (workTimeMap.get("WEDNESDAY").isIsWork()) {
-            wednesday = "Ср: " + Util.getStringTime(workTimeMap.get("WEDNESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("WEDNESDAY").getTo());
-        } else {
-            wednesday = "Ср: Не работает";
-        }
-        if (workTimeMap.get("THURSDAY").isIsWork()) {
-            thursday = "Чт: " + Util.getStringTime(workTimeMap.get("THURSDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("THURSDAY").getTo());
-        } else {
-            thursday = "Чт: Не работает";
-        }
-        if (workTimeMap.get("FRIDAY").isIsWork()) {
-            friday = "Пт: " + Util.getStringTime(workTimeMap.get("FRIDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("FRIDAY").getTo());
-        } else {
-            friday = "Пт: Не работает";
-        }
-        if (workTimeMap.get("SATURDAY").isIsWork()) {
-            saturday = "Сб: " + Util.getStringTime(workTimeMap.get("SATURDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SATURDAY").getTo());
-        } else {
-            saturday = "Сб: Не работает";
-        }
-        if (workTimeMap.get("SUNDAY").isIsWork()) {
-            sunday = "Вс: " + Util.getStringTime(workTimeMap.get("SUNDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SUNDAY").getTo());
-        } else {
-            sunday = "Вс: Не работает";
-        }
+        if (workTimeMap.size() > 0) {
+            String monday, tuesday, wednesday, thursday, friday, saturday, sunday = "";
+            if (workTimeMap.get("MONDAY") != null && workTimeMap.get("MONDAY").isIsWork()) {
+                monday = "Пн: " + Util.getStringTime(workTimeMap.get("MONDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("MONDAY").getTo());
+            } else {
+                monday = "Пн: Не работает";
+            }
+            if (workTimeMap.get("TUESDAY") != null && workTimeMap.get("TUESDAY").isIsWork()) {
+                tuesday = "Вт: " + Util.getStringTime(workTimeMap.get("TUESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("TUESDAY").getTo());
+            } else {
+                tuesday = "Вт: Не работает";
+            }
+            if (workTimeMap.get("WEDNESDAY") != null && workTimeMap.get("WEDNESDAY").isIsWork()) {
+                wednesday = "Ср: " + Util.getStringTime(workTimeMap.get("WEDNESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("WEDNESDAY").getTo());
+            } else {
+                wednesday = "Ср: Не работает";
+            }
+            if (workTimeMap.get("THURSDAY") != null && workTimeMap.get("THURSDAY").isIsWork()) {
+                thursday = "Чт: " + Util.getStringTime(workTimeMap.get("THURSDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("THURSDAY").getTo());
+            } else {
+                thursday = "Чт: Не работает";
+            }
+            if (workTimeMap.get("FRIDAY") != null && workTimeMap.get("FRIDAY").isIsWork()) {
+                friday = "Пт: " + Util.getStringTime(workTimeMap.get("FRIDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("FRIDAY").getTo());
+            } else {
+                friday = "Пт: Не работает";
+            }
+            if (workTimeMap.get("SATURDAY") != null && workTimeMap.get("SATURDAY").isIsWork()) {
+                saturday = "Сб: " + Util.getStringTime(workTimeMap.get("SATURDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SATURDAY").getTo());
+            } else {
+                saturday = "Сб: Не работает";
+            }
+            if (workTimeMap.get("SUNDAY") != null && workTimeMap.get("SUNDAY").isIsWork()) {
+                sunday = "Вс: " + Util.getStringTime(workTimeMap.get("SUNDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SUNDAY").getTo());
+            } else {
+                sunday = "Вс: Не работает";
+            }
 
-        workTimePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
-                .addItem(new PowerMenuItem(monday, false))
-                .addItem(new PowerMenuItem(tuesday, false))
-                .addItem(new PowerMenuItem(wednesday, false))
-                .addItem(new PowerMenuItem(thursday, false))
-                .addItem(new PowerMenuItem(friday, false))
-                .addItem(new PowerMenuItem(saturday, false))
-                .addItem(new PowerMenuItem(sunday, false))
-                .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
-                .setMenuRadius(10f)
-                .setMenuShadow(10f)
-                .setWidth(600)
-                .setSelectedTextColor(Color.WHITE)
-                .setMenuColor(Color.WHITE)
-                .build();
+            workTimePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
+                    .addItem(new PowerMenuItem(monday, false))
+                    .addItem(new PowerMenuItem(tuesday, false))
+                    .addItem(new PowerMenuItem(wednesday, false))
+                    .addItem(new PowerMenuItem(thursday, false))
+                    .addItem(new PowerMenuItem(friday, false))
+                    .addItem(new PowerMenuItem(saturday, false))
+                    .addItem(new PowerMenuItem(sunday, false))
+                    .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
+                    .setMenuRadius(10f)
+                    .setMenuShadow(10f)
+                    .setWidth(600)
+                    .setSelectedTextColor(Color.WHITE)
+                    .setMenuColor(Color.WHITE)
+                    .build();
+        }
     }
 
     private void openCommentDialog() {
