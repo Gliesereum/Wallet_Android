@@ -374,34 +374,39 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setPackages() {
-        for (int i = 0; i < carWash.getPackages().size(); i++) {
-            View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
-            MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
-            packageBtn.setText(carWash.getPackages().get(i).getName());
-            packageBtn.setTag(carWash.getPackages().get(i).getId());
-            packageBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    List<PowerMenuItem> powerMenuItemList = new ArrayList<>();
-                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                        powerMenuItemList.add(new PowerMenuItem(packageMap.get(v.getTag()).getServices().get(j).getName()));
-                    }
+        if (carWash.getPackages().size() != 0) {
+            for (int i = 0; i < carWash.getPackages().size(); i++) {
+                View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
+                MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
+                packageBtn.setText(carWash.getPackages().get(i).getName());
+                packageBtn.setTag(carWash.getPackages().get(i).getId());
+                packageBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        List<PowerMenuItem> powerMenuItemList = new ArrayList<>();
+                        for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                            powerMenuItemList.add(new PowerMenuItem(packageMap.get(v.getTag()).getServices().get(j).getName()));
+                        }
 
-                    packagePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
-                            .addItem(new PowerMenuItem("Скидка = " + packageMap.get(v.getTag()).getDiscount() + "%", false))
-                            .addItemList(powerMenuItemList)
-                            .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
-                            .setMenuRadius(10f)
-                            .setMenuShadow(10f)
-                            .setWidth(600)
-                            .setSelectedTextColor(Color.WHITE)
-                            .setMenuColor(Color.WHITE)
-                            .build();
-                    packagePowerMenu.showAsDropDown(v);
-                }
-            });
-            packageScroll.addView(layout2);
+                        packagePowerMenu = new PowerMenu.Builder(CarWashActivity.this)
+                                .addItem(new PowerMenuItem("Скидка = " + packageMap.get(v.getTag()).getDiscount() + "%", false))
+                                .addItemList(powerMenuItemList)
+                                .setAnimation(MenuAnimation.SHOWUP_TOP_LEFT)
+                                .setMenuRadius(10f)
+                                .setMenuShadow(10f)
+                                .setWidth(600)
+                                .setSelectedTextColor(Color.WHITE)
+                                .setMenuColor(Color.WHITE)
+                                .build();
+                        packagePowerMenu.showAsDropDown(v);
+                    }
+                });
+                packageScroll.addView(layout2);
+            }
+        } else {
+            packageScroll.setVisibility(View.GONE);
         }
+
 
     }
 

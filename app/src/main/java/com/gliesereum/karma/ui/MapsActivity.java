@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -432,6 +433,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         case R.id.serviceGroup:
                             LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
                             for (int i = 0; i < mapServise.size(); i++) {
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                layoutParams.setMargins(0, 4, 0, 4);
                                 CheckBox checkBox = new CheckBox(MapsActivity.this);
                                 checkBox.setText(serviceList.get(i).getName());
                                 checkBox.setOnCheckedChangeListener(this);
@@ -496,6 +499,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }, 2000);
     }
-
 
 }

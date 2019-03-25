@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.R;
+import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
@@ -24,6 +26,11 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.labters.lottiealertdialoglibrary.ClickListener;
+import com.labters.lottiealertdialoglibrary.DialogTypes;
+import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
+
+import org.jetbrains.annotations.NotNull;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +40,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 
-public class SingleRecordActivity extends AppCompatActivity {
+public class SingleRecordActivity extends AppCompatActivity implements View.OnClickListener {
 
     private APIInterface API;
     private CustomCallback customCallback;
@@ -52,7 +59,9 @@ public class SingleRecordActivity extends AppCompatActivity {
     private TextView car;
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastKnownLocation;
-
+    private TextView servicePriceLabel;
+    private Button cancelRecordBtn;
+    private LottieAlertDialog alertDialog;
 
 
     @Override
@@ -78,7 +87,9 @@ public class SingleRecordActivity extends AppCompatActivity {
         duration.setText(String.valueOf((record.getFinish() - record.getBegin()) / 60000) + " мин");
         price.setText(String.valueOf(record.getPrice()) + " грн");
         carWashName.setText(record.getBusiness().getName());
-
+        if (record.getStatusProcess().equals("COMPLETED") || record.getStatusProcess().equals("IN_PROCESS")) {
+            cancelRecordBtn.setVisibility(View.GONE);
+        }
         if (record.getPackageDto() != null) {
             packageBlock.setVisibility(View.VISIBLE);
             for (int i = 0; i < record.getPackageDto().getServices().size(); i++) {
@@ -93,6 +104,8 @@ public class SingleRecordActivity extends AppCompatActivity {
                 checkableChipView.setEnabled(false);
                 packageItems.addView(checkableChipView, 0, layoutParams);
             }
+        } else {
+            servicePriceLabel.setText("Выбранные услуги");
         }
 
         if (record.getServices() != null) {
@@ -115,22 +128,9 @@ public class SingleRecordActivity extends AppCompatActivity {
 
     private void initView() {
         goRoad = findViewById(R.id.goRoad);
-        goRoad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?saddr=" +
-                                mLastKnownLocation.getLatitude()
-                                + "," +
-                                mLastKnownLocation.getLongitude()
-                                + "&daddr=" + record.getBusiness().getLatitude() + "," + record.getBusiness().getLongitude()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                startActivity(intent);
-            }
-        });
-
+        cancelRecordBtn = findViewById(R.id.cancelRecord);
+        goRoad.setOnClickListener(this);
+        cancelRecordBtn.setOnClickListener(this);
         packageBlock = findViewById(R.id.packageBlock);
         packageItems = findViewById(R.id.packageItems);
         servicePriceBlock = findViewById(R.id.servicePriceBlock);
@@ -141,6 +141,7 @@ public class SingleRecordActivity extends AppCompatActivity {
         duration = findViewById(R.id.duration);
         price = findViewById(R.id.price);
         car = findViewById(R.id.car);
+        servicePriceLabel = findViewById(R.id.servicePriceLabel);
     }
 
     private void getCar(String targetId) {
@@ -159,25 +160,88 @@ public class SingleRecordActivity extends AppCompatActivity {
     }
 
     private void getDeviceLocation() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        try {
-            Task locationResult = mFusedLocationClient.getLastLocation();
-            locationResult.addOnCompleteListener(this, new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        mLastKnownLocation = (Location) task.getResult();
-                        if (mLastKnownLocation != null) {
-                            goRoad.setText("Проложить маршрут");
-                            goRoad.setEnabled(true);
+        if (!record.getStatusProcess().equals("CANCELED")) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            try {
+                Task locationResult = mFusedLocationClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            mLastKnownLocation = (Location) task.getResult();
+                            if (mLastKnownLocation != null) {
+                                goRoad.setText("Проложить маршрут");
+                                goRoad.setEnabled(true);
+                            }
                         }
-                    } else {
                     }
-                }
-            });
+                });
 
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
+            } catch (SecurityException e) {
+                Log.e("Exception: %s", e.getMessage());
+            }
+        } else {
+            goRoad.setText("Заказ отменен");
+            goRoad.setEnabled(false);
+            cancelRecordBtn.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.goRoad:
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr=" +
+                                mLastKnownLocation.getLatitude()
+                                + "," +
+                                mLastKnownLocation.getLongitude()
+                                + "&daddr=" + record.getBusiness().getLatitude() + "," + record.getBusiness().getLongitude()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                startActivity(intent);
+                break;
+            case R.id.cancelRecord:
+                alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_QUESTION)
+                        .setTitle("Отменить заказ")
+                        .setDescription("Вы действительно хотите отменить заказ?\n(Эту операцию нельзя отменить)")
+                        .setPositiveText("Да")
+                        .setNegativeText("Нет")
+                        .setPositiveButtonColor(getResources().getColor(R.color.md_red_A200))
+                        .setPositiveListener(new ClickListener() {
+                            @Override
+                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
+                                cancelRecord();
+                            }
+                        })
+                        .setNegativeListener(new ClickListener() {
+                            @Override
+                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
+                                alertDialog.dismiss();
+                            }
+                        })
+                        .build();
+                alertDialog.setCancelable(false);
+                alertDialog.show();
+                break;
+        }
+    }
+
+    private void cancelRecord() {
+        API.canceleRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), record.getId())
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllRecordResponse>() {
+                    @Override
+                    public void onSuccessful(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+                        startActivity(new Intent(SingleRecordActivity.this, RecordListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        Toast.makeText(SingleRecordActivity.this, "Заказ отменен", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onEmpty(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+
+                    }
+                }));
     }
 }

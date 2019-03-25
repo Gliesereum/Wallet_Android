@@ -221,7 +221,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/packageBlock">
 
                 <TextView
-                    android:id="@+id/textView19"
+                    android:id="@+id/servicePriceLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -246,7 +246,7 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView19"></LinearLayout>
+                    app:layout_constraintTop_toBottomOf="@+id/servicePriceLabel"></LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -263,7 +263,21 @@
         android:layout_marginEnd="8dp"
         android:enabled="false"
         android:text="Поиск местоположения..."
+        app:layout_constraintBottom_toTopOf="@+id/cancelRecord"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/cancelRecord"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Отменить заказ"
+        app:backgroundTint="@color/md_red_A200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

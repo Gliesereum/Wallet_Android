@@ -81,6 +81,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private TextView textView19;
     private LinearLayout servicePriceItem;
     private Button orderButton;
+    private TextView packageLabel;
 
 
     @Override
@@ -114,10 +115,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         packageScroll = findViewById(R.id.packageScroll);
         packageBlock = findViewById(R.id.packageBlock);
         packageItems = findViewById(R.id.packageItems);
-        textView19 = findViewById(R.id.textView19);
+        textView19 = findViewById(R.id.servicePriceLabel);
         servicePriceItem = findViewById(R.id.servicePriceItem);
         orderButton = findViewById(R.id.orderButton);
         orderButton.setOnClickListener(this);
+        packageLabel = findViewById(R.id.packageLabel);
     }
 
     private void showTutorial() {
@@ -219,80 +221,84 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void setPackages(AllCarWashResponse carWash) {
-        View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
-        MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
-        packageBtn.setText("Не выбран");
-        packageBtn.setTag("default");
-        packageBtn.setOnClickListener(v -> {
-            for (int j = 0; j < packageScroll.getChildCount(); j++) {
-                ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
-                if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                    Log.d(TAG, "onClick: 1");
-                    ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
-
-
-                } else {
-                    Log.d(TAG, "onClick: 2");
-                    ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
-
-
-                }
-            }
-            serviceMap.clear();
-            nameOfServiceList.clear();
-            priceLabel.setText("0");
-            durationLabel.setText("0");
-            discountTextView.setText("0%");
-            textView19.setText("Выберите услуги");
-            packageBlock.setVisibility(View.GONE);
-            setServicePrices(carWash);
-        });
-        packageScroll.addView(layout2);
-        for (int i = 0; i < carWash.getPackages().size(); i++) {
-            layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
-            packageBtn = layout2.findViewById(R.id.packageBtn);
-            packageBtn.setText(carWash.getPackages().get(i).getName());
-            packageBtn.setTag(carWash.getPackages().get(i).getId());
+        if (carWash.getPackages().size() != 0) {
+            View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
+            MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
+            packageBtn.setText("Не выбран");
+            packageBtn.setTag("default");
             packageBtn.setOnClickListener(v -> {
-                serviceMap.clear();
-                nameOfServiceList.clear();
-                orderBody.setPackageId((String) v.getTag());
                 for (int j = 0; j < packageScroll.getChildCount(); j++) {
                     ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                     if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                        Log.d(TAG, "onClick: 3");
+                        Log.d(TAG, "onClick: 1");
                         ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
 
 
                     } else {
-                        Log.d(TAG, "onClick: 4");
+                        Log.d(TAG, "onClick: 2");
                         ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
+
 
                     }
                 }
-                for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                    nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
-                    serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
-                }
-                discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
+                serviceMap.clear();
+                nameOfServiceList.clear();
+                priceLabel.setText("0");
+                durationLabel.setText("0");
+                discountTextView.setText("0%");
+                textView19.setText("Выберите услуги");
+                packageBlock.setVisibility(View.GONE);
                 setServicePrices(carWash);
-                String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
-                durationLabel.setText(duration);
-                double price = 0;
-                for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                    price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
-                }
-                priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
-                packageBlock.setVisibility(View.VISIBLE);
-                textView19.setText("Дополнительные услуги");
             });
             packageScroll.addView(layout2);
-            ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(0));
-            ((MaterialButton) constraintLayout.getChildAt(0)).performClick();
+            for (int i = 0; i < carWash.getPackages().size(); i++) {
+                layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
+                packageBtn = layout2.findViewById(R.id.packageBtn);
+                packageBtn.setText(carWash.getPackages().get(i).getName());
+                packageBtn.setTag(carWash.getPackages().get(i).getId());
+                packageBtn.setOnClickListener(v -> {
+                    serviceMap.clear();
+                    nameOfServiceList.clear();
+                    orderBody.setPackageId((String) v.getTag());
+                    for (int j = 0; j < packageScroll.getChildCount(); j++) {
+                        ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
+                        if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
+                            Log.d(TAG, "onClick: 3");
+                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
+
+
+                        } else {
+                            Log.d(TAG, "onClick: 4");
+                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
+
+                        }
+                    }
+                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                        nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
+                        serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
+                    }
+                    discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
+                    setServicePrices(carWash);
+                    String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
+                    durationLabel.setText(duration);
+                    double price = 0;
+                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                        price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
+                    }
+                    priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
+                    packageBlock.setVisibility(View.VISIBLE);
+                    textView19.setText("Дополнительные услуги");
+                });
+                packageScroll.addView(layout2);
+                ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(0));
+                ((MaterialButton) constraintLayout.getChildAt(0)).performClick();
+            }
+
+            setServicePrices(carWash);
+        } else {
+            packageScroll.setVisibility(View.GONE);
+            packageLabel.setVisibility(View.GONE);
         }
-
-        setServicePrices(carWash);
-
     }
 
     public void showDateTimePicker() {

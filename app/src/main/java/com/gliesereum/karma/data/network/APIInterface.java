@@ -127,6 +127,9 @@ public interface APIInterface {
     @GET("karma/v1/record/{recordId}")
     Call<RecordsItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
 
+    @PUT("karma/v1/record/record/canceled")
+    Call<AllRecordResponse> canceleRecord(@Header("Authorization") String accessToken, @Query("idRecord") String idRecord);
+
     //COMMENT
     @POST("karma/v1/business/{carwashId}/comment")
     Call<CommentsItem> sendComment(@Header("Authorization") String accessToken, @Path("carwashId") String carwashId, @Body CommentsItem orderBody);
