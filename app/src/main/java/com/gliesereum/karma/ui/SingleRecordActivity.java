@@ -109,19 +109,24 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         }
 
         if (record.getServices() != null) {
-            servicePriceBlock.setVisibility(View.VISIBLE);
-            for (int i = 0; i < record.getServices().size(); i++) {
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(0, 4, 0, 4);
-                CheckableChipView checkableChipView = new CheckableChipView(SingleRecordActivity.this);
-                checkableChipView.setText(record.getServices().get(i).getName());
-                checkableChipView.setOutlineCornerRadius(10f);
-                checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
-                checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
-                checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
-                checkableChipView.setEnabled(false);
-                servicePriceItem.addView(checkableChipView, 0, layoutParams);
+            if (record.getServices().size() > 0) {
+                servicePriceBlock.setVisibility(View.VISIBLE);
+                for (int i = 0; i < record.getServices().size(); i++) {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(0, 4, 0, 4);
+                    CheckableChipView checkableChipView = new CheckableChipView(SingleRecordActivity.this);
+                    checkableChipView.setText(record.getServices().get(i).getName());
+                    checkableChipView.setOutlineCornerRadius(10f);
+                    checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
+                    checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
+                    checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+                    checkableChipView.setEnabled(false);
+                    servicePriceItem.addView(checkableChipView, 0, layoutParams);
+                }
+            } else {
+                servicePriceLabel.setText("");
             }
+
         }
     }
 
