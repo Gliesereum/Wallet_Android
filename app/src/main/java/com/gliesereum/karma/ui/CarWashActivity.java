@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.data.network.json.carwash.MediaItem;
 import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
+import com.gliesereum.karma.data.network.json.carwash.Rating;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
 import com.gliesereum.karma.util.SmartRatingBar;
@@ -46,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import hakobastvatsatryan.DropdownTextView;
@@ -98,6 +101,13 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_wash);
+
+        ContextThemeWrapper themeWrapper = new ContextThemeWrapper(this, R.style.AppThemeRed);
+        LayoutInflater layoutInflater = LayoutInflater.from(themeWrapper);
+        ViewGroup viewContainer = findViewById(R.id.testColor);
+        viewContainer.removeAllViews();
+        layoutInflater.inflate(R.layout.activity_car_wash, viewContainer, true);
+
         initData();
         initView();
         getCarWash();
@@ -371,6 +381,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                         }));
                                 commentDialog.dismiss();
                                 Toast.makeText(CarWashActivity.this, "Комментарий добавлен", Toast.LENGTH_SHORT).show();
+                                updateRating();
                             }
 
                             @Override
@@ -379,6 +390,21 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         })
                 );
+    }
+
+    public void updateRating() {
+        API.getRating(carWashId)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<Rating>() {
+                    @Override
+                    public void onSuccessful(Call<Rating> call, Response<Rating> response) {
+                        carWashRating.setRatingNum(response.body().getRating());
+                    }
+
+                    @Override
+                    public void onEmpty(Call<Rating> call, Response<Rating> response) {
+
+                    }
+                }));
     }
 
     private void setPackages() {

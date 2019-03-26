@@ -6,6 +6,7 @@ import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
+import com.gliesereum.karma.data.network.json.carwash.Rating;
 import com.gliesereum.karma.data.network.json.carwash.RecordsItem;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
@@ -107,11 +108,16 @@ public interface APIInterface {
     @GET("karma/v1/business/{carwashId}/full-model")
     Call<AllCarWashResponse> getCarWashFull(@Path("carwashId") String id);
 
-    @GET("karma/v1/business/{carwashId}")
-    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
+//    @GET("karma/v1/business/{carwashId}")
+//    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
     @GET("karma/v1/service")
     Call<List<ServiceResponse>> getAllService();
+
+    @GET("karma/v1/business/{carwashId}/rating")
+    Call<Rating> getRating(@Path("carwashId") String id);
+
+
 
 
     //RECORD

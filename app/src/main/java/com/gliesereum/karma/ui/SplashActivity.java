@@ -1,7 +1,6 @@
 package com.gliesereum.karma.ui;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
-import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.status.StatusResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
@@ -50,9 +48,7 @@ public class SplashActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private ConstraintLayout errorBlock;
     private Button refreshBtn;
-    private ProgressDialog progressDialog;
     private String TAG = "test_log";
-    private CustomCallback customCallback;
     private LottieAlertDialog alertDialog;
 
 
@@ -89,7 +85,6 @@ public class SplashActivity extends AppCompatActivity {
         FastSave.init(getApplicationContext());
         errorHandler = new ErrorHandler(this, this);
         API = APIClient.getClient().create(APIInterface.class);
-        customCallback = new CustomCallback(this, this);
     }
 
     private void initView() {

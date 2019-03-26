@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -88,6 +89,13 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+
+        ContextThemeWrapper themeWrapper = new ContextThemeWrapper(this, R.style.AppThemeRed);
+        LayoutInflater layoutInflater = LayoutInflater.from(themeWrapper);
+        ViewGroup viewContainer = findViewById(R.id.testColor);
+        viewContainer.removeAllViews();
+        layoutInflater.inflate(R.layout.activity_order, viewContainer, true);
+
         initData();
         initView();
         setPackages(carWash);

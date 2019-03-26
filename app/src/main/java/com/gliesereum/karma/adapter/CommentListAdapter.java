@@ -151,6 +151,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                                             public void onSuccessful(Call<CommentsItem> call, Response<CommentsItem> response) {
                                                                 commentDialog.dismiss();
                                                                 activity.setCommentList();
+                                                                activity.updateRating();
                                                             }
 
                                                             @Override
@@ -162,7 +163,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                         });
                                         break;
                                     case R.id.cancelBtn:
-                                        Button backBtn = childView.findViewById(R.id.nowOrderBtn);
+                                        Button backBtn = childView.findViewById(R.id.cancelBtn);
                                         backBtn.setOnClickListener(v -> commentDialog.dismiss());
                                         break;
                                 }
@@ -176,6 +177,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                         @Override
                                         public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
                                             activity.setCommentList();
+                                            activity.updateRating();
                                         }
 
                                         @Override
