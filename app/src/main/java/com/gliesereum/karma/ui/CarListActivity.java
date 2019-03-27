@@ -118,6 +118,7 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
                                 FastSave.getInstance().saveString(CAR_MODEL, carsList.get(0).getModel().getName());
                                 FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, carsList.get(0).getServices());
                                 FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, carsList.get(0).getAttributes());
+                                viewPagerIndicator.setVisibility(View.GONE);
                                 chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
                                 chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
                                 chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
