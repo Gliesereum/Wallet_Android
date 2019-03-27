@@ -9,4 +9,15 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="CTAppTheme">
+        <attr name="colorPrimary" format="color" />
+        <attr name="editTextColor" format="color" />
+        <attr name="material_drawer_background" format="color" />
+
+        <attr name="secondaryTextColor" format="color" />
+        <attr name="dividerColor" format="color" />
+        <attr name="backgroundCardColor" format="color" />
+        <attr name="iconPlaceholder" format="integer" />
+    </declare-styleable>
+
 </resources>

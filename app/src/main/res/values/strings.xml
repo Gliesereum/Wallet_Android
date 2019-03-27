@@ -19,7 +19,7 @@
     <string name="error_1043">Module not active</string>
     <string name="error_1044">Endpoint not active</string>
     <string name="error_1045">Endpoint not found</string>
-    <string name="error_1046">User is anonymous</string>
+    <string name="error_1046">Для данного действия необходимо Войти или Зарегистрироваться</string>
 
     <string name="error_9000">Сервер в данный момент не доступен. Ведутся технические работы</string>
     <string name="error_9001">Сервер в данный момент не доступен. Попробуйте позже</string>

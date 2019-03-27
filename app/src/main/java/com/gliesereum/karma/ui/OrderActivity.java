@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -87,14 +86,17 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (FastSave.getInstance().getBoolean("NIGHT_THEME", false)) {
+            setTheme(R.style.AppThemeDark);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
 
-        ContextThemeWrapper themeWrapper = new ContextThemeWrapper(this, R.style.AppThemeRed);
-        LayoutInflater layoutInflater = LayoutInflater.from(themeWrapper);
-        ViewGroup viewContainer = findViewById(R.id.testColor);
-        viewContainer.removeAllViews();
-        layoutInflater.inflate(R.layout.activity_order, viewContainer, true);
+//        ContextThemeWrapper themeWrapper = new ContextThemeWrapper(this, R.style.AppThemeRed);
+//        LayoutInflater layoutInflater = LayoutInflater.from(themeWrapper);
+//        ViewGroup viewContainer = findViewById(R.id.testColor);
+//        viewContainer.removeAllViews();
+//        layoutInflater.inflate(R.layout.activity_order, viewContainer, true);
 
         initData();
         initView();

@@ -24,6 +24,7 @@ import com.google.android.material.button.MaterialButton;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import retrofit2.Call;
@@ -139,6 +140,8 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
                         addFirstCarBtn.setVisibility(View.VISIBLE);
                         chooseCarBtn.setVisibility(View.GONE);
                         viewPagerIndicator.setVisibility(View.GONE);
+                        ActionMenuItemView menuItem = findViewById(R.id.add_car_menu);
+                        menuItem.setVisibility(View.GONE);
                     }
                 })
         );

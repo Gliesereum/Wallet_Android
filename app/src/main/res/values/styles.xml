@@ -37,7 +37,7 @@
 
     </style>
 
-    <style name="AppThemeRed" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppThemeDark" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryDark">@color/red</item>
         <item name="colorAccent">@color/red</item>
@@ -61,6 +61,10 @@
         <item name="material_drawer_legacy_style">false
         </item> <!-- Enables legacy Material 1 style -->
 
+    </style>
+
+    <style name="TextViewPrimary" parent="Base.Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/material_drawer_accent</item>
     </style>
 
 
