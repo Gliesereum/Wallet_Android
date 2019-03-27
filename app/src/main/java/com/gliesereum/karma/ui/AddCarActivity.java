@@ -100,10 +100,8 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initView() {
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         toolbar.setTitle("Добавление авто");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setSupportActionBar(toolbar);
         brandSpinner = findViewById(R.id.brandSpinner);
         modelSpinner = findViewById(R.id.modelSpinner);
         yearSpinner = findViewById(R.id.yearSpinner);
