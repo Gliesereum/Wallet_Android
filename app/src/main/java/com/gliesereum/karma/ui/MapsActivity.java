@@ -23,9 +23,9 @@ import com.gliesereum.karma.adapter.CustomInfoWindowAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
+import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
-import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -61,11 +61,13 @@ import androidx.core.app.ActivityCompat;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CARWASH_ID;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
+import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.karma.util.Constants.FIRST_START;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
@@ -93,6 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LottieAlertDialog alertDialog;
 
     private void initData() {
+        FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         serviceIdList = new HashSet<>();
@@ -129,12 +132,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initView() {
         mapView = findViewById(R.id.mapView);
         toolbar = findViewById(R.id.toolbar);
-        if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") && FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
-            toolbar.setTitle("KARMA");
+        if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+            if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
+                FastSave.getInstance().deleteValue(CAR_ID);
+                toolbar.setTitle("KARMA");
+            } else {
+                toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
+                toolbar.setSubtitle("Выбранный автомобиль");
+            }
         } else {
-            toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
-            toolbar.setSubtitle("Выбранный автомобиль");
+            FastSave.getInstance().deleteValue(CAR_ID);
+            toolbar.setTitle("KARMA");
         }
+
         setSupportActionBar(toolbar);
         new Util(this, toolbar, 1).addNavigation();
     }
@@ -183,18 +193,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         firstStartNotify();
-
 //        if (FastSave.getInstance().getBoolean("openRecord", false)) {
 //            getSingleRecord(FastSave.getInstance().getString("recordId", ""));
 //            FastSave.getInstance().deleteValue("openRecord");
 //            FastSave.getInstance().deleteValue("recordId");
 //        }
-
         initData();
         initView();
         initMap(savedInstanceState);
         getLocationPermission();
         getAllService();
+        getAllCars();
+    }
+
+    private void getAllCars() {
+        if (!FastSave.getInstance().getString(ACCESS_TOKEN, "").equals("")) {
+            API.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                    .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarResponse>>() {
+                                @Override
+                                public void onSuccessful(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
+                                    FastSave.getInstance().deleteValue(CAR_ID);
+                                    for (int i = 0; i < response.body().size(); i++) {
+                                        if (response.body().get(i).isFavorite()) {
+                                            FastSave.getInstance().saveString(CAR_ID, response.body().get(i).getId());
+                                            FastSave.getInstance().saveString(CAR_BRAND, response.body().get(i).getBrand().getName());
+                                            FastSave.getInstance().saveString(CAR_MODEL, response.body().get(i).getModel().getName());
+                                            FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, response.body().get(i).getServices());
+                                            FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, response.body().get(i).getAttributes());
+                                        }
+                                    }
+
+                                }
+
+                                @Override
+                                public void onEmpty(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
+                                    FastSave.getInstance().deleteValue(CAR_ID);
+                                }
+                            })
+                    );
+        }
     }
 
     private void initMap(Bundle savedInstanceState) {
@@ -215,7 +252,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onInfoWindowClick(Marker marker) {
                 if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-                    if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class) != null) {
+                    if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
                         FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
                         startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
                     } else {

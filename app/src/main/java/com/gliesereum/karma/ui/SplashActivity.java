@@ -249,7 +249,6 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-
     public void showProgressDialog() {
 //        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
 //        ProgressLoadingJIGB.startLoadingJIGB(this, R.raw.loading,"Загрузка",1000,200,200);

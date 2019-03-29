@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.adapter.RecordListAdapter;
@@ -35,6 +34,7 @@ import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 import static com.gliesereum.karma.util.Constants.TEST_LOG;
 import static com.gliesereum.karma.util.Constants.USER_ID;
@@ -129,22 +129,25 @@ public class RecordListActivity extends AppCompatActivity {
 
 
     private void getAllRecord() {
-        API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE)
-                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<List<AllRecordResponse>>() {
-                    @Override
-                    public void onSuccessful(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
-                        recordsList = response.body();
-                        if (recordsList != null && recordsList.size() > 0) {
-                            recordListAdapter.setItems(recordsList);
+        if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+            API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE)
+                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<List<AllRecordResponse>>() {
+                        @Override
+                        public void onSuccessful(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
+                            recordsList = response.body();
+                            if (recordsList != null && recordsList.size() > 0) {
+                                recordListAdapter.setItems(recordsList);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onEmpty(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
-                        splashTextView.setVisibility(View.VISIBLE);
-                        Toast.makeText(RecordListActivity.this, "У вас пока нет записей", Toast.LENGTH_SHORT).show();
-                    }
-                }));
+                        @Override
+                        public void onEmpty(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
+                            splashTextView.setVisibility(View.VISIBLE);
+                        }
+                    }));
+        } else {
+            splashTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initView() {
@@ -165,16 +168,6 @@ public class RecordListActivity extends AppCompatActivity {
         recordListAdapter = new RecordListAdapter(RecordListActivity.this);
         recyclerView.setAdapter(recordListAdapter);
         new Util(this, toolbar, 3).addNavigation();
-    }
-
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-    }
-
-    public void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     @Override

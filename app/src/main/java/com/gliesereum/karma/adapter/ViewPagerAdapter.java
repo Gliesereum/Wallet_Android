@@ -30,6 +30,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CAR_ID;
 
 
 public class ViewPagerAdapter extends PagerAdapter {
@@ -103,6 +104,7 @@ public class ViewPagerAdapter extends PagerAdapter {
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CarDeleteResponse>() {
                     @Override
                     public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
+                        FastSave.getInstance().deleteValue(CAR_ID);
                         Toast.makeText(context, "Машина удалена успешно", Toast.LENGTH_SHORT).show();
                         context.startActivity(new Intent(context, CarListActivity.class));
                     }

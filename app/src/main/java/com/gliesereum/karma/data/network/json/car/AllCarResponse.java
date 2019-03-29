@@ -28,6 +28,17 @@ public class AllCarResponse {
 	@SerializedName("userId")
 	private String userId;
 
+    @SerializedName("favorite")
+    private boolean favorite;
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
 	@SerializedName("yearId")
 	private String yearId;
 
@@ -152,6 +163,7 @@ public class AllCarResponse {
     public Brand getBrand() {
 		return brand;
 	}
+
 
     public AllCarResponse(String brandId, String modelId, String yearId, String registrationNumber, String description) {
         this.brandId = brandId;

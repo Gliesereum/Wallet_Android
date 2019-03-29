@@ -3,6 +3,8 @@ package com.gliesereum.karma.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.user.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
@@ -34,6 +37,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private APIInterface API;
     private CustomCallback customCallback;
     private boolean doubleBackToExitPressedOnce;
+    private TextInputLayout secondNameTextInputLayout;
+    private TextInputLayout nameTextInputLayout;
+    private TextInputLayout thirdNameTextInputLayout;
+    private boolean firstNameFlag;
+    private boolean secondNameFlag;
+    private boolean thirdNameFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +74,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (user.getMiddleName() != null) {
             thirdNameTextView.setText(user.getMiddleName().toString());
         }
+
+
+        secondNameTextInputLayout = findViewById(R.id.secondNameTextInputLayout);
+        nameTextInputLayout = findViewById(R.id.nameTextInputLayout);
+        thirdNameTextInputLayout = findViewById(R.id.thirdNameTextInputLayout);
+
+        nameTextView.addTextChangedListener(firstNameListener);
+        secondNameTextView.addTextChangedListener(secondNameListener);
+        thirdNameTextView.addTextChangedListener(thirdNameListener);
+
     }
 
     @Override
@@ -124,6 +143,91 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     }));
         } else {
             Toast.makeText(RegisterActivity.this, "Заполните все поля", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    TextWatcher firstNameListener = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() < 2) {
+                nameTextInputLayout.setError("Обязательное поле");
+                firstNameFlag = false;
+                checkButton();
+            } else {
+                nameTextInputLayout.setError(null);
+                firstNameFlag = true;
+                checkButton();
+
+            }
+
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+    };
+
+    TextWatcher secondNameListener = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() < 2) {
+                secondNameTextInputLayout.setError("Обязательное поле");
+                secondNameFlag = false;
+                checkButton();
+            } else {
+                secondNameTextInputLayout.setError(null);
+                secondNameFlag = true;
+                checkButton();
+
+            }
+
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+    };
+
+    TextWatcher thirdNameListener = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() < 3) {
+                thirdNameTextInputLayout.setError("Обязательное поле");
+                thirdNameFlag = false;
+                checkButton();
+            } else {
+                thirdNameTextInputLayout.setError(null);
+                thirdNameFlag = true;
+                checkButton();
+            }
+
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+    };
+
+    private void checkButton() {
+        if (firstNameFlag && secondNameFlag && thirdNameFlag) {
+            registrationBtn.setEnabled(true);
+        } else {
+            registrationBtn.setEnabled(false);
         }
     }
 }
