@@ -60,25 +60,9 @@ public class SplashActivity extends AppCompatActivity {
         initData();
         initView();
         checkStatus();
-//        FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-//                        if (!task.isSuccessful()) {
-//                            Log.w(TEST_LOG, "getInstanceId failed", task.getException());
-//                            return;
-//                        }
-//
-//                        // Get new Instance ID token
-//                        String token = task.getResult().getToken();
-//                        Log.d(TEST_LOG, token);
-//
-//                        // Log and toast
-//                        String msg = "tetstest";
-//                        Log.d(TEST_LOG, msg);
-//                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+//        for (int i = 0; i < 1000; i++) {
+//            checkStatusTest();
+//        }
     }
 
     private void initData() {
@@ -91,6 +75,21 @@ public class SplashActivity extends AppCompatActivity {
         errorBlock = findViewById(R.id.errorBlock);
         refreshBtn = findViewById(R.id.refreshBtn);
         refreshBtn.setOnClickListener(v -> checkStatus());
+    }
+
+    public void checkStatusTest() {
+        Call<StatusResponse> call = API.checkStatus();
+        call.enqueue(new Callback<StatusResponse>() {
+            @Override
+            public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                Log.d("testhttp", "onResponse: " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<StatusResponse> call, Throwable t) {
+                Log.d("testhttp", "onResponse: " + t.getMessage());
+            }
+        });
     }
 
     public void checkStatus() {

@@ -24,8 +24,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:focusableInTouchMode="true"
-        android:textColorHint="#959CBB"
-        app:boxStrokeColor="#2A2B30"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -39,8 +39,8 @@
             android:enabled="false"
             android:inputType="text"
             android:singleLine="true"
-            android:textColor="#959CBB"
-            android:textColorHint="#959CBB" />
+            android:textColor="@color/black"
+            android:textColorHint="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -52,8 +52,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:focusableInTouchMode="true"
-        android:textColorHint="#959CBB"
-        app:boxStrokeColor="#2A2B30"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/secondNameTextInputLayout">
@@ -67,8 +67,8 @@
             android:enabled="false"
             android:inputType="text"
             android:singleLine="true"
-            android:textColor="#959CBB"
-            android:textColorHint="#959CBB" />
+            android:textColor="@color/black"
+            android:textColorHint="@color/black" />
 
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -82,8 +82,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:focusableInTouchMode="true"
-        android:textColorHint="#959CBB"
-        app:boxStrokeColor="#2A2B30"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nameTextInputLayout">
@@ -97,8 +97,8 @@
             android:enabled="false"
             android:inputType="text"
             android:singleLine="true"
-            android:textColor="#959CBB"
-            android:textColorHint="#959CBB" />
+            android:textColor="@color/black"
+            android:textColorHint="@color/black" />
 
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -106,13 +106,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/registerBtn"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:enabled="false"
-        android:text="Сохранить"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="Изменить"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/thirdNameTextInputLayout" />

@@ -11,11 +11,19 @@ public class SampleClusterItem implements ClusterItem {
     private LatLng location;
     private String title;
     private String snippet;
+    private boolean isWork;
 
     public SampleClusterItem(@NonNull LatLng location, String title, String snippet) {
         this.location = location;
         this.title = title;
         this.snippet = snippet;
+    }
+
+    public SampleClusterItem(@NonNull LatLng location, String title, String snippet, boolean isWork) {
+        this.location = location;
+        this.title = title;
+        this.snippet = snippet;
+        this.isWork = isWork;
     }
 
     @Override
@@ -54,5 +62,13 @@ public class SampleClusterItem implements ClusterItem {
 
     public void setSnippet(String snippet) {
         this.snippet = snippet;
+    }
+
+    public boolean isWork() {
+        return isWork;
+    }
+
+    public void setWork(boolean work) {
+        isWork = work;
     }
 }

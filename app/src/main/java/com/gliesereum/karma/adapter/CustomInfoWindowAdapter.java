@@ -24,12 +24,14 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoWindow(Marker marker) {
+        Log.d("MAPWINDOF", "getInfoWindow: ");
         render(marker, mWindow);
         return mWindow;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
+        Log.d("MAPWINDOF", "getInfoContents: ");
         render(marker, mContents);
         return mContents;
     }

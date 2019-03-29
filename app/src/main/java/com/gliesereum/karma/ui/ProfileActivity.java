@@ -1,12 +1,12 @@
 package com.gliesereum.karma.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.appizona.yehiahd.fastsave.FastSave;
@@ -45,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private boolean firstNameFlag;
     private boolean secondNameFlag;
     private boolean thirdNameFlag;
+    private boolean editFlag;
 
 
     @Override
@@ -80,30 +81,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         thirdNameTextView.addTextChangedListener(thirdNameListener);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.edit_menu:
-                if (!registerBtn.isEnabled()) {
-                    Toast.makeText(this, "sdfsdfsdf", Toast.LENGTH_SHORT).show();
-                } else {
-                    secondNameTextView.setEnabled(true);
-                    nameTextView.setEnabled(true);
-                    thirdNameTextView.setEnabled(true);
-                    registerBtn.setEnabled(true);
-                    return true;
-                }
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.edit_menu:
+//                    secondNameTextView.setEnabled(true);
+//                    nameTextView.setEnabled(true);
+//                    thirdNameTextView.setEnabled(true);
+//                    registerBtn.setEnabled(true);
+//                    return true;
+//
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     private void getUser() {
         API.getUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
@@ -113,7 +111,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         nameTextView.setText(response.body().getFirstName());
                         secondNameTextView.setText(response.body().getLastName());
                         thirdNameTextView.setText(response.body().getMiddleName());
-                        registerBtn.setEnabled(false);
                         FastSave.getInstance().saveObject("userInfo", response.body());
                     }
 
@@ -126,36 +123,53 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        User user = FastSave.getInstance().getObject("userInfo", User.class);
-        user.setFirstName(nameTextView.getText().toString());
-        user.setLastName(secondNameTextView.getText().toString());
-        user.setMiddleName(thirdNameTextView.getText().toString());
-        user.setCoverUrl(ANDROID_APP);
-        user.setCountry(ANDROID_APP);
-        user.setAddress(ANDROID_APP);
-        user.setAvatarUrl(ANDROID_APP);
-        user.setCity(ANDROID_APP);
-        user.setAddAddress(ANDROID_APP);
-        user.setPosition(ANDROID_APP);
+        if (editFlag) {
+            User user = FastSave.getInstance().getObject("userInfo", User.class);
+            user.setFirstName(nameTextView.getText().toString());
+            user.setLastName(secondNameTextView.getText().toString());
+            user.setMiddleName(thirdNameTextView.getText().toString());
+            user.setCoverUrl(ANDROID_APP);
+            user.setCountry(ANDROID_APP);
+            user.setAddress(ANDROID_APP);
+            user.setAvatarUrl(ANDROID_APP);
+            user.setCity(ANDROID_APP);
+            user.setAddAddress(ANDROID_APP);
+            user.setPosition(ANDROID_APP);
 
-        API.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user)
-                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<User>() {
-                    @Override
-                    public void onSuccessful(Call<User> call, Response<User> response) {
-                        FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
-                        FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
-                        secondNameTextView.setEnabled(false);
-                        nameTextView.setEnabled(false);
-                        thirdNameTextView.setEnabled(false);
-                        registerBtn.setEnabled(false);
-                        Toast.makeText(ProfileActivity.this, "Сохраненно", Toast.LENGTH_SHORT).show();
-                    }
+            API.updateUser(FastSave.getInstance().getString(ACCESS_TOKEN, ""), user)
+                    .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<User>() {
+                        @Override
+                        public void onSuccessful(Call<User> call, Response<User> response) {
+                            FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
+                            FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
+                            secondNameTextView.setEnabled(false);
+                            nameTextView.setEnabled(false);
+                            thirdNameTextView.setEnabled(false);
+                            registerBtn.setText("Изменить");
+                            editFlag = false;
+                            Toast.makeText(ProfileActivity.this, "Сохраненно", Toast.LENGTH_SHORT).show();
+                        }
 
-                    @Override
-                    public void onEmpty(Call<User> call, Response<User> response) {
+                        @Override
+                        public void onEmpty(Call<User> call, Response<User> response) {
 
-                    }
-                }));
+                        }
+                    }));
+
+        } else {
+            secondNameTextView.setEnabled(true);
+            nameTextView.setEnabled(true);
+            thirdNameTextView.setEnabled(true);
+            secondNameTextView.requestFocus();
+            secondNameTextView.setSelection(secondNameTextView.length());
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(secondNameTextView, InputMethodManager.SHOW_IMPLICIT);
+            registerBtn.setText("Сохранить");
+            editFlag = true;
+
+
+        }
+
     }
 
     TextWatcher firstNameListener = new TextWatcher() {
