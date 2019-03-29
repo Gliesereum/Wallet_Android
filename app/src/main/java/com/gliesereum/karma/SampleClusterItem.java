@@ -19,13 +19,6 @@ public class SampleClusterItem implements ClusterItem {
         this.snippet = snippet;
     }
 
-    public SampleClusterItem(@NonNull LatLng location, String title, String snippet, boolean isWork) {
-        this.location = location;
-        this.title = title;
-        this.snippet = snippet;
-        this.isWork = isWork;
-    }
-
     @Override
     public double getLatitude() {
         return location.latitude;

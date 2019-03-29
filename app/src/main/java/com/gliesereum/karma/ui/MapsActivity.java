@@ -292,7 +292,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         });
                         for (AllCarWashResponse coordinate : carWashList) {
-                            clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId(), Util.checkCarWashWorkTime(coordinate)));
+                            clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
                         }
                         clusterManager.setItems(clusterItems);
                         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
