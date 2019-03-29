@@ -308,6 +308,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         } else {
             packageScroll.setVisibility(View.GONE);
             packageLabel.setVisibility(View.GONE);
+            setServicePrices(carWash);
         }
     }
 
