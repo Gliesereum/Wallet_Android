@@ -395,7 +395,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     if (Util.checkCarWashWorkTime(carWash)) {
                         preOrderLabel1.setText("У Вас есть возможность заказать мойку на ближайшее или на выбраное время");
                     } else {
-                        preOrderLabel1.setText("Мойка сейчас не рабоатет. У Вас есть возможность заказать только мойку выбраное время");
+                        preOrderLabel1.setText("Мойка сейчас не работает. у  Вас есть возможность заказать мойку только на выбранное время");
                     }
                     break;
                 case R.id.preOrderLabel2:
