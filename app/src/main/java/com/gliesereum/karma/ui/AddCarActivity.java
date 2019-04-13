@@ -128,7 +128,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getAllClassService() {
-        API.getAllClassService()
+        API.getAllClassService(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<ClassServiceResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<ClassServiceResponse>> call, Response<List<ClassServiceResponse>> response) {
@@ -278,7 +278,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getBrands() {
-        API.getBrands()
+        API.getBrands(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<BrandResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
@@ -300,7 +300,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getModel() {
-        API.getModels(brandHashMap.get(brandSpinner.getSelectedItem()))
+        API.getModels(FastSave.getInstance().getString(ACCESS_TOKEN, ""), brandHashMap.get(brandSpinner.getSelectedItem()))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<BrandResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {
@@ -323,7 +323,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getYears() {
-        API.getYears()
+        API.getYears(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<BrandResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<BrandResponse>> call, Response<List<BrandResponse>> response) {

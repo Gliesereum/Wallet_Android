@@ -168,7 +168,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getCarWash() {
-        API.getCarWashFull(carWashId)
+        API.getCarWashFull(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId)
                 .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<AllCarWashResponse>() {
                             @Override
                             public void onSuccessful(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
@@ -255,12 +255,13 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             mediaURLList.add(mediumList.get(i).getUrl());
             View view = LayoutInflater.from(this).inflate(R.layout.image_view_for_slider, photoScrollView, false);
             ImageView imageView = view.findViewById(R.id.imageView6);
+            imageView.setTag(i);
             Picasso.get().load(mediumList.get(i).getUrl()).fit().into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Dialog dialog = new PopopDialogBuilder(CarWashActivity.this)
-                            .setList(mediaURLList)
+                            .setList(mediaURLList, (Integer) v.getTag())
                             .setHeaderBackgroundColor(R.color.accent)
                             .setCloseDrawable(R.drawable.ic_close_white_24dp)
                             .showThumbSlider(true)
@@ -367,7 +368,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CommentsItem>() {
                             @Override
                             public void onSuccessful(Call<CommentsItem> call, Response<CommentsItem> response) {
-                                API.getCarWashFull(carWashId)
+                                API.getCarWashFull(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId)
                                         .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllCarWashResponse>() {
                                             @Override
                                             public void onSuccessful(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
@@ -394,7 +395,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void updateRating() {
-        API.getRating(carWashId)
+        API.getRating(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId)
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<Rating>() {
                     @Override
                     public void onSuccessful(Call<Rating> call, Response<Rating> response) {

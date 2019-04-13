@@ -326,7 +326,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         } else {
             mLocationPermissionGranted = true;
-            getAllCarWash(new FilterCarWashBody());
+//            getAllCarWash(new FilterCarWashBody());
             updateLocationUI();
             getDeviceLocation();
         }

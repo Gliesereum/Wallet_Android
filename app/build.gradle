@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.karma"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 16
-        versionName "0.0.16"
+        versionCode 17
+        versionName "0.0.17"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -88,19 +88,13 @@ dependencies {
     implementation 'com.github.mreram:showcaseview:1.1'
     //https://android-arsenal.com/details/1/6713
 
-    implementation 'com.github.smhdk:KM-Popup-Image-Slider:v1.2.0'
+    implementation 'com.github.smhdk:KM-Popup-Image-Slider:v1.2.1'
     //https://android-arsenal.com/details/1/7336
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'com.airbnb.android:lottie:2.7.0'
     implementation 'com.github.mayuce:LottieAlertDialog:1.1'
     //https://android-arsenal.com/details/1/7557
-
-    implementation 'com.jgb.lordsaac.igb.progresslitieigb:progresslottieigb:0.0.2'
-    //https://android-arsenal.com/details/1/7471
-
-    implementation 'com.github.akndmr:ColorPrefUtil:1.0.1'
-    //https://github.com/akndmr/ColorPrefUtil?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=7502
 
     //Socket
     implementation 'org.java-websocket:Java-WebSocket:1.4.0'
@@ -114,7 +108,7 @@ dependencies {
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.google.firebase:firebase-messaging:17.4.0'
+    implementation 'com.google.firebase:firebase-messaging:17.6.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'

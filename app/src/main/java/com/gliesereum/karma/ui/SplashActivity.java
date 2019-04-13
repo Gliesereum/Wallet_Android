@@ -60,9 +60,6 @@ public class SplashActivity extends AppCompatActivity {
         initData();
         initView();
         checkStatus();
-//        for (int i = 0; i < 1000; i++) {
-//            checkStatusTest();
-//        }
     }
 
     private void initData() {
@@ -77,21 +74,6 @@ public class SplashActivity extends AppCompatActivity {
         refreshBtn.setOnClickListener(v -> checkStatus());
     }
 
-    public void checkStatusTest() {
-        Call<StatusResponse> call = API.checkStatus();
-        call.enqueue(new Callback<StatusResponse>() {
-            @Override
-            public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
-                Log.d("testhttp", "onResponse: " + response.code());
-            }
-
-            @Override
-            public void onFailure(Call<StatusResponse> call, Throwable t) {
-                Log.d("testhttp", "onResponse: " + t.getMessage());
-            }
-        });
-    }
-
     public void checkStatus() {
         errorBlock.setVisibility(View.GONE);
         showProgressDialog();
@@ -102,8 +84,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     if (response.body().getAccountService() != null && response.body().getAccountService().equals(STATUS_UP)
                             && response.body().getMailService() != null && response.body().getMailService().equals(STATUS_UP)
-                            && response.body().getKarmaService() != null && response.body().getKarmaService().equals(STATUS_UP)
-                            && response.body().getSocketService() != null && response.body().getSocketService().equals(STATUS_UP)) {
+                            && response.body().getKarmaService() != null && response.body().getKarmaService().equals(STATUS_UP)) {
                         checkAccessToken();
                     } else {
                         errorBlock.setVisibility(View.VISIBLE);

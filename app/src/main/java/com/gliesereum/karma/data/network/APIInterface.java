@@ -61,13 +61,13 @@ public interface APIInterface {
 
     //CAR
     @GET("karma/v1/car/brands")
-    Call<List<BrandResponse>> getBrands();
+    Call<List<BrandResponse>> getBrands(@Header("Authorization") String accessToken);
 
     @GET("karma/v1/car/models/by-brand/{brandId}")
-    Call<List<BrandResponse>> getModels(@Path("brandId") String id);
+    Call<List<BrandResponse>> getModels(@Header("Authorization") String accessToken, @Path("brandId") String id);
 
     @GET("karma/v1/car/years")
-    Call<List<BrandResponse>> getYears();
+    Call<List<BrandResponse>> getYears(@Header("Authorization") String accessToken);
 
     @GET("karma/v1/car/user")
     Call<List<AllCarResponse>> getAllCars(@Header("Authorization") String accessToken);
@@ -82,7 +82,7 @@ public interface APIInterface {
     Call<CarDeleteResponse> deleteCar(@Header("Authorization") String accessToken, @Path("idCar") String idCar);
 
     @GET("karma/v1/class")
-    Call<List<ClassServiceResponse>> getAllClassService();
+    Call<List<ClassServiceResponse>> getAllClassService(@Header("Authorization") String accessToken);
 
     @POST("karma/v1/car/service/{idCar}/{idService}")
     Call<CarDeleteResponse> addClassService(@Path("idCar") String idCar, @Path("idService") String idService, @Header("Authorization") String accessToken);
@@ -106,7 +106,7 @@ public interface APIInterface {
     Call<List<AllCarWashResponse>> getAllCarWash(@Body FilterCarWashBody filterCarWashBody);
 
     @GET("karma/v1/business/{carwashId}/full-model")
-    Call<AllCarWashResponse> getCarWashFull(@Path("carwashId") String id);
+    Call<AllCarWashResponse> getCarWashFull(@Header("Authorization") String accessToken, @Path("carwashId") String id);
 
 //    @GET("karma/v1/business/{carwashId}")
 //    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
@@ -115,7 +115,7 @@ public interface APIInterface {
     Call<List<ServiceResponse>> getAllService();
 
     @GET("karma/v1/business/{carwashId}/rating")
-    Call<Rating> getRating(@Path("carwashId") String id);
+    Call<Rating> getRating(@Header("Authorization") String accessToken, @Path("carwashId") String id);
 
 
 
@@ -125,7 +125,7 @@ public interface APIInterface {
     Call<OrderResponse> preOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @POST("karma/v1/record")
-    Call<OrderResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
+    Call<AllRecordResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @GET("karma/v1/record/client/all")
     Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken, @Query("serviceType") String serviceType);

@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.R;
-import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
@@ -30,6 +29,7 @@ import com.gliesereum.karma.data.network.json.carwash.ServicesItem;
 import com.gliesereum.karma.data.network.json.filter.AttributesItem;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
+import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
@@ -240,15 +240,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 for (int j = 0; j < packageScroll.getChildCount(); j++) {
                     ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                     if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                        Log.d(TAG, "onClick: 1");
                         ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
-
-
                     } else {
-                        Log.d(TAG, "onClick: 2");
                         ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
-
-
                     }
                 }
                 serviceMap.clear();
@@ -470,17 +464,19 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onClick(View v) {
                                             API.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody)
-                                                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<OrderResponse>() {
+                                                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<AllRecordResponse>() {
                                                         @Override
-                                                        public void onSuccessful(Call<OrderResponse> call, Response<OrderResponse> response) {
+                                                        public void onSuccessful(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
                                                             nDialog.dismiss();
                                                             Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
-                                                            startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
+//                                                            startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
+                                                            FastSave.getInstance().saveObject("RECORD", response.body());
+                                                            startActivity(new Intent(OrderActivity.this, SingleRecordActivity.class));
                                                             finish();
                                                         }
 
                                                         @Override
-                                                        public void onEmpty(Call<OrderResponse> call, Response<OrderResponse> response) {
+                                                        public void onEmpty(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
 
                                                         }
                                                     }));

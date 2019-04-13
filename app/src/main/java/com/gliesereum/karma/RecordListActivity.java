@@ -44,7 +44,7 @@ public class RecordListActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private RecordListAdapter recordListAdapter;
-    private List<AllRecordResponse> recordsList;
+    private List<AllRecordResponse> recordsList = new ArrayList<>();
     private Map<String, String> carWashNameMap = new HashMap<>();
     private APIInterface API;
     private ErrorHandler errorHandler;
