@@ -8,13 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.adapter.RecordListAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.util.ErrorHandler;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 import com.google.gson.Gson;
 
@@ -39,6 +39,8 @@ import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 import static com.gliesereum.karma.util.Constants.TEST_LOG;
 import static com.gliesereum.karma.util.Constants.USER_ID;
 
+//import com.appizona.yehiahd.fastsave.FastSave;
+
 public class RecordListActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -60,6 +62,15 @@ public class RecordListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_records);
+//        Bundle bundle = getIntent().getExtras();
+//        if(bundle.getString("action").equals("SHOW_DETAILS")) /*This indicates activity is launched from notification, not directly*/
+//        {
+//            //Data retrieved from notification payload send
+////            String filed1 = bundle.getString("field1");
+////            String filed2 = bundle.getString("field2");
+//            Log.d("TAG_NOTIF", "onCreate: filed1");
+//            Log.d("TAG_NOTIF", "onCreate: ");
+//        }
 //        FastSave.init(getApplicationContext());
         initView();
         getAllRecord();

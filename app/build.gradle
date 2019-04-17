@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'org.glassfish:javax.annotation:10.0-b28'
 
-    implementation 'com.github.yehiahd:FastSave-Android:1.0.6'
+//    implementation 'com.github.yehiahd:FastSave-Android:1.0.6'
     //https://android-arsenal.com/details/1/6875
     implementation 'com.github.joielechong:countrycodepicker:2.1.8'
     //https://github.com/joielechong/CountryCodePicker
@@ -86,7 +86,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0-alpha05'
 
     implementation 'com.github.mreram:showcaseview:1.1'
-    //https://android-arsenal.com/details/1/6713
+    //https://android-arsenal.com/details/1/6713 !!!!!!!!!!!!!!!!!!!!!
 
     implementation 'com.github.smhdk:KM-Popup-Image-Slider:v1.2.1'
     //https://android-arsenal.com/details/1/7336

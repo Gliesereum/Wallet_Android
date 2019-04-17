@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
@@ -38,6 +37,8 @@ import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class Util {
     private Activity activity;

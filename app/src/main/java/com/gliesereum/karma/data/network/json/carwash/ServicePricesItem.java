@@ -1,6 +1,7 @@
 package com.gliesereum.karma.data.network.json.carwash;
 
 import com.gliesereum.karma.data.network.json.filter.AttributesItem;
+import com.gliesereum.karma.data.network.json.filter.ServiceClassItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -81,13 +82,13 @@ public class ServicePricesItem {
 		return duration;
 	}
 
-	public void setServiceClass(List<ServiceClassItem> serviceClass) {
-		this.serviceClass = serviceClass;
-	}
-
 	public List<ServiceClassItem> getServiceClass() {
 		return serviceClass;
 	}
+
+    public void setServiceClass(List<ServiceClassItem> serviceClass) {
+        this.serviceClass = serviceClass;
+    }
 
 	public void setPrice(int price) {
 		this.price = price;

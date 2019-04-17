@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.RecordListActivity;
@@ -21,6 +20,7 @@ import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -39,6 +39,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class SingleRecordActivity extends AppCompatActivity implements View.OnClickListener {
 

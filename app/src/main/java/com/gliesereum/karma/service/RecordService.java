@@ -11,10 +11,10 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.ui.MapsActivity;
+import com.gliesereum.karma.util.FastSave;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -29,6 +29,8 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.TEST_LOG;
 import static com.gliesereum.karma.util.Constants.USER_ID;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class RecordService extends Service {
 

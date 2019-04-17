@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.GlideApp;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.ui.SingleRecordActivity;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 
 import java.util.ArrayList;
@@ -20,6 +20,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.ViewHolder> {
 

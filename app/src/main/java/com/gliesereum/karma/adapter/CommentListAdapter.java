@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -17,6 +16,7 @@ import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.ui.CarWashActivity;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.SmartRatingBar;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -36,6 +36,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
 

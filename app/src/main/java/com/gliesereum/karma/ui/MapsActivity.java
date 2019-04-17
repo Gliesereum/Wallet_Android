@@ -1,6 +1,7 @@
 package com.gliesereum.karma.ui;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -16,7 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
+import com.gliesereum.karma.MyFirebaseMessagingService;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.SampleClusterItem;
 import com.gliesereum.karma.adapter.CustomInfoWindowAdapter;
@@ -27,6 +28,7 @@ import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
@@ -41,6 +43,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.labters.lottiealertdialoglibrary.DialogTypes;
 import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 
@@ -73,6 +76,8 @@ import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 import static com.gliesereum.karma.util.Constants.TEST_LOG;
 
+//import com.appizona.yehiahd.fastsave.FastSave;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -103,10 +108,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         serviceList = new ArrayList<>();
         mDefaultLocation = new LatLng(50, 30);
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-//            startService(new Intent(this, RecordService.class));
+            startService(new Intent(this, MyFirebaseMessagingService.class));
             Log.d(TEST_LOG, "sendBroadcast: ");
 //            sendBroadcast(new Intent(this, RestartServiceReceiver.class));
         }
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+            String newToken = instanceIdResult.getToken();
+            Log.e("newToken", newToken);
+            getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
+        });
+
+        Log.d("newToken", getPreferences(Context.MODE_PRIVATE).getString("fb", "empty :("));
+
     }
 
     private void firstStartNotify() {
@@ -192,7 +206,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        firstStartNotify();
+
 //        if (FastSave.getInstance().getBoolean("openRecord", false)) {
 //            getSingleRecord(FastSave.getInstance().getString("recordId", ""));
 //            FastSave.getInstance().deleteValue("openRecord");
@@ -200,6 +214,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        }
         initData();
         initView();
+        firstStartNotify();
         initMap(savedInstanceState);
         getLocationPermission();
         getAllService();

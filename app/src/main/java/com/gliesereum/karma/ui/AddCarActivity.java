@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -19,6 +18,7 @@ import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.filter.FilterResponse;
+import com.gliesereum.karma.util.FastSave;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -37,6 +37,8 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class AddCarActivity extends AppCompatActivity implements View.OnClickListener {
 

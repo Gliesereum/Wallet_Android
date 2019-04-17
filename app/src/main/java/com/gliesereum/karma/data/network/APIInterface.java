@@ -118,8 +118,6 @@ public interface APIInterface {
     Call<Rating> getRating(@Header("Authorization") String accessToken, @Path("carwashId") String id);
 
 
-
-
     //RECORD
     @POST("karma/v1/record/free-time")
     Call<OrderResponse> preOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);

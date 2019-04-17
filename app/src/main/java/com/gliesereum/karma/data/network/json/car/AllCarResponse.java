@@ -1,6 +1,7 @@
 package com.gliesereum.karma.data.network.json.car;
 
 import com.gliesereum.karma.data.network.json.filter.AttributesItem;
+import com.gliesereum.karma.data.network.json.filter.ServiceClassItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class AllCarResponse {
 	private String description;
 
 	@SerializedName("services")
-	private List<ServicesItem> services;
+	private List<ServiceClassItem> services;
 
 	@SerializedName("userId")
 	private String userId;
@@ -92,11 +93,11 @@ public class AllCarResponse {
 		return description;
 	}
 
-    public void setServices(List<ServicesItem> services) {
+	public void setServices(List<ServiceClassItem> services) {
 		this.services = services;
 	}
 
-    public List<ServicesItem> getServices() {
+	public List<ServiceClassItem> getServices() {
 		return services;
 	}
 

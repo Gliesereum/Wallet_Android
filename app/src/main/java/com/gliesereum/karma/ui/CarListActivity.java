@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.vivchar.viewpagerindicator.ViewPagerIndicator;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.WrapContentHeightViewPager;
@@ -18,6 +17,7 @@ import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;
 
@@ -36,6 +36,8 @@ import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class CarListActivity extends AppCompatActivity implements View.OnClickListener {
     private ViewPagerIndicator viewPagerIndicator;

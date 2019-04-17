@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -17,6 +16,7 @@ import com.gliesereum.karma.data.network.json.status.StatusResponse;
 import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
 import com.gliesereum.karma.util.ErrorHandler;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 import com.labters.lottiealertdialoglibrary.DialogTypes;
 import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
@@ -40,6 +40,8 @@ import static com.gliesereum.karma.util.Constants.STATUS_UP;
 import static com.gliesereum.karma.util.Constants.USER_ID;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class SplashActivity extends AppCompatActivity {
 

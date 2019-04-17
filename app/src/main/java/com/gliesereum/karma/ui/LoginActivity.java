@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.chaos.view.PinView;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
@@ -20,6 +19,7 @@ import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
+import com.gliesereum.karma.util.FastSave;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.rilixtech.CountryCodePicker;
@@ -40,6 +40,8 @@ import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.karma.util.Constants.USER_ID;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 

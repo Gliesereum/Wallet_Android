@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.user.User;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,6 +29,8 @@ import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.ANDROID_APP;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 

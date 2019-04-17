@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
@@ -27,9 +26,11 @@ import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.ServicesItem;
 import com.gliesereum.karma.data.network.json.filter.AttributesItem;
+import com.gliesereum.karma.data.network.json.filter.ServiceClassItem;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
@@ -55,6 +56,7 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.karma.util.Constants.ORDER_ACTIVITY;
 
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
@@ -174,7 +176,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         servicePriceItem.removeAllViews();
         packageItems.removeAllViews();
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes())) {
+            if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes())
+                    && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())
+            ) {
                 if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);
@@ -247,6 +251,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 }
                 serviceMap.clear();
                 nameOfServiceList.clear();
+                orderBody.setPackageId(null);
                 priceLabel.setText("0");
                 durationLabel.setText("0");
                 discountTextView.setText("0%");

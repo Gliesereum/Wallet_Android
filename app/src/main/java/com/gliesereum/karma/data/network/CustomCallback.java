@@ -95,17 +95,11 @@ public class CustomCallback {
             alertDialog.setCancelable(false);
             alertDialog.show();
         }
-//        if (progressDialog ==null || !progressDialog.isShowing()){
-//            progressDialog = ProgressDialog.show(context, "Ща сек...", "Ща все сделаю...");
-//        }
     }
 
     private void closeProgressDialog() {
         if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
         }
-//        if (progressDialog != null && progressDialog.isShowing()) {
-//            progressDialog.dismiss();
-//        }
     }
 }

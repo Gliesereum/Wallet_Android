@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.GlideApp;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.adapter.CommentListAdapter;
@@ -28,6 +27,7 @@ import com.gliesereum.karma.data.network.json.carwash.PackagesItem;
 import com.gliesereum.karma.data.network.json.carwash.Rating;
 import com.gliesereum.karma.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.karma.data.network.json.carwash.WorkTimesItem;
+import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.SmartRatingBar;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -59,6 +59,8 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CARWASHA_CTIVITY;
 import static com.gliesereum.karma.util.Constants.CARWASH_ID;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class CarWashActivity extends AppCompatActivity implements View.OnClickListener {
 

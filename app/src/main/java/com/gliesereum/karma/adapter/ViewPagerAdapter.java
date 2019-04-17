@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appizona.yehiahd.fastsave.FastSave;
 import com.gliesereum.karma.IconPowerMenuItem;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
@@ -19,6 +18,7 @@ import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.karma.ui.CarListActivity;
+import com.gliesereum.karma.util.FastSave;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -31,6 +31,8 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
+
+//import com.appizona.yehiahd.fastsave.FastSave;
 
 
 public class ViewPagerAdapter extends PagerAdapter {
