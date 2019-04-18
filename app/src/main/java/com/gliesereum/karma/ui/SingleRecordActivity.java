@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.R;
+import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
@@ -240,7 +241,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllRecordResponse>() {
                     @Override
                     public void onSuccessful(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
-//                        startActivity(new Intent(SingleRecordActivity.this, RecordListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        startActivity(new Intent(SingleRecordActivity.this, RecordListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                         Toast.makeText(SingleRecordActivity.this, "Заказ отменен", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -250,5 +251,11 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
 
                     }
                 }));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(SingleRecordActivity.this, RecordListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
     }
 }

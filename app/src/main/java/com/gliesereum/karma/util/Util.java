@@ -112,7 +112,7 @@ public class Util {
                         result.closeDrawer();
                         break;
                     case "record_list":
-                        activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class));
+                        activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                         result.closeDrawer();
                         break;
                     case "logout":
