@@ -16,6 +16,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
@@ -43,10 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import retrofit2.Call;
 import retrofit2.Response;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
@@ -177,8 +178,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         packageItems.removeAllViews();
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
             if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes())
-                    && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())
-            ) {
+                    && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
                 if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);

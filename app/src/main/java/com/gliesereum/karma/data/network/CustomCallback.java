@@ -1,7 +1,6 @@
 package com.gliesereum.karma.data.network;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.gliesereum.karma.util.ErrorHandler;
@@ -18,7 +17,6 @@ public class CustomCallback {
 
     private Context context;
     private ErrorHandler errorHandler;
-    private ProgressDialog progressDialog;
     private LottieAlertDialog alertDialog;
 
 

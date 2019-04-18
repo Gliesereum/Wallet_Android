@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -20,8 +23,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -130,10 +131,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             user.setFirstName(nameTextView.getText().toString());
             user.setLastName(secondNameTextView.getText().toString());
             user.setMiddleName(thirdNameTextView.getText().toString());
-            user.setCoverUrl(ANDROID_APP);
             user.setCountry(ANDROID_APP);
             user.setAddress(ANDROID_APP);
-            user.setAvatarUrl(ANDROID_APP);
             user.setCity(ANDROID_APP);
             user.setAddAddress(ANDROID_APP);
             user.setPosition(ANDROID_APP);

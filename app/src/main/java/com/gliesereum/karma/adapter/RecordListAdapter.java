@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.gliesereum.karma.GlideApp;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
@@ -18,16 +21,12 @@ import com.gliesereum.karma.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 //import com.appizona.yehiahd.fastsave.FastSave;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.ViewHolder> {
 
     private List<AllRecordResponse> allRecordList = new ArrayList<>();
     private Context context;
-    private int i = 0;
 
     @NonNull
     @Override
@@ -35,7 +34,10 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_item, parent, false);
         view.setOnClickListener(v -> {
-            FastSave.getInstance().saveObject("RECORD", allRecordList.get(Integer.parseInt(((TextView) v.findViewById(R.id.recordId)).getText().toString())));
+//            FastSave.getInstance().saveObject("RECORD", allRecordList.get(Integer.parseInt(((TextView) v.findViewById(R.id.recordId)).getText().toString())));
+            AllRecordResponse allRecordResponse = new AllRecordResponse();
+            allRecordResponse.setId(((TextView) v.findViewById(R.id.recordId)).getText().toString());
+            FastSave.getInstance().saveObject("RECORD", allRecordList.get(allRecordList.indexOf(allRecordResponse)));
             Intent intent = new Intent(context, SingleRecordActivity.class);
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
         });
@@ -102,9 +104,8 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
             if (recordInfo.getBusiness() != null && recordInfo.getBusiness().getName() != null) {
                 carWashName.setText(recordInfo.getBusiness().getName());
             }
-            recordId.setText(String.valueOf(i));
+            recordId.setText(recordInfo.getId());
             GlideApp.with(context).load(R.mipmap.ic_launcher_round).circleCrop().into(carWashLogo);
-            i++;
         }
     }
 

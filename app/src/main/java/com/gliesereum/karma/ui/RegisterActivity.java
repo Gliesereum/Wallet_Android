@@ -8,6 +8,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -18,12 +20,12 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.ANDROID_APP;
+import static com.gliesereum.karma.util.Constants.USER_ID;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
 
@@ -120,10 +122,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             user.setFirstName(nameTextView.getText().toString());
             user.setLastName(secondNameTextView.getText().toString());
             user.setMiddleName(thirdNameTextView.getText().toString());
-            user.setCoverUrl(ANDROID_APP);
             user.setCountry(ANDROID_APP);
             user.setAddress(ANDROID_APP);
-            user.setAvatarUrl(ANDROID_APP);
             user.setCity(ANDROID_APP);
             user.setAddAddress(ANDROID_APP);
             user.setPosition(ANDROID_APP);
@@ -132,6 +132,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<User>() {
                         @Override
                         public void onSuccessful(Call<User> call, Response<User> response) {
+                            FastSave.getInstance().saveString(USER_ID, response.body().getId());
                             FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
                             startActivity(new Intent(RegisterActivity.this, CarListActivity.class));

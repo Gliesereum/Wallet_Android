@@ -14,6 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.gliesereum.karma.GlideApp;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.adapter.CommentListAdapter;
@@ -46,9 +50,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import hakobastvatsatryan.DropdownTextView;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -193,7 +194,11 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                 }
                                 name.setText(carWash.getName());
                                 address.setText(carWash.getAddress());
-                                descriptionDropdown.setContentText(carWash.getDescription());
+                                if (carWash.getDescription() != null && !carWash.getDescription().equals("")) {
+                                    descriptionDropdown.setContentText(carWash.getDescription());
+                                } else {
+                                    descriptionDropdown.setVisibility(View.GONE);
+                                }
                                 carWashRating.setRatingNum(carWash.getRating().getRating());
                                 if (Util.checkCarWashWorkTime(carWash)) {
                                     nowStatus.setText("работает");

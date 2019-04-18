@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.widget.Toolbar;
+
+import com.gliesereum.karma.BuildConfig;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
@@ -26,8 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
-import androidx.appcompat.widget.Toolbar;
 
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
@@ -61,6 +62,7 @@ public class Util {
         SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.profile);
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.logout);
         SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.login);
+        SecondaryDrawerItem versionItem = new SecondaryDrawerItem().withName("v" + BuildConfig.VERSION_NAME).withIdentifier(7).withSelectable(false).withTag("version").withSelectable(false);
 
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             car_listItem.withEnabled(false);
@@ -110,7 +112,7 @@ public class Util {
                         result.closeDrawer();
                         break;
                     case "record_list":
-                        activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        activity.startActivity(new Intent(activity.getApplicationContext(), RecordListActivity.class));
                         result.closeDrawer();
                         break;
                     case "logout":
@@ -145,6 +147,8 @@ public class Util {
         } else {
             result.addItem(loginItem);
         }
+        result.addItem(new DividerDrawerItem());
+        result.addItem(versionItem);
 
     }
 

@@ -17,7 +17,6 @@ import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.data.network.json.status.StatusResponse;
-import com.gliesereum.karma.data.network.json.user.TokenInfo;
 import com.gliesereum.karma.data.network.json.user.User;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
 
@@ -53,7 +52,7 @@ public interface APIInterface {
     Call<User> updateUser(@Header("Authorization") String accessToken, @Body User user);
 
     @POST("account/v1/auth/refresh")
-    Call<TokenInfo> refreshAccessToken(@Query("accessToken") String accessToken, @Query("refreshToken") String refreshToken);
+    Call<UserResponse> refreshAccessToken(@Query("refreshToken") String refreshToken);
 
     @GET("account/v1/auth/check")
     Call<UserResponse> checkAccessToken(@Query("accessToken") String accessToken);

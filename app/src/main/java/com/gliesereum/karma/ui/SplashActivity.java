@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -23,9 +27,6 @@ import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 
 import org.json.JSONObject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,9 +59,13 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        getLocationPermission();
+//        getLocationPermission();
         initData();
         initView();
+        if (FastSave.getInstance().getBoolean("CLEAN_STORAGE", true)) {
+            FastSave.getInstance().clearSession();
+            FastSave.getInstance().saveBoolean("CLEAN_STORAGE", false);
+        }
         checkStatus();
     }
 
@@ -148,7 +153,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
             } else {
                 if (Util.checkExpirationToken(refreshExpirationDate)) {
-                    refreshToken(FastSave.getInstance().getString(ACCESS_TOKEN_WITHOUT_BEARER, ""), FastSave.getInstance().getString(REFRESH_TOKEN, ""));
+                    refreshToken(FastSave.getInstance().getString(REFRESH_TOKEN, ""));
                 } else {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, false);
                     startActivity(new Intent(SplashActivity.this, MapsActivity.class));
@@ -162,17 +167,17 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    public void refreshToken(String accessToken, String refreshToken) {
+    public void refreshToken(String refreshToken) {
         Log.d(TAG, "refreshToken: ");
         API = APIClient.getClient().create(APIInterface.class);
-        Call<TokenInfo> call = API.refreshAccessToken(accessToken, refreshToken);
-        call.enqueue(new Callback<TokenInfo>() {
+        Call<UserResponse> call = API.refreshAccessToken(refreshToken);
+        call.enqueue(new Callback<UserResponse>() {
             @Override
-            public void onResponse(Call<TokenInfo> call, Response<TokenInfo> response) {
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.code() == 200) {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, true);
                     Toast.makeText(SplashActivity.this, "Refresh!", Toast.LENGTH_SHORT).show();
-                    setTokenInfo(response);
+                    setTokenInfo(response.body().getTokenInfo());
                     if (FastSave.getInstance().getString(USER_NAME, "").equals("") || FastSave.getInstance().getString(USER_SECOND_NAME, "").equals("")) {
                         startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
                         finish();
@@ -198,7 +203,7 @@ public class SplashActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<TokenInfo> call, Throwable t) {
+            public void onFailure(Call<UserResponse> call, Throwable t) {
 //                closeProgressDialog();
                 errorHandler.showCustomError(t.getMessage());
                 startActivity(new Intent(SplashActivity.this, LoginActivity.class));
@@ -208,17 +213,15 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    private void setTokenInfo(Response<TokenInfo> response) {
+    private void setTokenInfo(TokenInfo response) {
         Log.d(TAG, "setTokenInfo: ");
         FastSave.getInstance().saveBoolean(IS_LOGIN, true);
-        FastSave.getInstance().saveString(ACCESS_TOKEN, "Bearer " + response.body().getAccessToken());
-        FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, response.body().getAccessToken());
-        FastSave.getInstance().saveString(REFRESH_TOKEN, response.body().getRefreshToken());
-        FastSave.getInstance().saveString(USER_ID, response.body().getUserId());
-        FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, response.body().getAccessExpirationDate());
-        FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, response.body().getRefreshExpirationDate());
-
-
+        FastSave.getInstance().saveString(ACCESS_TOKEN, "Bearer " + response.getAccessToken());
+        FastSave.getInstance().saveString(ACCESS_TOKEN_WITHOUT_BEARER, response.getAccessToken());
+        FastSave.getInstance().saveString(REFRESH_TOKEN, response.getRefreshToken());
+        FastSave.getInstance().saveString(USER_ID, response.getUserId());
+        FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, response.getAccessExpirationDate());
+        FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, response.getRefreshExpirationDate());
     }
 
     private void getLocationPermission() {
