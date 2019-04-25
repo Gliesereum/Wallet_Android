@@ -16,8 +16,8 @@ public class FilterCarWashBody {
     @SerializedName("targetId")
     private String targetId;
 
-    @SerializedName("serviceType")
-    private String serviceType;
+    @SerializedName("businessCategoryId")
+    private String businessCategoryId;
 
     public List<String> getServiceIds() {
         return serviceIds;
@@ -35,12 +35,12 @@ public class FilterCarWashBody {
         this.targetId = targetId;
     }
 
-    public String getServiceType() {
-        return serviceType;
+    public String getBusinessCategoryId() {
+        return businessCategoryId;
     }
 
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
+    public void setBusinessCategoryId(String businessCategoryId) {
+        this.businessCategoryId = businessCategoryId;
     }
 
     public FilterCarWashBody(String targetId, List<String> serviceIds) {
@@ -48,10 +48,14 @@ public class FilterCarWashBody {
         this.serviceIds = serviceIds;
     }
 
-    public FilterCarWashBody(List<String> serviceIds, String targetId, String serviceType) {
+    public FilterCarWashBody(List<String> serviceIds, String targetId, String businessCategoryId) {
         this.serviceIds = serviceIds;
         this.targetId = targetId;
-        this.serviceType = serviceType;
+        this.businessCategoryId = businessCategoryId;
+    }
+
+    public FilterCarWashBody(String businessCategoryId) {
+        this.businessCategoryId = businessCategoryId;
     }
 
     public FilterCarWashBody() {

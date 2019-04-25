@@ -12,6 +12,9 @@ public class AllCarWashResponse {
     @SerializedName("id")
     private String id;
 
+    @SerializedName("businessCategoryId")
+    private String businessCategoryId;
+
     @SerializedName("address")
     private String address;
 
@@ -66,6 +69,13 @@ public class AllCarWashResponse {
     @SerializedName("timeZone")
     private Integer timeZone;
 
+    public String getBusinessCategoryId() {
+        return businessCategoryId;
+    }
+
+    public void setBusinessCategoryId(String businessCategoryId) {
+        this.businessCategoryId = businessCategoryId;
+    }
 
     public Integer getTimeZone() {
         return timeZone;

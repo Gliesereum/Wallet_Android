@@ -17,6 +17,11 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import com.gliesereum.karma.MyFirebaseMessagingService;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.SampleClusterItem;
@@ -57,14 +62,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.karma.util.Constants.CARWASH_ID;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
@@ -73,7 +75,6 @@ import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.karma.util.Constants.FIRST_START;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
-import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 import static com.gliesereum.karma.util.Constants.TEST_LOG;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
@@ -149,14 +150,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
             if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
                 FastSave.getInstance().deleteValue(CAR_ID);
-                toolbar.setTitle("KARMA");
+                toolbar.setTitle("Coupler");
             } else {
                 toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
                 toolbar.setSubtitle("Выбранный автомобиль");
             }
         } else {
             FastSave.getInstance().deleteValue(CAR_ID);
-            toolbar.setTitle("KARMA");
+            toolbar.setTitle("Coupler");
         }
 
         setSupportActionBar(toolbar);
@@ -262,7 +263,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        getAllCarWash(new FilterCarWashBody());
+        getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -475,7 +476,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 public void onClick(View v) {
                                     FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
                                     filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, null));
-                                    filterCarWashBody.setServiceType(SERVICE_TYPE);
+                                    filterCarWashBody.setBusinessCategoryId(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""));
                                     filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
                                     getAllCarWash(filterCarWashBody);
                                     nDialog.dismiss();
@@ -506,7 +507,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getAllService() {
-        API.getAllService()
+        API.getAllService(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<ServiceResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<ServiceResponse>> call, Response<List<ServiceResponse>> response) {

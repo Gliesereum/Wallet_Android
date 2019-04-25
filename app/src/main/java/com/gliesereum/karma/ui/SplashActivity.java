@@ -120,7 +120,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
                         checkToken();
                     } else {
-                        startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                        startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
                         finish();
                     }
                 } else {
@@ -148,7 +148,7 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
                     finish();
                 } else {
-                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                    startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
                     finish();
                 }
             } else {
@@ -156,13 +156,13 @@ public class SplashActivity extends AppCompatActivity {
                     refreshToken(FastSave.getInstance().getString(REFRESH_TOKEN, ""));
                 } else {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                    startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
                     finish();
                 }
             }
         } else {
             FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-            startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+            startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
             finish();
         }
     }
@@ -182,7 +182,7 @@ public class SplashActivity extends AppCompatActivity {
                         startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
                         finish();
                     } else {
-                        startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                        startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
                         finish();
                     }
                 } else {

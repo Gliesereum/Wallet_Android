@@ -25,6 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.ChooseServiceActivity"></activity>
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -58,9 +59,9 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="SHOW_DETAILS" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".ui.MapsActivity"
@@ -99,7 +100,6 @@
             android:exported="true" />
 
         <receiver android:name=".service.RestartServiceReceiver" />
-
     </application>
 
 </manifest>

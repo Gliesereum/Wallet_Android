@@ -63,7 +63,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="scalingPercent" value="110" />
+                                                <entry key="scalingPercent" value="125" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -87,8 +87,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="e7e7e7" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/KarmaTrackIcon.png" />
+                                      <entry key="backgroundColor" value="282828" />
+                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/512_one.png" />
                                       <entry key="foregroundLayerName" value="www" />
                                     </map>
                                   </option>

@@ -8,6 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.gliesereum.karma.adapter.RecordListAdapter;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -23,10 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Response;
 import ua.naiksoftware.stomp.Stomp;
@@ -34,8 +35,8 @@ import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
-import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
 import static com.gliesereum.karma.util.Constants.TEST_LOG;
 import static com.gliesereum.karma.util.Constants.USER_ID;
 
@@ -141,7 +142,7 @@ public class RecordListActivity extends AppCompatActivity {
 
     private void getAllRecord() {
         if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
-            API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE)
+            API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""))
                     .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<List<AllRecordResponse>>() {
                         @Override
                         public void onSuccessful(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {

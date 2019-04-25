@@ -9,6 +9,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
@@ -29,14 +32,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
-import static com.gliesereum.karma.util.Constants.SERVICE_TYPE;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -370,7 +371,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void getAllFilter() {
-        API.getFilters(SERVICE_TYPE)
+        API.getFilters(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<FilterResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {

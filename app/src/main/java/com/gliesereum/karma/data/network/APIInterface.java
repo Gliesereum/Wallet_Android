@@ -1,5 +1,6 @@
 package com.gliesereum.karma.data.network;
 
+import com.gliesereum.karma.data.network.json.businesscategory.BusinesCategoryResponse;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.car.BrandResponse;
 import com.gliesereum.karma.data.network.json.car.CarDeleteResponse;
@@ -37,6 +38,9 @@ public interface APIInterface {
     //STATUS
     @GET("status")
     Call<StatusResponse> checkStatus();
+
+    @GET("karma/v1/business-category")
+    Call<List<BusinesCategoryResponse>> getBusinessCategory();
 
     //ACCOUNT
     @GET("account/v1/phone/code")
@@ -96,8 +100,8 @@ public interface APIInterface {
 
 
     //FILTER
-    @GET("karma/v1/filter/by-service-type")
-    Call<List<FilterResponse>> getFilters(@Query("serviceType") String serviceType);
+    @GET("karma/v1/filter/by-business-category")
+    Call<List<FilterResponse>> getFilters(@Query("businessCategoryId") String businessCategoryId);
 
 
     //CARWASH
@@ -110,8 +114,8 @@ public interface APIInterface {
 //    @GET("karma/v1/business/{carwashId}")
 //    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
-    @GET("karma/v1/service")
-    Call<List<ServiceResponse>> getAllService();
+    @GET("karma/v1/service/get-by-business-category")
+    Call<List<ServiceResponse>> getAllService(@Query("businessCategoryId") String businessCategoryId);
 
     @GET("karma/v1/business/{carwashId}/rating")
     Call<Rating> getRating(@Header("Authorization") String accessToken, @Path("carwashId") String id);
@@ -125,7 +129,7 @@ public interface APIInterface {
     Call<AllRecordResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @GET("karma/v1/record/client/all")
-    Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken, @Query("serviceType") String serviceType);
+    Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken, @Query("businessCategoryId") String businessCategoryId);
 
     @GET("karma/v1/record/{recordId}")
     Call<RecordsItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
