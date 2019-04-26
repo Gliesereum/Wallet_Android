@@ -34,6 +34,7 @@ import retrofit2.Response;
 import static com.gliesereum.karma.util.Constants.ACCESS_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
@@ -120,7 +121,11 @@ public class SplashActivity extends AppCompatActivity {
                     if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
                         checkToken();
                     } else {
-                        startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                        if (FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "").equals("")) {
+                            startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                        } else {
+                            startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                        }
                         finish();
                     }
                 } else {
@@ -148,7 +153,11 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
                     finish();
                 } else {
-                    startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                    if (FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "").equals("")) {
+                        startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                    }
                     finish();
                 }
             } else {
@@ -156,13 +165,21 @@ public class SplashActivity extends AppCompatActivity {
                     refreshToken(FastSave.getInstance().getString(REFRESH_TOKEN, ""));
                 } else {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                    startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                    if (FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "").equals("")) {
+                        startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                    }
                     finish();
                 }
             }
         } else {
             FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-            startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+            if (FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "").equals("")) {
+                startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+            } else {
+                startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+            }
             finish();
         }
     }
@@ -182,7 +199,11 @@ public class SplashActivity extends AppCompatActivity {
                         startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
                         finish();
                     } else {
-                        startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                        if (FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "").equals("")) {
+                            startActivity(new Intent(SplashActivity.this, ChooseServiceActivity.class));
+                        } else {
+                            startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                        }
                         finish();
                     }
                 } else {

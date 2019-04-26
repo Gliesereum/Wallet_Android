@@ -12,6 +12,7 @@ public class Constants {
     public static final String IS_LOGIN = "isLogin";
     //    public static final String SERVICE_TYPE = "CAR_WASH";
     public static final String BUSINESS_CATEGORY_ID = "businessCategoryId";
+    public static final String BUSINESS_CATEGORY_NAME = "businessCategoryName";
     public static final String CARWASHA_CTIVITY = "CarWashActivity";
     public static final String ORDER_ACTIVITY = "OrderActivity";
     public static final String CARWASH_ID = "carWashId";

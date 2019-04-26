@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -12,6 +13,7 @@ import com.gliesereum.karma.R;
 import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.ui.CarListActivity;
+import com.gliesereum.karma.ui.ChooseServiceActivity;
 import com.gliesereum.karma.ui.LoginActivity;
 import com.gliesereum.karma.ui.MapsActivity;
 import com.gliesereum.karma.ui.ProfileActivity;
@@ -30,6 +32,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_NAME;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
@@ -56,12 +60,14 @@ public class Util {
 
     public void addNavigation() {
         new DrawerBuilder().withActivity(activity).build();
-        PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта").withIdentifier(1).withTag("maps").withIcon(R.drawable.map_icon);
+        PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта" + FastSave.getInstance().getString(BUSINESS_CATEGORY_NAME, "")).withIdentifier(1).withTag("maps").withIcon(R.drawable.map_icon);
+        SecondaryDrawerItem serviceItem = new SecondaryDrawerItem().withName("Список сервисов").withIdentifier(8).withSelectable(false).withTag("service").withSelectable(false).withIcon(R.drawable.ic_service_black_24dp);
         SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withSelectable(false).withIcon(R.drawable.my_cars);
         SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.orders);
         SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.profile);
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.logout);
         SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.login);
+        SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О нас").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_about_black_24dp);
         SecondaryDrawerItem versionItem = new SecondaryDrawerItem().withName("v" + BuildConfig.VERSION_NAME).withIdentifier(7).withSelectable(false).withTag("version").withSelectable(false);
 
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
@@ -93,6 +99,7 @@ public class Util {
         drawerBuilder.addDrawerItems(
                 mapsItem,
                 new DividerDrawerItem(),
+                serviceItem,
                 car_listItem,
                 record_listItem,
                 profileItem
@@ -135,6 +142,15 @@ public class Util {
                         activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         activity.finish();
                         break;
+                    case "service":
+                        FastSave.getInstance().deleteValue(BUSINESS_CATEGORY_ID);
+                        FastSave.getInstance().deleteValue(BUSINESS_CATEGORY_NAME);
+                        activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                        activity.finish();
+                        break;
+                    case "about":
+                        Toast.makeText(activity, "В разработке", Toast.LENGTH_SHORT).show();
+                        break;
                 }
 
                 return true;
@@ -148,6 +164,7 @@ public class Util {
             result.addItem(loginItem);
         }
         result.addItem(new DividerDrawerItem());
+        result.addItem(aboutItem);
         result.addItem(versionItem);
 
     }

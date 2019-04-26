@@ -20,6 +20,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_NAME;
 
 public class ChooseServiceActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -46,13 +47,16 @@ public class ChooseServiceActivity extends AppCompatActivity implements View.OnC
                         for (int i = 0; i < response.body().size(); i++) {
                             switch (response.body().get(i).getCode()) {
                                 case "CAR_WASH":
-                                    carWashImage.setTag(response.body().get(i).getId());
+                                    carWashImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
+                                    carWashImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
                                     break;
                                 case "TIRE_FITTING":
-                                    tireFittingImage.setTag(response.body().get(i).getId());
+                                    tireFittingImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
+                                    tireFittingImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
                                     break;
                                 case "CAR_SERVICE":
-                                    carServiceImage.setTag(response.body().get(i).getId());
+                                    carServiceImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
+                                    carServiceImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
                                     break;
                             }
                         }
@@ -82,7 +86,8 @@ public class ChooseServiceActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        FastSave.getInstance().saveString(BUSINESS_CATEGORY_ID, (String) v.getTag());
+        FastSave.getInstance().saveString(BUSINESS_CATEGORY_ID, (String) v.getTag(R.string.tagBusinessCategoryId));
+        FastSave.getInstance().saveString(BUSINESS_CATEGORY_NAME, " (" + (String) v.getTag(R.string.tagBusinessCategoryName) + ")");
         startActivity(new Intent(ChooseServiceActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
         finish();
     }

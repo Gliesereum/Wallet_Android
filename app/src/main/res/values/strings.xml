@@ -116,4 +116,7 @@
     <string name="tagKeyDuration">tagKeyDuration</string>
     <string name="tagKeyPrice">tagKeyPrice</string>
 
+    <string name="tagBusinessCategoryId">tagBusinessCategoryId</string>
+    <string name="tagBusinessCategoryName">tagBusinessCategoryName</string>
+
 </resources>
