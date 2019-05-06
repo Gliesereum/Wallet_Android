@@ -13,6 +13,7 @@ import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.filter.FilterResponse;
+import com.gliesereum.karma.data.network.json.notificatoin.NotificatoinBody;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
@@ -41,6 +42,11 @@ public interface APIInterface {
 
     @GET("karma/v1/business-category")
     Call<List<BusinesCategoryResponse>> getBusinessCategory();
+
+    //NOTIFICATION
+    @POST("notification/v1/user-device")
+    Call<NotificatoinBody> sendRegistrationToken(@Header("Authorization") String accessToken, @Body NotificatoinBody notificatoinBody);
+
 
     //ACCOUNT
     @GET("account/v1/phone/code")

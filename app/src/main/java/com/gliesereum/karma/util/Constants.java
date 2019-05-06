@@ -4,6 +4,11 @@ public class Constants {
 
     public static final String ANDROID_APP = "Не заполенно";
 
+    public static final String KARMA_USER_RECORD = "KARMA_USER_RECORD";
+    public static final String KARMA_USER_REMIND_RECORD = "KARMA_USER_REMIND_RECORD";
+    public static final String KARMA_BUSINESS_RECORD = "KARMA_BUSINESS_RECORD";
+
+
     public static final String STATUS_UP = "UP";
     public static final String FIRST_START = "firstStart";
 

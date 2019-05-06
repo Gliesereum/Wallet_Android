@@ -63,9 +63,9 @@ public class SplashActivity extends AppCompatActivity {
 //        getLocationPermission();
         initData();
         initView();
-        if (FastSave.getInstance().getBoolean("CLEAN_STORAGE", true)) {
+        if (FastSave.getInstance().getBoolean("CLEAN_STORAGE_1", true)) {
             FastSave.getInstance().clearSession();
-            FastSave.getInstance().saveBoolean("CLEAN_STORAGE", false);
+            FastSave.getInstance().saveBoolean("CLEAN_STORAGE_1", false);
         }
         checkStatus();
     }

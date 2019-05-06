@@ -6,10 +6,14 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.chaos.view.PinView;
 import com.gliesereum.karma.R;
@@ -18,16 +22,18 @@ import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
+import com.gliesereum.karma.data.network.json.notificatoin.NotificatoinBody;
+import com.gliesereum.karma.data.network.json.notificatoin.UserSubscribe;
 import com.gliesereum.karma.data.network.json.user.UserResponse;
 import com.gliesereum.karma.util.FastSave;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.rilixtech.CountryCodePicker;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -35,6 +41,7 @@ import static com.gliesereum.karma.util.Constants.ACCESS_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
+import static com.gliesereum.karma.util.Constants.KARMA_USER_RECORD;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.karma.util.Constants.USER_ID;
@@ -133,6 +140,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, user.getTokenInfo().getAccessExpirationDate());
         FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, user.getTokenInfo().getRefreshExpirationDate());
         FastSave.getInstance().saveObject("userInfo", user);
+        getRegToken(user);
+    }
+
+    private void getRegToken(UserResponse user) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+            String newToken = instanceIdResult.getToken();
+            Log.e("TAG_NOTIF", newToken);
+//            getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
+            UserSubscribe userSubscribe = new UserSubscribe(true, KARMA_USER_RECORD);
+            NotificatoinBody notificatoinBody = new NotificatoinBody(newToken, true, Arrays.asList(userSubscribe));
+            API.sendRegistrationToken(FastSave.getInstance().getString(ACCESS_TOKEN, ""), notificatoinBody)
+                    .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<NotificatoinBody>() {
+                        @Override
+                        public void onSuccessful(Call<NotificatoinBody> call, Response<NotificatoinBody> response) {
+                            Toast.makeText(LoginActivity.this, "onSuccessful", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onEmpty(Call<NotificatoinBody> call, Response<NotificatoinBody> response) {
+
+                        }
+                    }));
+        });
+
+
     }
 
     public void signIn(SigninBody signinBody) {
@@ -141,16 +173,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onSuccessful(Call<UserResponse> call, Response<UserResponse> response) {
                         countDownTimer.cancel();
-                        saveUserInfo(response.body());
                         if (response.body().getUser().getFirstName() == null ||
                                 response.body().getUser().getLastName() == null ||
                                 response.body().getUser().getMiddleName() == null) {
+                            saveUserInfo(response.body());
                             startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         } else {
                             FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
-                            startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                             saveUserInfo(response.body());
+                            startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         }
                         finish();
                     }

@@ -58,8 +58,7 @@
             android:name=".RecordListActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="SHOW_DETAILS" />
-
+                <action android:name="RECORD_LIST" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

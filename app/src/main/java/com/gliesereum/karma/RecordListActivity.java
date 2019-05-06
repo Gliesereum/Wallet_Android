@@ -75,7 +75,7 @@ public class RecordListActivity extends AppCompatActivity {
 //        FastSave.init(getApplicationContext());
         initView();
         getAllRecord();
-        connectSocket();
+//        connectSocket();
     }
 
     private void reconnectSocket() {
