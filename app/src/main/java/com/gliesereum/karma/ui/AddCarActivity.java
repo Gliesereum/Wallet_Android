@@ -3,6 +3,7 @@ package com.gliesereum.karma.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -73,6 +74,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private Map<String, String> mapClassServise;
     private List<Chip> selectedChip;
     private Map<String, FilterResponse> filterMap;
+    private String TAG = "spinner";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -280,6 +282,79 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+//    private void disableSpinner(MaterialSpinner materialSpinner) {
+//        switch (materialSpinner.getId()) {
+//            case R.id.brandSpinner:
+//                brandSpinner.setEnabled(true);
+//                spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
+//                modelSpinner.setEnabled(false);
+//                modelSpinner.setAdapter(spinnerAdapter);
+//                yearSpinner.setEnabled(false);
+//                yearSpinner.setAdapter(spinnerAdapter);
+//                interiorSpinner.setEnabled(false);
+//                interiorSpinner.setAdapter(spinnerAdapter);
+//                carBodySpinner.setEnabled(false);
+//                carBodySpinner.setAdapter(spinnerAdapter);
+//                colourSpinner.setEnabled(false);
+//                colourSpinner.setAdapter(spinnerAdapter);
+//                break;
+//            case R.id.modelSpinner:
+//                brandSpinner.setEnabled(true);
+//                modelSpinner.setEnabled(true);
+//                spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
+//                yearSpinner.setEnabled(false);
+//                yearSpinner.setAdapter(spinnerAdapter);
+//                interiorSpinner.setEnabled(false);
+//                interiorSpinner.setAdapter(spinnerAdapter);
+//                carBodySpinner.setEnabled(false);
+//                carBodySpinner.setAdapter(spinnerAdapter);
+//                colourSpinner.setEnabled(false);
+//                colourSpinner.setAdapter(spinnerAdapter);
+//                break;
+//            case R.id.yearSpinner:
+//                brandSpinner.setEnabled(true);
+//                modelSpinner.setEnabled(true);
+//                yearSpinner.setEnabled(true);
+//                spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
+//                interiorSpinner.setEnabled(false);
+//                interiorSpinner.setAdapter(spinnerAdapter);
+//                carBodySpinner.setEnabled(false);
+//                carBodySpinner.setAdapter(spinnerAdapter);
+//                colourSpinner.setEnabled(false);
+//                colourSpinner.setAdapter(spinnerAdapter);
+//                break;
+//            case R.id.interiorSpinner:
+//                brandSpinner.setEnabled(true);
+//                modelSpinner.setEnabled(true);
+//                yearSpinner.setEnabled(true);
+//                interiorSpinner.setEnabled(true);
+//                spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
+//                carBodySpinner.setEnabled(false);
+//                carBodySpinner.setAdapter(spinnerAdapter);
+//                colourSpinner.setEnabled(false);
+//                colourSpinner.setAdapter(spinnerAdapter);
+//                break;
+//            case R.id.carBodySpinner:
+//                brandSpinner.setEnabled(true);
+//                modelSpinner.setEnabled(true);
+//                yearSpinner.setEnabled(true);
+//                interiorSpinner.setEnabled(true);
+//                carBodySpinner.setEnabled(true);
+//                spinnerAdapter = new ArrayAdapter<>(this, R.layout.car_hint_item_layout, new String[]{""});
+//                colourSpinner.setEnabled(false);
+//                colourSpinner.setAdapter(spinnerAdapter);
+//                break;
+//            case R.id.colourSpinner:
+//                brandSpinner.setEnabled(true);
+//                modelSpinner.setEnabled(true);
+//                yearSpinner.setEnabled(true);
+//                interiorSpinner.setEnabled(true);
+//                carBodySpinner.setEnabled(true);
+//                colourSpinner.setEnabled(true);
+//                break;
+//        }
+//    }
+
     private void getBrands() {
         API.getBrands(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<BrandResponse>>() {
@@ -429,9 +504,11 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (id != 0) {
+                Log.d(TAG, "onItemSelected: id != 0");
                 enableSpinner(modelSpinner);
                 brandFlag = true;
             } else {
+                Log.d(TAG, "onItemSelected: id = 0");
                 brandFlag = false;
             }
             checkFillFields();
@@ -439,6 +516,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
+            Log.d(TAG, "onNothingSelected: ");
             brandFlag = false;
             checkFillFields();
         }

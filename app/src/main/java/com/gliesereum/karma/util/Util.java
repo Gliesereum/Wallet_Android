@@ -78,7 +78,8 @@ public class Util {
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(activity)
-                .withHeaderBackground(R.drawable.cover_karma)
+//                .withHeaderBackground(R.drawable.cover_karma_new)
+                .withHeaderBackground(R.drawable.cover_karma_new)
                 .addProfiles(
                         new ProfileDrawerItem().withName(FastSave.getInstance().getString(USER_NAME, "") + " " + FastSave.getInstance().getString(USER_SECOND_NAME, ""))
                                 .withIcon(activity.getResources().getDrawable(R.mipmap.ic_launcher_round))

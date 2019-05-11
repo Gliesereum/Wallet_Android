@@ -16,32 +16,30 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/registerBtn"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:enabled="false"
                 android:text="Получить код"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-                app:strokeColor="@color/black"
-                app:strokeWidth="1dp" />
+                app:strokeColor="@color/black" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginBtn"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:enabled="false"
                 android:text="Вход"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-                app:strokeColor="@color/black"
-                app:strokeWidth="1dp" />
+                app:strokeColor="@color/black" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -57,7 +55,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/valueBlock"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -79,13 +77,13 @@
                         android:id="@+id/phoneTextInputLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="56dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
                         android:focusableInTouchMode="true"
                         android:textColorHint="#959CBB"
-                        app:boxStrokeColor="#2A2B30"
+                        app:boxStrokeColor="#FF7A00"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/ccp"
@@ -141,7 +139,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="32dp"
                     android:text="Код был отправлен на номер"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +153,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/black"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -181,16 +179,15 @@
 
             <ImageView
                 android:id="@+id/imageView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="128dp"
+                android:layout_height="168dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="80dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_karmaclient" />
+                app:srcCompat="@drawable/ic_logo_group" />
 
             <ImageView
                 android:id="@+id/mapImageBtn"

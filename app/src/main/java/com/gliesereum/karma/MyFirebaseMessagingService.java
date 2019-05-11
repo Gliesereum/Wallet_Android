@@ -5,16 +5,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.gliesereum.karma.ui.SingleRecordActivity;
+import com.gliesereum.karma.ui.SplashActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -26,30 +24,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob();
-            } else {
-                // Handle message within 10 seconds
-                handleNow();
-            }
-
-        }
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-        }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
-
-//        sendNotification(remoteMessage.getNotification().getBody());
-        sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("body"));
+        Log.d(TAG, "Data: " + remoteMessage.getData());
+//        sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("body"), remoteMessage.getData().get("event"));
+        sendNotification(remoteMessage);
     }
 
     @Override
@@ -97,24 +74,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
+     //     * @param messageBody FCM message body received.
+     * @param remoteMessage
      */
-    private void sendNotification(String title, String messageBody) {
-        Intent intent = new Intent(this, RecordListActivity.class);
+    private void sendNotification(RemoteMessage remoteMessage) {
+        Intent intent;
+        switch (remoteMessage.getData().get("event")) {
+            case "KARMA_USER_RECORD":
+                intent = new Intent(this, SingleRecordActivity.class);
+                intent.putExtra("objectId", remoteMessage.getData().get("objectId"));
+                break;
+            case "KARMA_USER_REMIND_RECORD":
+                intent = new Intent(this, SingleRecordActivity.class);
+                intent.putExtra("objectId", remoteMessage.getData().get("objectId"));
+                break;
+            default:
+                intent = new Intent(this, SplashActivity.class);
+                break;
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         String channelId = "default_notification_channel_id";
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_directions_car_black_24dp);
+//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+//        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_directions_car_black_24dp);
+
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_directions_car_black_24dp)
-                        .setContentTitle(title)
-                        .setContentText(messageBody)
-                        .setLargeIcon(largeIcon)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentTitle(remoteMessage.getData().get("title"))
+                        .setContentText(remoteMessage.getData().get("body"))
                         .setAutoCancel(true)
                         .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                         .setLights(Color.MAGENTA, 500, 1000)

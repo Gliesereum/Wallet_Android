@@ -1,7 +1,6 @@
 package com.gliesereum.karma.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -34,6 +33,7 @@ import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.util.FastSave;
+import com.gliesereum.karma.util.IconGenerator;
 import com.gliesereum.karma.util.Util;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
@@ -48,12 +48,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.labters.lottiealertdialoglibrary.DialogTypes;
 import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 
 import net.sharewire.googlemapsclustering.Cluster;
 import net.sharewire.googlemapsclustering.ClusterManager;
+import net.sharewire.googlemapsclustering.IconStyle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,15 +113,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d(TEST_LOG, "sendBroadcast: ");
 //            sendBroadcast(new Intent(this, RestartServiceReceiver.class));
         }
-
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
-            String newToken = instanceIdResult.getToken();
-            Log.e("newToken", newToken);
-            getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
-        });
-
-        Log.d("newToken", getPreferences(Context.MODE_PRIVATE).getString("fb", "empty :("));
-
     }
 
     private void firstStartNotify() {
@@ -164,55 +155,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new Util(this, toolbar, 1).addNavigation();
     }
 
-//    private void getSingleRecord(String recordId) {
-//        API = APIClient.getClient().create(APIInterface.class);
-//        Call<List<AllRecordResponse>> call = API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), SERVICE_TYPE);
-//        call.enqueue(new Callback<List<AllRecordResponse>>() {
-//            @Override
-//            public void onResponse(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
-//                if (response.code() == 200) {
-//                    List<AllRecordResponse> recordsList = response.body();
-//                    if (recordsList != null && recordsList.size() > 0) {
-//                        for (int i = 0; i < recordsList.size(); i++) {
-//                            if (recordsList.get(i).getId().equals(recordId)) {
-//                                FastSave.getInstance().saveObject("RECORD", recordsList.get(i));
-//                                Intent intent = new Intent(MapsActivity.this, SingleRecordActivity.class);
-//                                MapsActivity.this.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
-//                            }
-//                        }
-//                    }
-//
-//                } else {
-//                    if (response.code() == 204) {
-//                        Toast.makeText(MapsActivity.this, "У вас пока нет записей", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        try {
-//                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-//                            errorHandler.showError(jObjError.getInt("code"));
-//                        } catch (Exception e) {
-//                            errorHandler.showCustomError(e.getMessage());
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<AllRecordResponse>> call, Throwable t) {
-//                errorHandler.showCustomError(t.getMessage());
-//            }
-//        });
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-//        if (FastSave.getInstance().getBoolean("openRecord", false)) {
-//            getSingleRecord(FastSave.getInstance().getString("recordId", ""));
-//            FastSave.getInstance().deleteValue("openRecord");
-//            FastSave.getInstance().deleteValue("recordId");
-//        }
         initData();
         initView();
         firstStartNotify();
@@ -292,6 +238,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         mMap.clear();
                         List<SampleClusterItem> clusterItems = new ArrayList<>();
                         ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+
+                        IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
+                        stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
+                        stilo.setClusterTextColor(getResources().getColor(R.color.white));
+//
+//                        DefaultIconGenerator iconGenerator = new DefaultIconGenerator(MapsActivity.this);
+                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
+                        iconGenerator.setIconStyle(stilo.build());
+
+//                        clusterManager.setIconGenerator(iconGenerator);
+                        clusterManager.setIconGenerator(iconGenerator);
+                        clusterManager.setMinClusterSize(3);
+
                         mMap.setOnCameraIdleListener(clusterManager);
                         clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
                             @Override
@@ -312,7 +271,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         clusterManager.setItems(clusterItems);
                         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-                        mMap.setBuildingsEnabled(true);
+                        mMap.setBuildingsEnabled(false);
                         mMap.getUiSettings().setMapToolbarEnabled(true);
                         mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         mMap.getUiSettings().setAllGesturesEnabled(true);

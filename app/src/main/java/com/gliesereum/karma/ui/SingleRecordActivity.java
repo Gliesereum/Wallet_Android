@@ -73,9 +73,32 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_single_record);
         initData();
         initView();
-        getDeviceLocation();
-        getCar(record.getTargetId());
-        fillActivity(record);
+//        getDeviceLocation();
+        if (getIntent().getStringExtra("objectId") != null) {
+            getSingleRecord(getIntent().getStringExtra("objectId"));
+        } else {
+            getDeviceLocation();
+            getCar(record.getTargetId());
+            fillActivity(record);
+        }
+    }
+
+    private void getSingleRecord(String objectId) {
+        API.getSingleRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), objectId)
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<AllRecordResponse>() {
+                    @Override
+                    public void onSuccessful(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+                        record = response.body();
+                        getDeviceLocation();
+                        getCar(record.getTargetId());
+                        fillActivity(record);
+                    }
+
+                    @Override
+                    public void onEmpty(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+
+                    }
+                }));
     }
 
     private void initData() {

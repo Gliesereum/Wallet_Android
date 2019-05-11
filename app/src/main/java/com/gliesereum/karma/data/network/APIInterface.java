@@ -8,7 +8,6 @@ import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.CommentsItem;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.karma.data.network.json.carwash.Rating;
-import com.gliesereum.karma.data.network.json.carwash.RecordsItem;
 import com.gliesereum.karma.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
@@ -120,7 +119,7 @@ public interface APIInterface {
 //    @GET("karma/v1/business/{carwashId}")
 //    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
-    @GET("karma/v1/service/get-by-business-category")
+    @GET("karma/v1/service/by-business-category")
     Call<List<ServiceResponse>> getAllService(@Query("businessCategoryId") String businessCategoryId);
 
     @GET("karma/v1/business/{carwashId}/rating")
@@ -138,7 +137,7 @@ public interface APIInterface {
     Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken, @Query("businessCategoryId") String businessCategoryId);
 
     @GET("karma/v1/record/{recordId}")
-    Call<RecordsItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
+    Call<AllRecordResponse> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
 
     @PUT("karma/v1/record/record/canceled")
     Call<AllRecordResponse> canceleRecord(@Header("Authorization") String accessToken, @Query("idRecord") String idRecord);

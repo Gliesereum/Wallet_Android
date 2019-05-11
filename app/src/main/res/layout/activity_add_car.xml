@@ -10,6 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        app:titleTextColor="@color/accent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,6 +29,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:background="#FAFAFA"
             android:layout_height="match_parent">
 
             <fr.ganfra.materialspinner.MaterialSpinner
@@ -37,25 +39,28 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:spinnerMode="dialog"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:spinnerMode="dialog"
                 app:ms_alignLabels="false"
-                app:ms_arrowColor="@color/material_drawer_secondary_text"
-                app:ms_arrowSize="16dp"
-                app:ms_baseColor="@color/material_drawer_secondary_text"
-                app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_floatingLabelColor="@color/material_drawer_primary"
-                app:ms_highlightColor="@color/material_drawer_primary_text"
-                app:ms_hint="Марка авто"
-                app:ms_hintColor="@color/material_drawer_secondary_text"
-                app:ms_hintView="@layout/car_hint_item_layout"
-                app:ms_multiline="false"
-                app:ms_thickness="2dp" />
+                app:ms_hint="Марка авто" />
+
+            <!--app:ms_hintView="@layout/car_hint_item_layout"-->
+            <!--app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"-->
+            <!--app:ms_thickness="1dp"-->
+            <!--app:ms_arrowSize="16dp"-->
+            <!--app:ms_enableErrorLabel="true"-->
+            <!--app:ms_enableFloatingLabel="true"-->
+            <!--app:ms_multiline="false"-->
+            <!--app:ms_alignLabels="false"-->
+
+            <!--app:ms_arrowColor="@color/yellow"-->
+            <!--app:ms_baseColor="@color/green"-->
+            <!--app:ms_floatingLabelColor="@color/primary"-->
+            <!--app:ms_highlightColor="@color/red"-->
+            <!--app:ms_hintColor="@color/purple"-->
+
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/modelSpinner"
@@ -69,19 +74,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/brandSpinner"
                 app:ms_alignLabels="false"
-                app:ms_arrowColor="@color/material_drawer_secondary_text"
-                app:ms_arrowSize="16dp"
-                app:ms_baseColor="@color/material_drawer_secondary_text"
-                app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_floatingLabelColor="@color/material_drawer_primary"
-                app:ms_highlightColor="@color/material_drawer_primary_text"
-                app:ms_hint="Модель авто"
-                app:ms_hintColor="@color/material_drawer_secondary_text"
-                app:ms_hintView="@layout/car_hint_item_layout"
-                app:ms_multiline="false"
-                app:ms_thickness="2dp" />
+                app:ms_hint="Модель авто" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/yearSpinner"
@@ -95,19 +88,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/modelSpinner"
                 app:ms_alignLabels="false"
-                app:ms_arrowColor="@color/material_drawer_secondary_text"
-                app:ms_arrowSize="16dp"
-                app:ms_baseColor="@color/material_drawer_secondary_text"
-                app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_floatingLabelColor="@color/material_drawer_primary"
-                app:ms_highlightColor="@color/material_drawer_primary_text"
-                app:ms_hint="Год выпуска авто"
-                app:ms_hintColor="@color/material_drawer_secondary_text"
-                app:ms_hintView="@layout/car_hint_item_layout"
-                app:ms_multiline="false"
-                app:ms_thickness="2dp" />
+                app:ms_hint="Год выпуска авто" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/interiorSpinner"
@@ -121,19 +102,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/yearSpinner"
                 app:ms_alignLabels="false"
-                app:ms_arrowColor="@color/material_drawer_secondary_text"
-                app:ms_arrowSize="16dp"
-                app:ms_baseColor="@color/material_drawer_secondary_text"
-                app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_floatingLabelColor="@color/material_drawer_primary"
-                app:ms_highlightColor="@color/material_drawer_primary_text"
-                app:ms_hint="Интерьер"
-                app:ms_hintColor="@color/material_drawer_secondary_text"
-                app:ms_hintView="@layout/car_hint_item_layout"
-                app:ms_multiline="false"
-                app:ms_thickness="2dp" />
+                app:ms_hint="Интерьер" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/carBodySpinner"
@@ -147,19 +116,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/interiorSpinner"
                 app:ms_alignLabels="false"
-                app:ms_arrowColor="@color/material_drawer_secondary_text"
-                app:ms_arrowSize="16dp"
-                app:ms_baseColor="@color/material_drawer_secondary_text"
-                app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_floatingLabelColor="@color/material_drawer_primary"
-                app:ms_highlightColor="@color/material_drawer_primary_text"
-                app:ms_hint="Тип кузова"
-                app:ms_hintColor="@color/material_drawer_secondary_text"
-                app:ms_hintView="@layout/car_hint_item_layout"
-                app:ms_multiline="false"
-                app:ms_thickness="2dp" />
+                app:ms_hint="Тип кузова" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/colourSpinner"
@@ -173,19 +130,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/carBodySpinner"
                 app:ms_alignLabels="false"
-                app:ms_arrowColor="@color/material_drawer_secondary_text"
-                app:ms_arrowSize="16dp"
-                app:ms_baseColor="@color/material_drawer_secondary_text"
-                app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_floatingLabelColor="@color/material_drawer_primary"
-                app:ms_highlightColor="@color/material_drawer_primary_text"
-                app:ms_hint="Цвет"
-                app:ms_hintColor="@color/material_drawer_secondary_text"
-                app:ms_hintView="@layout/car_hint_item_layout"
-                app:ms_multiline="false"
-                app:ms_thickness="2dp" />
+                app:ms_hint="Цвет" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationNumberTextInputLayout"
@@ -197,7 +142,7 @@
                 android:layout_marginEnd="16dp"
                 android:focusableInTouchMode="true"
                 android:textColorHint="#959CBB"
-                app:boxStrokeColor="#2A2B30"
+                app:boxStrokeColor="#FF7A00"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/colourSpinner">
@@ -210,7 +155,7 @@
                     android:hint="Регистрационный номер"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textColor="#959CBB"
+                    android:textColor="@color/black"
                     android:textColorHint="#959CBB" />
 
 
@@ -226,7 +171,7 @@
                 android:layout_marginEnd="16dp"
                 android:focusableInTouchMode="true"
                 android:textColorHint="#959CBB"
-                app:boxStrokeColor="#2A2B30"
+                app:boxStrokeColor="#FF7A00"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/registrationNumberTextInputLayout">
@@ -239,7 +184,7 @@
                     android:hint="Примечание"
                     android:inputType="textMultiLine"
                     android:singleLine="false"
-                    android:textColor="#959CBB"
+                    android:textColor="@color/black"
                     android:textColorHint="#959CBB" />
 
 
@@ -255,9 +200,7 @@
                 android:text="Добавить автомобиль"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="@color/black"
-                app:strokeWidth="1dp" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"

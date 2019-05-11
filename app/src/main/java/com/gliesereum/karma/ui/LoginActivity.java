@@ -42,6 +42,7 @@ import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.KARMA_USER_RECORD;
+import static com.gliesereum.karma.util.Constants.KARMA_USER_REMIND_RECORD;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.karma.util.Constants.USER_ID;
@@ -149,12 +150,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.e("TAG_NOTIF", newToken);
 //            getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
             UserSubscribe userSubscribe = new UserSubscribe(true, KARMA_USER_RECORD);
-            NotificatoinBody notificatoinBody = new NotificatoinBody(newToken, true, Arrays.asList(userSubscribe));
+            UserSubscribe userSubscribe2 = new UserSubscribe(true, KARMA_USER_REMIND_RECORD);
+            NotificatoinBody notificatoinBody = new NotificatoinBody(newToken, true, Arrays.asList(userSubscribe, userSubscribe2));
             API.sendRegistrationToken(FastSave.getInstance().getString(ACCESS_TOKEN, ""), notificatoinBody)
                     .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<NotificatoinBody>() {
                         @Override
                         public void onSuccessful(Call<NotificatoinBody> call, Response<NotificatoinBody> response) {
-                            Toast.makeText(LoginActivity.this, "onSuccessful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Уведомления включены", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
