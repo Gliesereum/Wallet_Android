@@ -31,6 +31,7 @@ import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.car.AllCarResponse;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.data.network.json.carwash.FilterCarWashBody;
+import com.gliesereum.karma.data.network.json.carwashnew.CarWashResponse;
 import com.gliesereum.karma.data.network.json.service.ServiceResponse;
 import com.gliesereum.karma.util.FastSave;
 import com.gliesereum.karma.util.IconGenerator;
@@ -92,6 +93,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private MapView mapView;
     private List<AllCarWashResponse> carWashList;
+    private List<CarWashResponse> carWashListNew;
     private APIInterface API;
     private CustomCallback customCallback;
     private List<ServiceResponse> serviceList;
@@ -210,6 +212,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
+//        getAllCarWash(new FilterCarWashBody());
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -229,28 +232,82 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+//    private void getAllCarWash(FilterCarWashBody filterCarWashBody) {
+//        API.getAllCarWash(filterCarWashBody)
+//                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarWashResponse>>() {
+//                    @Override
+//                    public void onSuccessful(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
+//                        carWashList = response.body();
+//                        mMap.clear();
+//                        List<SampleClusterItem> clusterItems = new ArrayList<>();
+//                        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+//                        IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
+//                        stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
+//                        stilo.setClusterTextColor(getResources().getColor(R.color.white));
+//                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
+//                        iconGenerator.setIconStyle(stilo.build());
+//                        clusterManager.setIconGenerator(iconGenerator);
+//                        clusterManager.setMinClusterSize(3);
+//                        mMap.setOnCameraIdleListener(clusterManager);
+//                        clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
+//                            @Override
+//                            public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
+//                                Log.d(TAG, "onClusterClick");
+//                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
+//                                return true;
+//                            }
+//
+//                            @Override
+//                            public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
+//                                Log.d(TAG, "onClusterItemClick");
+//                                return false;
+//                            }
+//                        });
+//                        for (AllCarWashResponse coordinate : carWashList) {
+//                            clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
+//                        }
+//                        clusterManager.setItems(clusterItems);
+//                        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+//                        mMap.setBuildingsEnabled(false);
+//                        mMap.getUiSettings().setMapToolbarEnabled(true);
+//                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//                        mMap.getUiSettings().setAllGesturesEnabled(true);
+//                        updateLocationUI();
+//                        getDeviceLocation();
+//                    }
+//
+//                    @Override
+//                    public void onEmpty(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
+//                        mMap.clear();
+//                        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+//                        List<SampleClusterItem> clusterItems = new ArrayList<>();
+//                        clusterManager.setItems(clusterItems);
+//                        mMap.setBuildingsEnabled(true);
+//                        mMap.getUiSettings().setMapToolbarEnabled(true);
+//                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//                        mMap.getUiSettings().setAllGesturesEnabled(true);
+//                        updateLocationUI();
+//                        getDeviceLocation();
+//                    }
+//                }));
+//    }
+
     private void getAllCarWash(FilterCarWashBody filterCarWashBody) {
-        API.getAllCarWash(filterCarWashBody)
-                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarWashResponse>>() {
+        API.getAllCarWashNew(filterCarWashBody)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<CarWashResponse>>() {
                     @Override
-                    public void onSuccessful(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
-                        carWashList = response.body();
+                    public void onSuccessful(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
+                        carWashListNew = response.body();
                         mMap.clear();
                         List<SampleClusterItem> clusterItems = new ArrayList<>();
                         ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
-
                         IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
                         stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
                         stilo.setClusterTextColor(getResources().getColor(R.color.white));
-//
-//                        DefaultIconGenerator iconGenerator = new DefaultIconGenerator(MapsActivity.this);
                         IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
                         iconGenerator.setIconStyle(stilo.build());
-
-//                        clusterManager.setIconGenerator(iconGenerator);
                         clusterManager.setIconGenerator(iconGenerator);
                         clusterManager.setMinClusterSize(3);
-
                         mMap.setOnCameraIdleListener(clusterManager);
                         clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
                             @Override
@@ -266,7 +323,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 return false;
                             }
                         });
-                        for (AllCarWashResponse coordinate : carWashList) {
+                        for (CarWashResponse coordinate : carWashListNew) {
                             clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
                         }
                         clusterManager.setItems(clusterItems);
@@ -280,7 +337,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     @Override
-                    public void onEmpty(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
+                    public void onEmpty(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
                         mMap.clear();
                         ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
                         List<SampleClusterItem> clusterItems = new ArrayList<>();

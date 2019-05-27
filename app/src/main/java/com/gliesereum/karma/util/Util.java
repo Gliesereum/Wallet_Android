@@ -10,13 +10,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.gliesereum.karma.BuildConfig;
 import com.gliesereum.karma.R;
-import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.karma.ui.CarListActivity;
 import com.gliesereum.karma.ui.ChooseServiceActivity;
 import com.gliesereum.karma.ui.LoginActivity;
 import com.gliesereum.karma.ui.MapsActivity;
 import com.gliesereum.karma.ui.ProfileActivity;
+import com.gliesereum.karma.ui.RecordListActivity;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;

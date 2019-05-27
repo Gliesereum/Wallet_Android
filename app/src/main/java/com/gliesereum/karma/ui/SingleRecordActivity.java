@@ -18,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.karma.R;
-import com.gliesereum.karma.RecordListActivity;
 import com.gliesereum.karma.data.network.APIClient;
 import com.gliesereum.karma.data.network.APIInterface;
 import com.gliesereum.karma.data.network.CustomCallback;

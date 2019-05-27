@@ -21,6 +21,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_NAME;
+import static com.gliesereum.karma.util.Constants.BUSINESS_TYPE;
 
 public class ChooseServiceActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,14 +48,17 @@ public class ChooseServiceActivity extends AppCompatActivity implements View.OnC
                         for (int i = 0; i < response.body().size(); i++) {
                             switch (response.body().get(i).getCode()) {
                                 case "CAR_WASH":
+                                    FastSave.getInstance().saveString(BUSINESS_TYPE, response.body().get(i).getBusinessType());
                                     carWashImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
                                     carWashImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
                                     break;
                                 case "TIRE_FITTING":
+                                    FastSave.getInstance().saveString(BUSINESS_TYPE, response.body().get(i).getBusinessType());
                                     tireFittingImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
                                     tireFittingImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
                                     break;
                                 case "CAR_SERVICE":
+                                    FastSave.getInstance().saveString(BUSINESS_TYPE, response.body().get(i).getBusinessType());
                                     carServiceImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
                                     carServiceImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
                                     break;

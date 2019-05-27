@@ -8,6 +8,9 @@ public class Constants {
     public static final String KARMA_USER_REMIND_RECORD = "KARMA_USER_REMIND_RECORD";
     public static final String KARMA_BUSINESS_RECORD = "KARMA_BUSINESS_RECORD";
 
+    public static final String RECORD_LIST_ACTIVITY = "RECORD_LIST_ACTIVITY";
+    public static final String BUSINESS_TYPE = "BUSINESS_TYPE";
+
 
     public static final String STATUS_UP = "UP";
     public static final String FIRST_START = "firstStart";

@@ -43,7 +43,7 @@ public class IconGenerator extends DefaultIconGenerator implements net.sharewire
     @Override
     public BitmapDescriptor getClusterItemIcon(@NonNull ClusterItem clusterItem) {
 //        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_edit_black_24dp);
-        Drawable background = ContextCompat.getDrawable(contextt, R.drawable.ic_pin);
+        Drawable background = ContextCompat.getDrawable(contextt, R.drawable.ic_pin_servicess);
         background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
 //        Drawable vectorDrawable = ContextCompat.getDrawable(contextt, R.drawable.ic_directions_car_black_24dp);
 //        vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 40, vectorDrawable.getIntrinsicHeight() + 20);

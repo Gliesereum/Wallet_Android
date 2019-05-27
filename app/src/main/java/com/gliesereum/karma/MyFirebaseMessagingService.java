@@ -11,10 +11,14 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.gliesereum.karma.ui.RecordListActivity;
 import com.gliesereum.karma.ui.SingleRecordActivity;
 import com.gliesereum.karma.ui.SplashActivity;
+import com.gliesereum.karma.util.FastSave;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import static com.gliesereum.karma.util.Constants.RECORD_LIST_ACTIVITY;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String TAG = "TAG_NOTIF";
@@ -26,7 +30,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "Data: " + remoteMessage.getData());
 //        sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("body"), remoteMessage.getData().get("event"));
-        sendNotification(remoteMessage);
+        if (FastSave.getInstance().getBoolean(RECORD_LIST_ACTIVITY, false)) {
+            Intent intent = new Intent(this, RecordListActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            sendNotification(remoteMessage);
+        }
     }
 
     @Override

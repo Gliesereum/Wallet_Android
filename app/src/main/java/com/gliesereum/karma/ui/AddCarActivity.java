@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
-import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
+import static com.gliesereum.karma.util.Constants.BUSINESS_TYPE;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -48,6 +48,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private MaterialSpinner brandSpinner;
     private MaterialSpinner modelSpinner;
     private MaterialSpinner yearSpinner;
+    private MaterialSpinner radiusSpinner;
     private MaterialSpinner interiorSpinner;
     private MaterialSpinner carBodySpinner;
     private MaterialSpinner colourSpinner;
@@ -57,6 +58,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private boolean interiorFlag;
     private boolean carBodyFlag;
     private boolean colourFlag;
+    private boolean radiusFlag;
     private TextInputEditText registrationNumberTextView;
     private TextInputEditText descriptionNumberTextView;
     private MaterialButton addCarBtn;
@@ -67,6 +69,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
     private HashMap<String, String> modelHashMap;
     private HashMap<String, String> yearHashMap;
     private HashMap<String, String> interiorHashMap;
+    private HashMap<String, String> radiusHashMap;
     private HashMap<String, String> carBodyHashMap;
     private HashMap<String, String> colorHashMap;
     private ArrayAdapter<String> spinnerAdapter;
@@ -98,6 +101,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         modelHashMap = new HashMap<>();
         yearHashMap = new HashMap<>();
         interiorHashMap = new HashMap<>();
+        radiusHashMap = new HashMap<>();
         carBodyHashMap = new HashMap<>();
         colorHashMap = new HashMap<>();
         selectedChip = new ArrayList<>();
@@ -111,6 +115,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         modelSpinner = findViewById(R.id.modelSpinner);
         yearSpinner = findViewById(R.id.yearSpinner);
         interiorSpinner = findViewById(R.id.interiorSpinner);
+        radiusSpinner = findViewById(R.id.radiusSpinner);
         carBodySpinner = findViewById(R.id.carBodySpinner);
         colourSpinner = findViewById(R.id.colourSpinner);
         brandSpinner.setOnItemSelectedListener(brandSpinnerItemSelectedListener);
@@ -119,12 +124,14 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         interiorSpinner.setOnItemSelectedListener(interiorSpinnerItemSelectedListener);
         carBodySpinner.setOnItemSelectedListener(carBodySpinnerItemSelectedListener);
         colourSpinner.setOnItemSelectedListener(colourSpinnerItemSelectedListener);
+        radiusSpinner.setOnItemSelectedListener(radiusSpinnerItemSelectedListener);
         brandSpinner.setAdapter(spinnerAdapter);
         modelSpinner.setAdapter(spinnerAdapter);
         yearSpinner.setAdapter(spinnerAdapter);
         interiorSpinner.setAdapter(spinnerAdapter);
         carBodySpinner.setAdapter(spinnerAdapter);
         colourSpinner.setAdapter(spinnerAdapter);
+        radiusSpinner.setAdapter(spinnerAdapter);
         registrationNumberTextView = findViewById(R.id.registrationNumberTextView);
         descriptionNumberTextView = findViewById(R.id.descriptionNumberTextView);
         addCarBtn = findViewById(R.id.addCarBtn);
@@ -181,6 +188,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                         addCarFilter(response.body().getId(), interiorHashMap.get(interiorSpinner.getSelectedItem().toString()));
                         addCarFilter(response.body().getId(), carBodyHashMap.get(carBodySpinner.getSelectedItem().toString()));
                         addCarFilter(response.body().getId(), colorHashMap.get(colourSpinner.getSelectedItem().toString()));
+                        addCarFilter(response.body().getId(), radiusHashMap.get(radiusSpinner.getSelectedItem().toString()));
                         startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
                         finish();
                         Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
@@ -230,8 +238,9 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                 brandSpinner.setEnabled(true);
                 modelSpinner.setEnabled(false);
                 yearSpinner.setEnabled(false);
-                interiorSpinner.setEnabled(false);
+                radiusSpinner.setEnabled(false);
                 carBodySpinner.setEnabled(false);
+                interiorSpinner.setEnabled(false);
                 colourSpinner.setEnabled(false);
                 break;
             case R.id.modelSpinner:
@@ -239,8 +248,9 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                 brandSpinner.setEnabled(true);
                 modelSpinner.setEnabled(true);
                 yearSpinner.setEnabled(false);
-                interiorSpinner.setEnabled(false);
+                radiusSpinner.setEnabled(false);
                 carBodySpinner.setEnabled(false);
+                interiorSpinner.setEnabled(false);
                 colourSpinner.setEnabled(false);
                 break;
             case R.id.yearSpinner:
@@ -248,17 +258,19 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                 brandSpinner.setEnabled(true);
                 modelSpinner.setEnabled(true);
                 yearSpinner.setEnabled(true);
-                interiorSpinner.setEnabled(false);
+                radiusSpinner.setEnabled(false);
                 carBodySpinner.setEnabled(false);
+                interiorSpinner.setEnabled(false);
                 colourSpinner.setEnabled(false);
                 break;
-            case R.id.interiorSpinner:
-                getInterior();
+            case R.id.radiusSpinner:
+                getRadius();
                 brandSpinner.setEnabled(true);
                 modelSpinner.setEnabled(true);
                 yearSpinner.setEnabled(true);
-                interiorSpinner.setEnabled(true);
+                radiusSpinner.setEnabled(true);
                 carBodySpinner.setEnabled(false);
+                interiorSpinner.setEnabled(false);
                 colourSpinner.setEnabled(false);
                 break;
             case R.id.carBodySpinner:
@@ -266,17 +278,30 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                 brandSpinner.setEnabled(true);
                 modelSpinner.setEnabled(true);
                 yearSpinner.setEnabled(true);
-                interiorSpinner.setEnabled(true);
+                radiusSpinner.setEnabled(true);
                 carBodySpinner.setEnabled(true);
+                interiorSpinner.setEnabled(false);
                 colourSpinner.setEnabled(false);
                 break;
+            case R.id.interiorSpinner:
+                getInterior();
+                brandSpinner.setEnabled(true);
+                modelSpinner.setEnabled(true);
+                yearSpinner.setEnabled(true);
+                radiusSpinner.setEnabled(true);
+                carBodySpinner.setEnabled(true);
+                interiorSpinner.setEnabled(true);
+                colourSpinner.setEnabled(false);
+                break;
+
             case R.id.colourSpinner:
                 getColor();
                 brandSpinner.setEnabled(true);
                 modelSpinner.setEnabled(true);
                 yearSpinner.setEnabled(true);
-                interiorSpinner.setEnabled(true);
+                radiusSpinner.setEnabled(true);
                 carBodySpinner.setEnabled(true);
+                interiorSpinner.setEnabled(true);
                 colourSpinner.setEnabled(true);
                 break;
         }
@@ -434,6 +459,17 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         interiorSpinner.setAdapter(spinnerAdapter);
     }
 
+    public void getRadius() {
+        ArrayList<String> radiusITEMS = new ArrayList<>();
+        for (int i = 0; i < filterMap.get("CAR_WHEEL_RADIUS").getAttributes().size(); i++) {
+            radiusITEMS.add(filterMap.get("CAR_WHEEL_RADIUS").getAttributes().get(i).getTitle());
+            radiusHashMap.put(filterMap.get("CAR_WHEEL_RADIUS").getAttributes().get(i).getTitle(), filterMap.get("CAR_WHEEL_RADIUS").getAttributes().get(i).getId());
+        }
+        spinnerAdapter = new ArrayAdapter<String>(AddCarActivity.this, R.layout.car_hint_item_layout, radiusITEMS);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        radiusSpinner.setAdapter(spinnerAdapter);
+    }
+
     public void getCarBody() {
         ArrayList<String> carBodyITEMS = new ArrayList<>();
         for (int i = 0; i < filterMap.get("CAR_BODY").getAttributes().size(); i++) {
@@ -445,8 +481,25 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         carBodySpinner.setAdapter(spinnerAdapter);
     }
 
+//    public void getAllFilter() {
+//        API.getFilters(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""))
+//                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<FilterResponse>>() {
+//                    @Override
+//                    public void onSuccessful(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {
+//                        for (int i = 0; i < response.body().size(); i++) {
+//                            filterMap.put(response.body().get(i).getValue(), response.body().get(i));
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onEmpty(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {
+//
+//                    }
+//                }));
+//    }
+
     public void getAllFilter() {
-        API.getFilters(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""))
+        API.getFiltersBusinessType(FastSave.getInstance().getString(BUSINESS_TYPE, ""))
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<FilterResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<FilterResponse>> call, Response<List<FilterResponse>> response) {
@@ -475,7 +528,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
 
     private void checkFillFields() {
         boolean result = false;
-        if (brandFlag && modelFlag && yearFlag && interiorFlag && carBodyFlag && colourFlag) {
+        if (brandFlag && modelFlag && yearFlag && interiorFlag && carBodyFlag && colourFlag && radiusFlag) {
             for (int i = 0; i < chipGroup.getChildCount(); i++) {
                 if (((Chip) chipGroup.getChildAt(i)).isChecked()) {
                     result = true;
@@ -543,7 +596,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (id != 0) {
-                enableSpinner(interiorSpinner);
+                enableSpinner(carBodySpinner);
                 yearFlag = true;
             } else {
                 yearFlag = false;
@@ -561,7 +614,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (id != 0) {
-                enableSpinner(carBodySpinner);
+                enableSpinner(colourSpinner);
                 interiorFlag = true;
             } else {
                 interiorFlag = false;
@@ -579,7 +632,7 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (id != 0) {
-                enableSpinner(colourSpinner);
+                enableSpinner(radiusSpinner);
                 carBodyFlag = true;
             } else {
                 carBodyFlag = false;
@@ -607,6 +660,24 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
             colourFlag = false;
+            checkFillFields();
+        }
+    };
+    AdapterView.OnItemSelectedListener radiusSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 0) {
+                enableSpinner(interiorSpinner);
+                radiusFlag = true;
+            } else {
+                radiusFlag = false;
+            }
+            checkFillFields();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            radiusFlag = false;
             checkFillFields();
         }
     };

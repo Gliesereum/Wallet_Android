@@ -55,7 +55,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".RecordListActivity"
+            android:name=".ui.RecordListActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="RECORD_LIST" />
