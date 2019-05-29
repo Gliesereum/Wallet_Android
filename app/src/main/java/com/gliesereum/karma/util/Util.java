@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_NAME;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
@@ -132,6 +133,7 @@ public class Util {
                         FastSave.getInstance().deleteValue(CAR_SERVICE_CLASS);
                         FastSave.getInstance().deleteValue(CAR_MODEL);
                         FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
+                        FastSave.getInstance().deleteValue(ACCESS_TOKEN);
                         activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         activity.finish();
                         break;

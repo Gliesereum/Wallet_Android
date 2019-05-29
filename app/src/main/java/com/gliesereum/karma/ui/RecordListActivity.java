@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -50,6 +51,7 @@ public class RecordListActivity extends AppCompatActivity {
     //    private StompClient mStompClient;
     private NotificationManager notifManager;
     private CustomCallback customCallback;
+    private String TAG = "activityTest";
 
 
     @SuppressLint("CheckResult")
@@ -57,82 +59,9 @@ public class RecordListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_records);
-//        Bundle bundle = getIntent().getExtras();
-//        if(bundle.getString("action").equals("SHOW_DETAILS")) /*This indicates activity is launched from notification, not directly*/
-//        {
-//            //Data retrieved from notification payload send
-////            String filed1 = bundle.getString("field1");
-////            String filed2 = bundle.getString("field2");
-//            Log.d("TAG_NOTIF", "onCreate: filed1");
-//            Log.d("TAG_NOTIF", "onCreate: ");
-//        }
-//        FastSave.init(getApplicationContext());
         initView();
         getAllRecord();
-//        connectSocket();
     }
-
-//    private void reconnectSocket() {
-//        if (mStompClient != null && mStompClient.isConnected()) {
-//            mStompClient.disconnect();
-//        }
-//        Log.d(TEST_LOG, "reconnectSocket: ");
-//        connectSocket();
-//    }
-
-//    private void disconnectSocket() {
-//        if (mStompClient != null && mStompClient.isConnected()) {
-//            Log.d(TEST_LOG, "disconnectSocket: ");
-//            mStompClient.disconnect();
-//        }
-//    }
-
-//    private void connectSocket() {
-//        mStompClient = Stomp.over(Stomp.ConnectionProvider.JWS, "wss://dev.gliesereum.com/socket/websocket-app");
-//        mStompClient.lifecycle().subscribe(lifecycleEvent -> {
-//            switch (lifecycleEvent.getType()) {
-//                case OPENED:
-//                    Log.d(TEST_LOG, "connectSocket: connection OPENED");
-//                    break;
-//                case ERROR:
-//                    Log.e(TEST_LOG, "connectSocket: Error", lifecycleEvent.getException());
-//                    reconnectSocket();
-//                    break;
-//                case CLOSED:
-//                    Log.d(TEST_LOG, "connectSocket: connection CLOSED");
-//                    break;
-//            }
-//        });
-//        mStompClient.connect();
-//        List<StompHeader> stompHeaders = new ArrayList<>();
-//        stompHeaders.add(new StompHeader("Authorization", FastSave.getInstance().getString(ACCESS_TOKEN, "")));
-//        mStompClient.topic("/topic/karma.userRecord." + FastSave.getInstance().getString(USER_ID, ""), stompHeaders).subscribe(topicMessage -> {
-//            try {
-//                Log.d(TEST_LOG, "jsonObject " + topicMessage.getPayload());
-//                AllRecordResponse jsonJavaRootObject = new Gson().fromJson(topicMessage.getPayload(), AllRecordResponse.class);
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Log.d(TEST_LOG, "run: ");
-//                        for (int i = 0; i < recordsList.size(); i++) {
-//                            if (recordsList.get(i).getId().equals(jsonJavaRootObject.getId())) {
-//                                Log.d(TEST_LOG, "run: ");
-//                                recordsList.set(i, jsonJavaRootObject);
-//                                recordListAdapter = new RecordListAdapter(RecordListActivity.this);
-//                                recyclerView.setAdapter(recordListAdapter);
-//                                recordListAdapter.setItems(recordsList);
-//                            }
-//                        }
-//
-//                    }
-//                });
-//            } catch (Exception e) {
-//                Log.e(TEST_LOG, "connectSocket: " + e.getMessage());
-//            }
-//        });
-//    }
-
-
 
     private void getAllRecord() {
         if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
@@ -140,15 +69,24 @@ public class RecordListActivity extends AppCompatActivity {
                     .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<List<AllRecordResponse>>() {
                         @Override
                         public void onSuccessful(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
-                            recordsList = response.body();
-                            if (recordsList != null && recordsList.size() > 0) {
+                            recordsList = new ArrayList<>();
+                            if (response.body() != null && response.body().size() > 0) {
+                                for (int i = 0; i < response.body().size(); i++) {
+                                    if (response.body().get(i).getTargetId() != null) {
+                                        recordsList.add(response.body().get(i));
+                                    }
+                                }
                                 recordListAdapter.setItems(recordsList);
                             }
+                            Log.d(TAG, "onSuccessful: ");
+                            FastSave.getInstance().saveBoolean(RECORD_LIST_ACTIVITY, true);
                         }
 
                         @Override
                         public void onEmpty(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
                             splashTextView.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "onEmpty: ");
+                            FastSave.getInstance().saveBoolean(RECORD_LIST_ACTIVITY, true);
                         }
                     }));
         } else {
@@ -181,12 +119,13 @@ public class RecordListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FastSave.getInstance().saveBoolean(RECORD_LIST_ACTIVITY, true);
+        Log.d(TAG, "onStart: ");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         FastSave.getInstance().saveBoolean(RECORD_LIST_ACTIVITY, false);
-
+        Log.d(TAG, "onStop: ");
     }
 }

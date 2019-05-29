@@ -27,6 +27,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        FastSave.init(getApplicationContext());
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "Data: " + remoteMessage.getData());
 //        sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("body"), remoteMessage.getData().get("event"));

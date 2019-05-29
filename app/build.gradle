@@ -62,7 +62,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
     // https://github.com/ganfra/MaterialSpinner
-    implementation 'com.mikepenz:materialdrawer:6.1.1'
+    implementation 'com.mikepenz:materialdrawer:6.1.2'
     // https://github.com/mikepenz/MaterialDrawer
     implementation 'com.andrognito.flashbar:flashbar:1.0.3'
     //https://android-arsenal.com/details/1/6933

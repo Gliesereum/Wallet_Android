@@ -167,7 +167,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMap(savedInstanceState);
         getLocationPermission();
         getAllService();
-        getAllCars();
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            getAllCars();
+        }
     }
 
     private void getAllCars() {
@@ -185,6 +187,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, response.body().get(i).getServices());
                                             FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, response.body().get(i).getAttributes());
                                         }
+                                    }
+                                    if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+                                        if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
+                                            FastSave.getInstance().deleteValue(CAR_ID);
+                                            toolbar.setTitle("Coupler");
+                                        } else {
+                                            toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
+                                            toolbar.setSubtitle("Выбранный автомобиль");
+                                        }
+                                    } else {
+                                        FastSave.getInstance().deleteValue(CAR_ID);
+                                        toolbar.setTitle("Coupler");
                                     }
 
                                 }
