@@ -60,6 +60,7 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.CARWASHA_CTIVITY;
 import static com.gliesereum.karma.util.Constants.CARWASH_ID;
+import static com.gliesereum.karma.util.Constants.OPEN_SERVICE_FLAG;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -130,6 +131,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         mediaURLList = new ArrayList<>();
         commentsItemList = new ArrayList<>();
         mediumList = new ArrayList<>();
+        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, false);
     }
 
     private void initView() {

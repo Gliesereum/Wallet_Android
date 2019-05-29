@@ -10,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.viewpager.widget.PagerAdapter;
+
 import com.gliesereum.karma.IconPowerMenuItem;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.data.network.APIClient;
@@ -25,12 +27,15 @@ import com.skydoves.powermenu.OnMenuItemClickListener;
 
 import java.util.List;
 
-import androidx.viewpager.widget.PagerAdapter;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.karma.util.Constants.CAR_BRAND;
+import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
+import static com.gliesereum.karma.util.Constants.CAR_MODEL;
+import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -41,9 +46,11 @@ public class ViewPagerAdapter extends PagerAdapter {
     private APIInterface API;
     private CustomCallback customCallback;
     private String TAG = "TAG";
+    private Activity activity;
 
     public ViewPagerAdapter(Context context, List<AllCarResponse> listDate, Activity activity) {
         this.context = context;
+        this.activity = activity;
         mListData = listDate;
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(context, activity);
@@ -107,8 +114,13 @@ public class ViewPagerAdapter extends PagerAdapter {
                     @Override
                     public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
                         FastSave.getInstance().deleteValue(CAR_ID);
+                        FastSave.getInstance().deleteValue(CAR_BRAND);
+                        FastSave.getInstance().deleteValue(CAR_MODEL);
+                        FastSave.getInstance().deleteValue(CAR_SERVICE_CLASS);
+                        FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
                         Toast.makeText(context, "Машина удалена успешно", Toast.LENGTH_SHORT).show();
                         context.startActivity(new Intent(context, CarListActivity.class));
+                        activity.finish();
                     }
 
                     @Override

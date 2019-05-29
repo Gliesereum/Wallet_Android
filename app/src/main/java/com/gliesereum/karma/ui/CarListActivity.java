@@ -9,6 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import com.github.vivchar.viewpagerindicator.ViewPagerIndicator;
 import com.gliesereum.karma.R;
 import com.gliesereum.karma.WrapContentHeightViewPager;
@@ -23,10 +28,6 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ActionMenuItemView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -36,6 +37,7 @@ import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
+import static com.gliesereum.karma.util.Constants.OPEN_SERVICE_FLAG;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -102,7 +104,11 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
             chooseCarBtn.setText("Пересесть на " + carsList.get(selectPosition).getBrand().getName());
         }
         Toast.makeText(CarListActivity.this, "Вы выбрали " + carsList.get(selectPosition).getBrand().getName(), Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(CarListActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
+            startActivity(new Intent(CarListActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        } else {
+            startActivity(new Intent(CarListActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        }
     }
 
     private void getAllCars() {

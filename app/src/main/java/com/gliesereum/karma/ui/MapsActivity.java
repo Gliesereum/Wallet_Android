@@ -76,6 +76,7 @@ import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.karma.util.Constants.FIRST_START;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
+import static com.gliesereum.karma.util.Constants.OPEN_SERVICE_FLAG;
 import static com.gliesereum.karma.util.Constants.TEST_LOG;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
@@ -144,6 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
                 FastSave.getInstance().deleteValue(CAR_ID);
                 toolbar.setTitle("Coupler");
+                toolbar.setSubtitle("");
             } else {
                 toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
                 toolbar.setSubtitle("Выбранный автомобиль");
@@ -151,6 +153,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             FastSave.getInstance().deleteValue(CAR_ID);
             toolbar.setTitle("Coupler");
+            toolbar.setSubtitle("");
         }
 
         setSupportActionBar(toolbar);
@@ -163,7 +166,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         initData();
         initView();
-        firstStartNotify();
+//        firstStartNotify();
         initMap(savedInstanceState);
         getLocationPermission();
         getAllService();
@@ -192,6 +195,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
                                             FastSave.getInstance().deleteValue(CAR_ID);
                                             toolbar.setTitle("Coupler");
+                                            toolbar.setSubtitle("");
                                         } else {
                                             toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
                                             toolbar.setSubtitle("Выбранный автомобиль");
@@ -199,6 +203,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     } else {
                                         FastSave.getInstance().deleteValue(CAR_ID);
                                         toolbar.setTitle("Coupler");
+                                        toolbar.setSubtitle("");
                                     }
 
                                 }
@@ -230,14 +235,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
+                FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
                 if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
                     if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+                        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, false);
                         FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
                         startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
                     } else {
+                        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
                         startActivity(new Intent(MapsActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                     }
                 } else {
+                    FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
                     startActivity(new Intent(MapsActivity.this, LoginActivity.class));
                     finish();
                 }

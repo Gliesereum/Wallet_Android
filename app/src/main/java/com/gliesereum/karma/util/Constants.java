@@ -12,6 +12,9 @@ public class Constants {
     public static final String BUSINESS_TYPE = "BUSINESS_TYPE";
 
 
+    public static final String OPEN_SERVICE_FLAG = "OPEN_SERVICE_FLAG";
+
+
     public static final String STATUS_UP = "UP";
     public static final String FIRST_START = "firstStart";
 

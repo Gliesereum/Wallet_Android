@@ -43,6 +43,7 @@ import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.KARMA_USER_RECORD;
 import static com.gliesereum.karma.util.Constants.KARMA_USER_REMIND_RECORD;
+import static com.gliesereum.karma.util.Constants.OPEN_SERVICE_FLAG;
 import static com.gliesereum.karma.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.karma.util.Constants.USER_ID;
@@ -184,7 +185,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
                             saveUserInfo(response.body());
-                            startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
+                                startActivity(new Intent(LoginActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            } else {
+                                startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            }
                         }
                         finish();
                     }

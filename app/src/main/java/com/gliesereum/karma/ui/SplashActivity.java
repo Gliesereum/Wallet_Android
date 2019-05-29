@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +55,7 @@ public class SplashActivity extends AppCompatActivity {
     private Button refreshBtn;
     private String TAG = "test_log";
     private LottieAlertDialog alertDialog;
+    private ImageView startLogo;
 
 
     @Override
@@ -78,12 +80,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private void initView() {
         errorBlock = findViewById(R.id.errorBlock);
+        startLogo = findViewById(R.id.startLogo);
         refreshBtn = findViewById(R.id.refreshBtn);
         refreshBtn.setOnClickListener(v -> checkStatus());
     }
 
     public void checkStatus() {
         errorBlock.setVisibility(View.GONE);
+        startLogo.setVisibility(View.VISIBLE);
         showProgressDialog();
         Call<StatusResponse> call = API.checkStatus();
         call.enqueue(new Callback<StatusResponse>() {
@@ -96,9 +100,11 @@ public class SplashActivity extends AppCompatActivity {
                         checkAccessToken();
                     } else {
                         errorBlock.setVisibility(View.VISIBLE);
+                        startLogo.setVisibility(View.GONE);
                     }
                 } else {
                     errorBlock.setVisibility(View.VISIBLE);
+                    startLogo.setVisibility(View.GONE);
                 }
                 closeProgressDialog();
             }
@@ -106,6 +112,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<StatusResponse> call, Throwable t) {
                 errorBlock.setVisibility(View.VISIBLE);
+                startLogo.setVisibility(View.GONE);
                 closeProgressDialog();
             }
         });
@@ -136,6 +143,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
                 errorBlock.setVisibility(View.VISIBLE);
+                startLogo.setVisibility(View.GONE);
                 closeProgressDialog();
             }
         });
