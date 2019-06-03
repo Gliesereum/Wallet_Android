@@ -103,7 +103,7 @@
                         app:layout_constraintTop_toTopOf="@+id/textView15"
                         app:srcCompat="@drawable/ic_watch_later_black_24dp" />
 
-                    <com.gliesereum.karma.util.SmartRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                    <com.gliesereum.coupler.util.SmartRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/carWashRating"
                         android:layout_width="wrap_content"
                         android:layout_height="15dp"

@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.gliesereum.karma.WrapContentHeightViewPager
+    <com.gliesereum.coupler.WrapContentHeightViewPager
         android:id="@+id/viewPager"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
