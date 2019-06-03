@@ -10,13 +10,20 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.gliesereum.karma.BuildConfig;
 import com.gliesereum.karma.R;
+import com.gliesereum.karma.data.network.APIClient;
+import com.gliesereum.karma.data.network.APIInterface;
+import com.gliesereum.karma.data.network.CustomCallback;
 import com.gliesereum.karma.data.network.json.carwash.AllCarWashResponse;
+import com.gliesereum.karma.data.network.json.notificatoin.RegistrationTokenDeleteResponse;
 import com.gliesereum.karma.ui.CarListActivity;
-import com.gliesereum.karma.ui.ChooseServiceActivity;
+import com.gliesereum.karma.ui.ChooseServiceNewActivity;
 import com.gliesereum.karma.ui.LoginActivity;
 import com.gliesereum.karma.ui.MapsActivity;
 import com.gliesereum.karma.ui.ProfileActivity;
 import com.gliesereum.karma.ui.RecordListActivity;
+import com.labters.lottiealertdialoglibrary.ClickListener;
+import com.labters.lottiealertdialoglibrary.DialogTypes;
+import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -27,10 +34,15 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_NAME;
@@ -39,6 +51,7 @@ import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.karma.util.Constants.CAR_ID;
 import static com.gliesereum.karma.util.Constants.CAR_MODEL;
 import static com.gliesereum.karma.util.Constants.CAR_SERVICE_CLASS;
+import static com.gliesereum.karma.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.USER_NAME;
 import static com.gliesereum.karma.util.Constants.USER_SECOND_NAME;
@@ -49,13 +62,20 @@ public class Util {
     private Activity activity;
     private Toolbar toolbar;
     private int identifier;
+    private APIInterface API;
+    private CustomCallback customCallback;
+    private LottieAlertDialog alertDialog;
+    private Drawer result;
+
 
 
     public Util(Activity activity, Toolbar toolbar, int identifier) {
         this.activity = activity;
         this.toolbar = toolbar;
         this.identifier = identifier;
-
+        FastSave.init(activity.getApplicationContext());
+        API = APIClient.getClient().create(APIInterface.class);
+        customCallback = new CustomCallback(activity.getApplicationContext(), activity);
     }
 
     public void addNavigation() {
@@ -105,7 +125,7 @@ public class Util {
                 record_listItem,
                 profileItem
         );
-        Drawer result = drawerBuilder.build();
+        result = drawerBuilder.build();
         drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -124,17 +144,41 @@ public class Util {
                         result.closeDrawer();
                         break;
                     case "logout":
-                        FastSave.getInstance().saveBoolean(IS_LOGIN, false);
-                        FastSave.getInstance().deleteValue(USER_NAME);
-                        FastSave.getInstance().deleteValue(USER_SECOND_NAME);
-                        FastSave.getInstance().deleteValue(CAR_ID);
-                        FastSave.getInstance().deleteValue(CAR_BRAND);
-                        FastSave.getInstance().deleteValue(CAR_SERVICE_CLASS);
-                        FastSave.getInstance().deleteValue(CAR_MODEL);
-                        FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
-                        FastSave.getInstance().deleteValue(ACCESS_TOKEN);
-                        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                        activity.finish();
+                        if (result.isDrawerOpen()) {
+                            result.closeDrawer();
+                        }
+                        alertDialog = new LottieAlertDialog.Builder(activity, DialogTypes.TYPE_QUESTION)
+                                .setTitle("Выход")
+                                .setDescription("Вы действительно хотите выйти со своего профиля?")
+                                .setPositiveText("Да")
+                                .setNegativeText("Нет")
+                                .setPositiveButtonColor(activity.getResources().getColor(R.color.md_red_A200))
+                                .setPositiveListener(new ClickListener() {
+                                    @Override
+                                    public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
+                                        deleteRegistrationToken();
+                                        FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+                                        FastSave.getInstance().deleteValue(USER_NAME);
+                                        FastSave.getInstance().deleteValue(USER_SECOND_NAME);
+                                        FastSave.getInstance().deleteValue(CAR_ID);
+                                        FastSave.getInstance().deleteValue(CAR_BRAND);
+                                        FastSave.getInstance().deleteValue(CAR_SERVICE_CLASS);
+                                        FastSave.getInstance().deleteValue(CAR_MODEL);
+                                        FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
+                                        FastSave.getInstance().deleteValue(ACCESS_TOKEN);
+                                        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                        activity.finish();
+                                    }
+                                })
+                                .setNegativeListener(new ClickListener() {
+                                    @Override
+                                    public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
+                                        alertDialog.dismiss();
+                                    }
+                                })
+                                .build();
+                        alertDialog.setCancelable(false);
+                        alertDialog.show();
                         break;
                     case "profile":
                         activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
@@ -145,9 +189,8 @@ public class Util {
                         activity.finish();
                         break;
                     case "service":
-//                        FastSave.getInstance().deleteValue(BUSINESS_CATEGORY_ID);
-//                        FastSave.getInstance().deleteValue(BUSINESS_CATEGORY_NAME);
-                        activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+//                        activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         activity.finish();
                         break;
                     case "about":
@@ -168,6 +211,22 @@ public class Util {
         result.addItem(new DividerDrawerItem());
         result.addItem(aboutItem);
         result.addItem(versionItem);
+
+    }
+
+    private void deleteRegistrationToken() {
+        API.deleteRegistrationToken(FastSave.getInstance().getString(ACCESS_TOKEN, ""), FastSave.getInstance().getString(FIREBASE_TOKEN, ""))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<RegistrationTokenDeleteResponse>() {
+                    @Override
+                    public void onSuccessful(Call<RegistrationTokenDeleteResponse> call, Response<RegistrationTokenDeleteResponse> response) {
+
+                    }
+
+                    @Override
+                    public void onEmpty(Call<RegistrationTokenDeleteResponse> call, Response<RegistrationTokenDeleteResponse> response) {
+
+                    }
+                }));
 
     }
 

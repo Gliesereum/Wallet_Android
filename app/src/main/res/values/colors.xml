@@ -10,7 +10,7 @@
     <color name="purple">#ff00FF</color>
     <color name="yellow">#ffff00</color>
     <color name="green">#00ff00</color>
-    <color name="gray">#F5F5F5</color>
+    <color name="gray">#BABABA</color>
 
     <!-- Material DEFAULT colors -->
     <color name="material_drawer_primary">#FF7A00</color>

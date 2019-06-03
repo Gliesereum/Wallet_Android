@@ -3,6 +3,7 @@ package com.gliesereum.karma.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -68,6 +70,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.karma.util.Constants.CARWASH_ID;
 import static com.gliesereum.karma.util.Constants.CAR_BRAND;
 import static com.gliesereum.karma.util.Constants.CAR_FILTER_LIST;
@@ -230,6 +233,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.coupler_map));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
         getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
 //        getAllCarWash(new FilterCarWashBody());
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -327,7 +343,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
                         stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
                         stilo.setClusterTextColor(getResources().getColor(R.color.white));
-                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
+                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this, FastSave.getInstance().getString(BUSINESS_CODE, ""));
                         iconGenerator.setIconStyle(stilo.build());
                         clusterManager.setIconGenerator(iconGenerator);
                         clusterManager.setMinClusterSize(3);

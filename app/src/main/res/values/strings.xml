@@ -118,5 +118,7 @@
 
     <string name="tagBusinessCategoryId">tagBusinessCategoryId</string>
     <string name="tagBusinessCategoryName">tagBusinessCategoryName</string>
+    <string name="tagBusinessCode">tagBusinessCode</string>
+    <string name="tagBusinessType">tagBusinessType</string>
 
 </resources>

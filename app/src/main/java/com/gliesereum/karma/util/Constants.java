@@ -6,10 +6,16 @@ public class Constants {
 
     public static final String KARMA_USER_RECORD = "KARMA_USER_RECORD";
     public static final String KARMA_USER_REMIND_RECORD = "KARMA_USER_REMIND_RECORD";
-    public static final String KARMA_BUSINESS_RECORD = "KARMA_BUSINESS_RECORD";
+    public static final String FIREBASE_TOKEN = "FIREBASE_TOKEN";
 
     public static final String RECORD_LIST_ACTIVITY = "RECORD_LIST_ACTIVITY";
     public static final String BUSINESS_TYPE = "BUSINESS_TYPE";
+    public static final String BUSINESS_CODE = "BUSINESS_CODE";
+
+
+    public static final String SERVICE_CAR_WASH = "CAR_WASH";
+    public static final String SERVICE_TIRE_FITTING = "TIRE_FITTING";
+    public static final String SERVICE_CAR_SERVICE = "CAR_SERVICE";
 
 
     public static final String OPEN_SERVICE_FLAG = "OPEN_SERVICE_FLAG";

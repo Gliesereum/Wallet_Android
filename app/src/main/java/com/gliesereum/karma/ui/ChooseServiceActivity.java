@@ -21,6 +21,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.karma.util.Constants.BUSINESS_CATEGORY_NAME;
+import static com.gliesereum.karma.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.karma.util.Constants.BUSINESS_TYPE;
 
 public class ChooseServiceActivity extends AppCompatActivity implements View.OnClickListener {
@@ -48,19 +49,22 @@ public class ChooseServiceActivity extends AppCompatActivity implements View.OnC
                         for (int i = 0; i < response.body().size(); i++) {
                             switch (response.body().get(i).getCode()) {
                                 case "CAR_WASH":
-                                    FastSave.getInstance().saveString(BUSINESS_TYPE, response.body().get(i).getBusinessType());
                                     carWashImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
                                     carWashImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
+                                    carWashImage.setTag(R.string.tagBusinessCode, response.body().get(i).getCode());
+                                    carWashImage.setTag(R.string.tagBusinessType, response.body().get(i).getBusinessType());
                                     break;
                                 case "TIRE_FITTING":
-                                    FastSave.getInstance().saveString(BUSINESS_TYPE, response.body().get(i).getBusinessType());
                                     tireFittingImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
                                     tireFittingImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
+                                    tireFittingImage.setTag(R.string.tagBusinessCode, response.body().get(i).getCode());
+                                    tireFittingImage.setTag(R.string.tagBusinessType, response.body().get(i).getBusinessType());
                                     break;
                                 case "CAR_SERVICE":
-                                    FastSave.getInstance().saveString(BUSINESS_TYPE, response.body().get(i).getBusinessType());
                                     carServiceImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
                                     carServiceImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
+                                    carServiceImage.setTag(R.string.tagBusinessCode, response.body().get(i).getCode());
+                                    carServiceImage.setTag(R.string.tagBusinessType, response.body().get(i).getBusinessType());
                                     break;
                             }
                         }
@@ -90,6 +94,8 @@ public class ChooseServiceActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
+        FastSave.getInstance().saveString(BUSINESS_CODE, (String) v.getTag(R.string.tagBusinessCode));
+        FastSave.getInstance().saveString(BUSINESS_TYPE, (String) v.getTag(R.string.tagBusinessType));
         FastSave.getInstance().saveString(BUSINESS_CATEGORY_ID, (String) v.getTag(R.string.tagBusinessCategoryId));
         FastSave.getInstance().saveString(BUSINESS_CATEGORY_NAME, " (" + (String) v.getTag(R.string.tagBusinessCategoryName) + ")");
         startActivity(new Intent(ChooseServiceActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));

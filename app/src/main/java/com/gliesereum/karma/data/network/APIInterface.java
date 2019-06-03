@@ -14,6 +14,7 @@ import com.gliesereum.karma.data.network.json.code.CodeResponse;
 import com.gliesereum.karma.data.network.json.code.SigninBody;
 import com.gliesereum.karma.data.network.json.filter.FilterResponse;
 import com.gliesereum.karma.data.network.json.notificatoin.NotificatoinBody;
+import com.gliesereum.karma.data.network.json.notificatoin.RegistrationTokenDeleteResponse;
 import com.gliesereum.karma.data.network.json.order.OrderBody;
 import com.gliesereum.karma.data.network.json.order.OrderResponse;
 import com.gliesereum.karma.data.network.json.record.AllRecordResponse;
@@ -46,6 +47,9 @@ public interface APIInterface {
     //NOTIFICATION
     @POST("notification/v1/user-device")
     Call<NotificatoinBody> sendRegistrationToken(@Header("Authorization") String accessToken, @Body NotificatoinBody notificatoinBody);
+
+    @DELETE("notification/v1/user-device")
+    Call<RegistrationTokenDeleteResponse> deleteRegistrationToken(@Header("Authorization") String accessToken, @Query("registrationToken") String registrationToken);
 
 
     //ACCOUNT

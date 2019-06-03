@@ -40,6 +40,7 @@ import retrofit2.Response;
 import static com.gliesereum.karma.util.Constants.ACCESS_EXPIRATION_DATE;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.karma.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
+import static com.gliesereum.karma.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.karma.util.Constants.IS_LOGIN;
 import static com.gliesereum.karma.util.Constants.KARMA_USER_RECORD;
 import static com.gliesereum.karma.util.Constants.KARMA_USER_REMIND_RECORD;
@@ -149,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
             String newToken = instanceIdResult.getToken();
             Log.e("TAG_NOTIF", newToken);
-//            getPreferences(Context.MODE_PRIVATE).edit().putString("fb", newToken).apply();
+            FastSave.getInstance().saveString(FIREBASE_TOKEN, newToken);
             UserSubscribe userSubscribe = new UserSubscribe(true, KARMA_USER_RECORD);
             UserSubscribe userSubscribe2 = new UserSubscribe(true, KARMA_USER_REMIND_RECORD);
             NotificatoinBody notificatoinBody = new NotificatoinBody(newToken, true, Arrays.asList(userSubscribe, userSubscribe2));

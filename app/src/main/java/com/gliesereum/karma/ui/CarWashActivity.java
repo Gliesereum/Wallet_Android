@@ -101,18 +101,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (FastSave.getInstance().getBoolean("NIGHT_THEME", false)) {
-            setTheme(R.style.AppThemeDark);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_wash);
-
-//        ContextThemeWrapper themeWrapper = new ContextThemeWrapper(this, R.style.AppThemeRed);
-//        LayoutInflater layoutInflater = LayoutInflater.from(themeWrapper);
-//        ViewGroup viewContainer = findViewById(R.id.testColor);
-//        viewContainer.removeAllViews();
-//        layoutInflater.inflate(R.layout.activity_car_wash, viewContainer, true);
-
         initData();
         initView();
         getCarWash();
@@ -508,4 +498,9 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         return context;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(CarWashActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+    }
 }
