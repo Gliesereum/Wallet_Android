@@ -367,7 +367,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         clusterManager.setItems(clusterItems);
                         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-                        mMap.setBuildingsEnabled(false);
+//                        mMap.setBuildingsEnabled(false);
                         mMap.getUiSettings().setMapToolbarEnabled(true);
                         mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         mMap.getUiSettings().setAllGesturesEnabled(true);
