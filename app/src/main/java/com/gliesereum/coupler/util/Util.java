@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -18,6 +17,7 @@ import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
 import com.gliesereum.coupler.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.coupler.data.network.json.notificatoin.RegistrationTokenDeleteResponse;
+import com.gliesereum.coupler.ui.AboutActivity;
 import com.gliesereum.coupler.ui.CarListActivity;
 import com.gliesereum.coupler.ui.ChooseServiceNewActivity;
 import com.gliesereum.coupler.ui.LoginActivity;
@@ -180,7 +180,7 @@ public class Util {
                                     @Override
                                     public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
                                         deleteRegistrationToken();
-                                        FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+                                        FastSave.getInstance().deleteValue(IS_LOGIN);
                                         FastSave.getInstance().deleteValue(USER_NAME);
                                         FastSave.getInstance().deleteValue(USER_SECOND_NAME);
                                         FastSave.getInstance().deleteValue(CAR_ID);
@@ -217,7 +217,8 @@ public class Util {
                         activity.finish();
                         break;
                     case "about":
-                        Toast.makeText(activity, "В разработке", Toast.LENGTH_SHORT).show();
+                        result.closeDrawer();
+                        activity.startActivity(new Intent(activity.getApplicationContext(), AboutActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         break;
                 }
 

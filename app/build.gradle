@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.coupler"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 28
-        versionName "0.0.28"
+        versionCode 29
+        versionName "0.0.29"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -24,7 +24,7 @@ android {
             signingConfig getSigningConfig()
             applicationVariants.all { variant ->
                 variant.outputs.all {
-                    outputFileName = "KARMA-v${variant.versionName}.apk"
+                    outputFileName = "Coupler-v${variant.versionName}.apk"
                 }
             }
         }
@@ -107,6 +107,9 @@ dependencies {
 
     implementation 'com.github.james602152002:FloatingLabelSpinner:1.4.2'
     //https://github.com/james602152002/FloatingLabelSpinner?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=6635
+
+    implementation 'com.github.medyo:android-about-page:1.2.5'
+    //https://github.com/medyo/android-about-page
 
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
