@@ -12,11 +12,17 @@ public class Constants {
     public static final String BUSINESS_TYPE = "BUSINESS_TYPE";
     public static final String BUSINESS_CODE = "BUSINESS_CODE";
 
+    public static final String UPDATE_MAP = "UPDATE_MAP";
+    public static final String FILTER_CARWASH_BODY = "FILTER_CARWASH_BODY";
+    public static final String SERVICE_ID_LIST = "SERVICE_ID_LIST";
+
     public static final String USER_AVATAR = "USER_AVATAR";
 
     public static final String SERVICE_CAR_WASH = "CAR_WASH";
     public static final String SERVICE_TIRE_FITTING = "TIRE_FITTING";
     public static final String SERVICE_CAR_SERVICE = "CAR_SERVICE";
+
+    public static final String SERVICE_LIST = "SERVICE_LIST";
 
 
     public static final String OPEN_SERVICE_FLAG = "OPEN_SERVICE_FLAG";

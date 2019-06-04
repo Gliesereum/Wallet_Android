@@ -86,14 +86,14 @@ public class Util {
 
     public void addNavigation() {
         new DrawerBuilder().withActivity(activity).build();
-        PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта" + FastSave.getInstance().getString(BUSINESS_CATEGORY_NAME, "")).withIdentifier(1).withTag("maps").withIcon(R.drawable.map_icon);
-        SecondaryDrawerItem serviceItem = new SecondaryDrawerItem().withName("Список сервисов").withIdentifier(8).withSelectable(false).withTag("service").withSelectable(false).withIcon(R.drawable.ic_service_black_24dp);
-        SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withSelectable(false).withIcon(R.drawable.my_cars);
-        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.orders);
-        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.profile);
-        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.logout);
-        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.login);
-        SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О нас").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_about_black_24dp);
+        PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта" + FastSave.getInstance().getString(BUSINESS_CATEGORY_NAME, "")).withIdentifier(1).withTag("maps").withIcon(R.drawable.ic_outline_explore_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem serviceItem = new SecondaryDrawerItem().withName("Список сервисов").withIdentifier(8).withSelectable(false).withTag("service").withSelectable(false).withIcon(R.drawable.ic_outline_store_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withSelectable(false).withIcon(R.drawable.ic_outline_directions_car_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.ic_outline_list_alt_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.ic_outline_account_circle_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О приложении").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_outline_info_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem versionItem = new SecondaryDrawerItem().withName("v" + BuildConfig.VERSION_NAME).withIdentifier(7).withSelectable(false).withTag("version").withSelectable(false);
 
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
@@ -212,9 +212,9 @@ public class Util {
                         activity.finish();
                         break;
                     case "service":
-//                        activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                        activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                        activity.finish();
+                        activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+//                        activity.finish();
+                        result.closeDrawer();
                         break;
                     case "about":
                         result.closeDrawer();

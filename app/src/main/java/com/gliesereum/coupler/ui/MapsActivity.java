@@ -7,14 +7,13 @@ import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,8 +36,6 @@ import com.gliesereum.coupler.data.network.json.service.ServiceResponse;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.IconGenerator;
 import com.gliesereum.coupler.util.Util;
-import com.gohn.nativedialog.ButtonType;
-import com.gohn.nativedialog.NDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,7 +47,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
 import com.labters.lottiealertdialoglibrary.DialogTypes;
 import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 
@@ -77,10 +73,13 @@ import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
+import static com.gliesereum.coupler.util.Constants.FILTER_CARWASH_BODY;
 import static com.gliesereum.coupler.util.Constants.FIRST_START;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
+import static com.gliesereum.coupler.util.Constants.SERVICE_LIST;
 import static com.gliesereum.coupler.util.Constants.TEST_LOG;
+import static com.gliesereum.coupler.util.Constants.UPDATE_MAP;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -105,6 +104,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Set<String> serviceIdList;
     private boolean doubleBack = false;
     private LottieAlertDialog alertDialog;
+    private ImageView couplerLogoImg;
 
     private void initData() {
         FastSave.init(getApplicationContext());
@@ -142,23 +142,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initView() {
+        couplerLogoImg = findViewById(R.id.couplerLogoImg);
         mapView = findViewById(R.id.mapView);
         toolbar = findViewById(R.id.toolbar);
         if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
             if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
                 FastSave.getInstance().deleteValue(CAR_ID);
-                toolbar.setTitle("Coupler");
+                couplerLogoImg.setVisibility(View.VISIBLE);
+                toolbar.setTitle("");
                 toolbar.setSubtitle("");
             } else {
+                couplerLogoImg.setVisibility(View.GONE);
                 toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
                 toolbar.setSubtitle("Выбранный автомобиль");
             }
         } else {
             FastSave.getInstance().deleteValue(CAR_ID);
-            toolbar.setTitle("Coupler");
+            couplerLogoImg.setVisibility(View.VISIBLE);
+            toolbar.setTitle("");
             toolbar.setSubtitle("");
         }
-
         setSupportActionBar(toolbar);
         new Util(this, toolbar, 1).addNavigation();
     }
@@ -167,6 +170,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        setupWindowAnimations();
         initData();
         initView();
 //        firstStartNotify();
@@ -176,6 +180,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             getAllCars();
         }
+    }
+
+    private void setupWindowAnimations() {
+        Slide slide = new Slide();
+        slide.setDuration(1000);
+        getWindow().setExitTransition(slide);
     }
 
     private void getAllCars() {
@@ -197,15 +207,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
                                         if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
                                             FastSave.getInstance().deleteValue(CAR_ID);
-                                            toolbar.setTitle("Coupler");
+                                            couplerLogoImg.setVisibility(View.VISIBLE);
+                                            toolbar.setTitle("");
                                             toolbar.setSubtitle("");
                                         } else {
+                                            couplerLogoImg.setVisibility(View.GONE);
                                             toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
                                             toolbar.setSubtitle("Выбранный автомобиль");
                                         }
                                     } else {
                                         FastSave.getInstance().deleteValue(CAR_ID);
-                                        toolbar.setTitle("Coupler");
+                                        couplerLogoImg.setVisibility(View.VISIBLE);
+                                        toolbar.setTitle("");
                                         toolbar.setSubtitle("");
                                     }
 
@@ -331,7 +344,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                }));
 //    }
 
-    private void getAllCarWash(FilterCarWashBody filterCarWashBody) {
+    public void getAllCarWash(FilterCarWashBody filterCarWashBody) {
         API.getAllCarWashNew(filterCarWashBody)
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<CarWashResponse>>() {
                     @Override
@@ -516,45 +529,50 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.filter_menu:
-                NDialog nDialog = new NDialog(MapsActivity.this, ButtonType.NO_BUTTON);
-                nDialog.setTitle("Фильтр");
-                nDialog.setMessage("Накликай фильтров");
-                nDialog.isCancelable(true);
-                nDialog.setCustomView(R.layout.service_chip_view);
-                List<View> childViews = nDialog.getCustomViewChildren();
-                for (View childView : childViews) {
-                    switch (childView.getId()) {
-                        case R.id.timeOrderBtn:
-                            MaterialButton okBtn = childView.findViewById(R.id.timeOrderBtn);
-                            okBtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
-                                    filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, null));
-                                    filterCarWashBody.setBusinessCategoryId(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""));
-                                    filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
-                                    getAllCarWash(filterCarWashBody);
-                                    nDialog.dismiss();
-                                }
-                            });
-                            break;
-                        case R.id.serviceGroup:
-                            LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
-                            for (int i = 0; i < mapServise.size(); i++) {
-                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                layoutParams.setMargins(0, 4, 0, 4);
-                                CheckBox checkBox = new CheckBox(MapsActivity.this);
-                                checkBox.setText(serviceList.get(i).getName());
-                                checkBox.setOnCheckedChangeListener(this);
-                                if (serviceIdList.contains(mapServise.get(serviceList.get(i).getName()))) {
-                                    checkBox.setChecked(true);
-                                }
-                                checkGroup.addView(checkBox);
-                            }
-                            break;
-                    }
-                }
-                nDialog.show();
+//                NDialog nDialog = new NDialog(MapsActivity.this, ButtonType.NO_BUTTON);
+//                nDialog.setTitle("Фильтр");
+//                nDialog.setMessage("Накликай фильтров");
+//                nDialog.isCancelable(true);
+//                nDialog.setCustomView(R.layout.service_chip_view);
+//                List<View> childViews = nDialog.getCustomViewChildren();
+//                for (View childView : childViews) {
+//                    switch (childView.getId()) {
+//                        case R.id.timeOrderBtn:
+//                            MaterialButton okBtn = childView.findViewById(R.id.timeOrderBtn);
+//                            okBtn.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
+//                                    filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, null));
+//                                    filterCarWashBody.setBusinessCategoryId(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""));
+//                                    filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
+//                                    getAllCarWash(filterCarWashBody);
+//                                    nDialog.dismiss();
+//                                }
+//                            });
+//                            break;
+//                        case R.id.serviceGroup:
+//                            LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
+//                            for (int i = 0; i < mapServise.size(); i++) {
+//                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                                layoutParams.setMargins(0, 4, 0, 4);
+//                                CheckBox checkBox = new CheckBox(MapsActivity.this);
+//                                checkBox.setText(serviceList.get(i).getName());
+//                                checkBox.setOnCheckedChangeListener(this);
+//                                if (serviceIdList.contains(mapServise.get(serviceList.get(i).getName()))) {
+//                                    checkBox.setChecked(true);
+//                                }
+//                                checkGroup.addView(checkBox);
+//                            }
+//                            break;
+//                    }
+//                }
+//                nDialog.show();
+
+
+                startActivity(new Intent(MapsActivity.this, TestActivity.class));
+                overridePendingTransition(R.anim.enter, R.anim.no_animation);
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -570,6 +588,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         for (int i = 0; i < serviceList.size(); i++) {
                             mapServise.put(serviceList.get(i).getName(), serviceList.get(i).getId());
                         }
+                        FastSave.getInstance().saveObjectsList(SERVICE_LIST, serviceList);
                     }
 
                     @Override
@@ -608,4 +627,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }, 2000);
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.d("serviceIdList", "onPostResume: ");
+        if (FastSave.getInstance().getBoolean(UPDATE_MAP, false)) {
+            getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class));
+            FastSave.getInstance().deleteValue(UPDATE_MAP);
+        }
+    }
 }

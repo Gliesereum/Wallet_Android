@@ -26,6 +26,7 @@ import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_NAME;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
+import static com.gliesereum.coupler.util.Constants.SERVICE_ID_LIST;
 
 public class ChooseServiceAdapter extends RecyclerView.Adapter<ChooseServiceAdapter.ViewHolder> {
 
@@ -39,16 +40,13 @@ public class ChooseServiceAdapter extends RecyclerView.Adapter<ChooseServiceAdap
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.choose_service_item, parent, false);
         view.setOnClickListener(v -> {
-//            FastSave.getInstance().saveObject("RECORD", allRecordList.get(Integer.parseInt(((TextView) v.findViewById(R.id.recordId)).getText().toString())));
-//            AllRecordResponse allRecordResponse = new AllRecordResponse();
-//            FastSave.getInstance().saveObject("RECORD", allRecordList.get(allRecordList.indexOf(allRecordResponse)));
             if (businesCategoryList.get(businesCategoryList.indexOf(new BusinesCategoryResponse(((TextView) v.findViewById(R.id.businessCategoryId)).getText().toString()))).getActive()) {
+                FastSave.getInstance().deleteValue(SERVICE_ID_LIST);
                 FastSave.getInstance().saveString(BUSINESS_CODE, ((TextView) v.findViewById(R.id.businessCode)).getText().toString());
                 FastSave.getInstance().saveString(BUSINESS_TYPE, ((TextView) v.findViewById(R.id.businessType)).getText().toString());
                 FastSave.getInstance().saveString(BUSINESS_CATEGORY_ID, ((TextView) v.findViewById(R.id.businessCategoryId)).getText().toString());
                 FastSave.getInstance().saveString(BUSINESS_CATEGORY_NAME, " (" + ((TextView) v.findViewById(R.id.businessCategoryName)).getText().toString() + ")");
-                Intent intent = new Intent(context, MapsActivity.class);
-                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                context.startActivity(new Intent(context, MapsActivity.class));
             } else {
                 Toast.makeText(context, "Скоро будет доступно", Toast.LENGTH_SHORT).show();
             }
