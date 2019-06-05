@@ -1,5 +1,6 @@
 package com.gliesereum.coupler.data.network;
 
+import com.gliesereum.coupler.data.network.json.avatar.UploadResponse;
 import com.gliesereum.coupler.data.network.json.businesscategory.BusinesCategoryResponse;
 import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.car.BrandResponse;
@@ -25,13 +26,17 @@ import com.gliesereum.coupler.data.network.json.user.UserResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -70,6 +75,12 @@ public interface APIInterface {
 
     @GET("account/v1/auth/check")
     Call<UserResponse> checkAccessToken(@Query("accessToken") String accessToken);
+
+    @Multipart
+    @POST("file/v1/upload")
+    Call<UploadResponse> uploadAvatar(@Header("Authorization") String accessToken, @Part MultipartBody.Part file, @Part("open") RequestBody open);
+
+
 
 
     //CAR

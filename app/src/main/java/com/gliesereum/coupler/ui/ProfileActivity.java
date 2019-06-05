@@ -31,7 +31,6 @@ import static com.gliesereum.coupler.util.Constants.ANDROID_APP;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
 import static com.gliesereum.coupler.util.Constants.USER_SECOND_NAME;
 
-//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,6 +48,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private boolean secondNameFlag;
     private boolean thirdNameFlag;
     private boolean editFlag;
+    private String TAG = "upload";
 
 
     @Override
@@ -82,9 +82,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         nameTextView.addTextChangedListener(firstNameListener);
         secondNameTextView.addTextChangedListener(secondNameListener);
         thirdNameTextView.addTextChangedListener(thirdNameListener);
+
     }
 
-//    @Override
+
+    //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        getMenuInflater().inflate(R.menu.main_menu, menu);
 //        return true;

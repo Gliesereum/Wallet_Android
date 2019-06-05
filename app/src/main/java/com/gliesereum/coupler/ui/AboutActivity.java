@@ -19,7 +19,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
 
         Element versionElement = new Element();
-        versionElement.setTitle("Версия: " + " " + BuildConfig.VERSION_NAME);
+        versionElement.setTitle("Версия: " + " " + BuildConfig.VERSION_NAME + "beta");
 
         View aboutPage = new AboutPage(this)
                 .isRTL(false)
@@ -31,6 +31,7 @@ public class AboutActivity extends AppCompatActivity {
                 .addWebsite("https://coupler.app/")
 //                .addYoutube("UCdPQtdWIsg7_pi4mrRu46vA")
                 .addPlayStore("com.gliesereum.coupler")
+                .addGroup("Документы")
                 .addWebsite("https://coupler.app/policy", "Политика конфидицифльности")
                 .addWebsite("https://coupler.app/terms", "Условия использования")
                 .create();

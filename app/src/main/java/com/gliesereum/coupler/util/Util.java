@@ -129,7 +129,9 @@ public class Util {
                 .withActivity(activity)
 //                .withHeaderBackground(R.drawable.cover_karma_new)
                 .withHeaderBackground(R.drawable.cover_karma_new)
+                .withSelectionListEnabledForSingleProfile(false)
                 .addProfiles(profileDrawerItem)
+
 //                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
 //                    @Override
 //                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
@@ -208,6 +210,7 @@ public class Util {
                         break;
                     case "profile":
                         activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+//                        activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class));
                         result.closeDrawer();
                         break;
                     case "login":

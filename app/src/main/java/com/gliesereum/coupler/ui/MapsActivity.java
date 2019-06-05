@@ -124,12 +124,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (FastSave.getInstance().getBoolean(FIRST_START, true)) {
             alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_SUCCESS)
                     .setTitle("Тестовый режим")
-                    .setDescription("Приложение работает в тестовом режиме." +
-                            "Сейчас созданна одна ТЕСТОВАЯ мойка в городе Киев." +
-                            "Вы можете уже сейчас попробовать записаться на мойку выбрав все интересущие вас услуги." +
-                            "Также вы можете попробовать все остальные функции даного приложения." +
-                            "А вообще тут надо придумать нормальный текст, что б люди поняли, что если они сделали заказ мойки, то не надо не нее ехать мыться)))")
-                    .setPositiveText("Да! Я понял!")
+                    .setDescription("В данный момент интерактивная карта запущена в тестовом режиме. Услуги указанных компаний недоступны. Мы работаем над тем, чтобы как можно скорее наполнить карту нужными вам сервисами.")
+                    .setPositiveText("Понятно")
                     .setPositiveListener(lottieAlertDialog -> {
                         FastSave.getInstance().saveBoolean(FIRST_START, false);
                         alertDialog.dismiss();
@@ -172,7 +168,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setupWindowAnimations();
         initData();
         initView();
-//        firstStartNotify();
+        firstStartNotify();
         initMap(savedInstanceState);
         getLocationPermission();
         getAllService();
@@ -194,6 +190,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 @Override
                                 public void onSuccessful(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
                                     FastSave.getInstance().deleteValue(CAR_ID);
+                                    List<AllCarResponse> body = response.body();
                                     for (int i = 0; i < response.body().size(); i++) {
                                         if (response.body().get(i).isFavorite()) {
                                             FastSave.getInstance().saveString(CAR_ID, response.body().get(i).getId());

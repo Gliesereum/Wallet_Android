@@ -24,6 +24,7 @@ import com.gliesereum.coupler.adapter.CommentListAdapter;
 import com.gliesereum.coupler.data.network.APIClient;
 import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
+import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.coupler.data.network.json.carwash.CommentsItem;
 import com.gliesereum.coupler.data.network.json.carwash.MediaItem;
@@ -60,6 +61,12 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.CARWASHA_CTIVITY;
 import static com.gliesereum.coupler.util.Constants.CARWASH_ID;
+import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
+import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
+import static com.gliesereum.coupler.util.Constants.CAR_ID;
+import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
+import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
+import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
@@ -106,6 +113,9 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         initData();
         initView();
         getCarWash();
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            getAllCars();
+        }
     }
 
     private void initData() {
@@ -502,5 +512,35 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(CarWashActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+    }
+
+    private void getAllCars() {
+        if (!FastSave.getInstance().getString(ACCESS_TOKEN, "").equals("")) {
+            API.getAllCars(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                    .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarResponse>>() {
+                                @Override
+                                public void onSuccessful(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
+                                    FastSave.getInstance().deleteValue(CAR_ID);
+                                    for (int i = 0; i < response.body().size(); i++) {
+                                        if (response.body().get(i).isFavorite()) {
+                                            FastSave.getInstance().saveString(CAR_ID, response.body().get(i).getId());
+                                            FastSave.getInstance().saveString(CAR_BRAND, response.body().get(i).getBrand().getName());
+                                            FastSave.getInstance().saveString(CAR_MODEL, response.body().get(i).getModel().getName());
+                                            FastSave.getInstance().saveObject(CAR_SERVICE_CLASS, response.body().get(i).getServices());
+                                            FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, response.body().get(i).getAttributes());
+                                        }
+                                    }
+
+                                }
+
+                                @Override
+                                public void onEmpty(Call<List<AllCarResponse>> call, Response<List<AllCarResponse>> response) {
+                                    FastSave.getInstance().deleteValue(CAR_ID);
+                                    FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
+                                    startActivity(new Intent(CarWashActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                                }
+                            })
+                    );
+        }
     }
 }

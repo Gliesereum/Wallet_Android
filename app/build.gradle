@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.coupler"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 30
-        versionName "0.0.30"
+        versionCode 31
+        versionName "0.0.31"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -111,6 +111,9 @@ dependencies {
 
     implementation 'com.github.medyo:android-about-page:1.2.5'
     //https://github.com/medyo/android-about-page
+
+
+
 
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
