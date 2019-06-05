@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -24,12 +23,10 @@ import static com.gliesereum.coupler.util.Constants.SERVICE_TIRE_FITTING;
 public class IconGenerator extends DefaultIconGenerator implements net.sharewire.googlemapsclustering.IconGenerator {
 
     private Context context;
-    private String businessCode;
 
-    public IconGenerator(@NonNull Context context, String businessCode) {
+    public IconGenerator(@NonNull Context context) {
         super(context);
         this.context = context;
-        this.businessCode = businessCode;
         FastSave.init(context);
     }
 
@@ -37,7 +34,6 @@ public class IconGenerator extends DefaultIconGenerator implements net.sharewire
     @Override
     public BitmapDescriptor getClusterItemIcon(@NonNull ClusterItem clusterItem) {
         Drawable background;
-        Log.e("TAG", "getClusterItemIcon: " + FastSave.getInstance().getString(BUSINESS_CODE, ""));
         switch (FastSave.getInstance().getString(BUSINESS_CODE, "")) {
             case SERVICE_CAR_WASH:
                 background = ContextCompat.getDrawable(context, R.drawable.ic_pin_car_wash);
@@ -49,7 +45,7 @@ public class IconGenerator extends DefaultIconGenerator implements net.sharewire
                 background = ContextCompat.getDrawable(context, R.drawable.ic_pin_car_service);
                 break;
             default:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_servicess);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_car_wash);
                 break;
         }
         background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());

@@ -21,6 +21,10 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_SERVICE_ID;
+import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_WASH_ID;
+import static com.gliesereum.coupler.util.Constants.SERVICE_TIRE_FITTING_ID;
+
 public class ChooseServiceNewActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -63,28 +67,19 @@ public class ChooseServiceNewActivity extends AppCompatActivity {
                     @Override
                     public void onSuccessful(Call<List<BusinesCategoryResponse>> call, Response<List<BusinesCategoryResponse>> response) {
                         chooseServiceAdapter.setItems(response.body());
-//                        for (int i = 0; i < response.body().size(); i++) {
-//                            switch (response.body().get(i).getCode()) {
-//                                case "CAR_WASH":
-//                                    carWashImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
-//                                    carWashImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
-//                                    carWashImage.setTag(R.string.tagBusinessCode, response.body().get(i).getCode());
-//                                    carWashImage.setTag(R.string.tagBusinessType, response.body().get(i).getBusinessType());
-//                                    break;
-//                                case "TIRE_FITTING":
-//                                    tireFittingImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
-//                                    tireFittingImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
-//                                    tireFittingImage.setTag(R.string.tagBusinessCode, response.body().get(i).getCode());
-//                                    tireFittingImage.setTag(R.string.tagBusinessType, response.body().get(i).getBusinessType());
-//                                    break;
-//                                case "CAR_SERVICE":
-//                                    carServiceImage.setTag(R.string.tagBusinessCategoryId, response.body().get(i).getId());
-//                                    carServiceImage.setTag(R.string.tagBusinessCategoryName, response.body().get(i).getName());
-//                                    carServiceImage.setTag(R.string.tagBusinessCode, response.body().get(i).getCode());
-//                                    carServiceImage.setTag(R.string.tagBusinessType, response.body().get(i).getBusinessType());
-//                                    break;
-//                            }
-//                        }
+                        for (int i = 0; i < response.body().size(); i++) {
+                            switch (response.body().get(i).getCode()) {
+                                case "CAR_WASH":
+                                    FastSave.getInstance().saveString(SERVICE_CAR_WASH_ID, response.body().get(i).getId());
+                                    break;
+                                case "TIRE_FITTING":
+                                    FastSave.getInstance().saveString(SERVICE_TIRE_FITTING_ID, response.body().get(i).getId());
+                                    break;
+                                case "CAR_SERVICE":
+                                    FastSave.getInstance().saveString(SERVICE_CAR_SERVICE_ID, response.body().get(i).getId());
+                                    break;
+                            }
+                        }
                     }
 
                     @Override

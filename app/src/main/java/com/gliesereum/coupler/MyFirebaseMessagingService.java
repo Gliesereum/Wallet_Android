@@ -115,7 +115,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_directions_car_black_24dp)
+                        .setSmallIcon(R.drawable.ic_coupler)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setContentTitle(remoteMessage.getData().get("title"))
                         .setContentText(remoteMessage.getData().get("body"))

@@ -28,7 +28,6 @@
         <activity android:name=".ui.TestActivity"></activity>
         <activity android:name=".ui.AboutActivity" />
         <activity android:name=".ui.ChooseServiceNewActivity" />
-        <activity android:name=".ui.ChooseServiceActivity" />
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -40,7 +39,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_directions_car_black_24dp" />
+            android:resource="@drawable/ic_coupler" />
 
         <activity
             android:name=".ui.SingleRecordActivity"

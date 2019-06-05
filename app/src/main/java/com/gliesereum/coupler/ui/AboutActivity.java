@@ -26,13 +26,13 @@ public class AboutActivity extends AppCompatActivity {
                 .setImage(R.drawable.ic_logo_group)
                 .setDescription("Тут должен быть какойто текст. Можно даже много текста")
                 .addItem(versionElement)
-//                .addItem(adsElement)
 //                .addGroup("Connect with us")
                 .addEmail("support@gliesereum.com")
                 .addWebsite("https://coupler.app/")
 //                .addYoutube("UCdPQtdWIsg7_pi4mrRu46vA")
                 .addPlayStore("com.gliesereum.coupler")
                 .addWebsite("https://coupler.app/policy", "Политика конфидицифльности")
+                .addWebsite("https://coupler.app/terms", "Условия использования")
                 .create();
 
         setContentView(aboutPage);

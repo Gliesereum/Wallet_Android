@@ -52,6 +52,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_NAME;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
 import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
@@ -62,8 +63,6 @@ import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.USER_AVATAR;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
 import static com.gliesereum.coupler.util.Constants.USER_SECOND_NAME;
-
-//import com.appizona.yehiahd.fastsave.FastSave;
 
 public class Util {
     private Activity activity;
@@ -94,12 +93,16 @@ public class Util {
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О приложении").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_outline_info_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem versionItem = new SecondaryDrawerItem().withName("v" + BuildConfig.VERSION_NAME).withIdentifier(7).withSelectable(false).withTag("version").withSelectable(false);
+        SecondaryDrawerItem versionItem = new SecondaryDrawerItem().withName("v" + BuildConfig.VERSION_NAME + "beta").withIdentifier(7).withSelectable(false).withTag("version").withSelectable(false);
 
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             car_listItem.withEnabled(false);
             record_listItem.withEnabled(false);
             profileItem.withEnabled(false);
+        }
+
+        if (FastSave.getInstance().getString(BUSINESS_CODE, "").equals("")) {
+            mapsItem.withEnabled(false);
         }
 
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {

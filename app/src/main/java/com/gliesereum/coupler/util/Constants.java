@@ -22,6 +22,10 @@ public class Constants {
     public static final String SERVICE_TIRE_FITTING = "TIRE_FITTING";
     public static final String SERVICE_CAR_SERVICE = "CAR_SERVICE";
 
+    public static final String SERVICE_CAR_WASH_ID = "CAR_WASH_ID";
+    public static final String SERVICE_TIRE_FITTING_ID = "TIRE_FITTING_ID";
+    public static final String SERVICE_CAR_SERVICE_ID = "CAR_SERVICE_ID";
+
     public static final String SERVICE_LIST = "SERVICE_LIST";
 
 

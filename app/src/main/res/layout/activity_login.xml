@@ -191,13 +191,13 @@
 
             <ImageView
                 android:id="@+id/mapImageBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/map_icon" />
+                app:srcCompat="@drawable/ic_zoom_out_map_black_24dp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

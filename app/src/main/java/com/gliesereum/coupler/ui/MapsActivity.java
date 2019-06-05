@@ -66,7 +66,6 @@ import retrofit2.Response;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
-import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.coupler.util.Constants.CARWASH_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
 import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
@@ -260,7 +259,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e(TAG, "Can't find style. Error: ", e);
         }
         getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
-//        getAllCarWash(new FilterCarWashBody());
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -356,10 +354,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
                         stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
                         stilo.setClusterTextColor(getResources().getColor(R.color.white));
-                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this, FastSave.getInstance().getString(BUSINESS_CODE, ""));
+                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
                         iconGenerator.setIconStyle(stilo.build());
                         clusterManager.setIconGenerator(iconGenerator);
-                        clusterManager.setMinClusterSize(3);
+                        clusterManager.setMinClusterSize(4);
                         mMap.setOnCameraIdleListener(clusterManager);
                         clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
                             @Override
@@ -379,8 +377,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
                         }
                         clusterManager.setItems(clusterItems);
+
                         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-//                        mMap.setBuildingsEnabled(false);
                         mMap.getUiSettings().setMapToolbarEnabled(true);
                         mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         mMap.getUiSettings().setAllGesturesEnabled(true);
