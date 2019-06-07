@@ -81,8 +81,6 @@ public interface APIInterface {
     Call<UploadResponse> uploadAvatar(@Header("Authorization") String accessToken, @Part MultipartBody.Part file, @Part("open") RequestBody open);
 
 
-
-
     //CAR
     @GET("karma/v1/car/brands")
     Call<List<BrandResponse>> getBrands(@Header("Authorization") String accessToken);

@@ -12,6 +12,10 @@
     <color name="green">#00ff00</color>
     <color name="gray">#BABABA</color>
 
+    <color name="ucrop_color_toolbar">#FF7A00</color>
+    <color name="ucrop_color_statusbar">#FF7A00</color>
+    <color name="ucrop_color_widget_active">#FF7A00</color>
+
     <!-- Material DEFAULT colors -->
     <color name="material_drawer_primary">#FF7A00</color>
     <color name="material_drawer_primary_dark">#FF7A00</color>

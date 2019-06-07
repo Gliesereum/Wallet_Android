@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.coupler"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 32
-        versionName "0.0.32"
+        versionCode 33
+        versionName "0.0.33"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -111,6 +111,11 @@ dependencies {
 
     implementation 'com.github.medyo:android-about-page:1.2.5'
     //https://github.com/medyo/android-about-page
+
+    implementation 'com.github.dhaval2404:imagepicker-support:1.1'
+    //https://android-arsenal.com/details/1/7510
+
+
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.9'

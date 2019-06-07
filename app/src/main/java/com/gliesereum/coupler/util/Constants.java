@@ -17,6 +17,7 @@ public class Constants {
     public static final String SERVICE_ID_LIST = "SERVICE_ID_LIST";
 
     public static final String USER_AVATAR = "USER_AVATAR";
+    public static final String USER_INFO = "USER_INFO";
 
     public static final String SERVICE_CAR_WASH = "CAR_WASH";
     public static final String SERVICE_TIRE_FITTING = "TIRE_FITTING";

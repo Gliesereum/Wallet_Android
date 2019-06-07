@@ -13,11 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gliesereum.coupler.GlideApp;
 import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.data.network.json.businesscategory.BusinesCategoryResponse;
 import com.gliesereum.coupler.ui.MapsActivity;
+import com.gliesereum.coupler.util.CircleTransform;
 import com.gliesereum.coupler.util.FastSave;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,9 +92,9 @@ public class ChooseServiceAdapter extends RecyclerView.Adapter<ChooseServiceAdap
                 serviceName.setTextColor(Color.parseColor("#BABABA"));
             }
             if (businesCategoryResponse.getImageUrl() != null) {
-                GlideApp.with(context).load(businesCategoryResponse.getImageUrl()).into(serviceImage);
+                Picasso.get().load(businesCategoryResponse.getImageUrl()).transform(new CircleTransform()).into(serviceImage);
             } else {
-                GlideApp.with(context).load(R.mipmap.ic_launcher_round).circleCrop().into(serviceImage);
+                Picasso.get().load(R.mipmap.ic_launcher_round).transform(new CircleTransform()).into(serviceImage);
             }
         }
     }

@@ -209,8 +209,8 @@ public class Util {
                         alertDialog.show();
                         break;
                     case "profile":
-                        activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
-//                        activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class));
+//                        activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        activity.startActivity(new Intent(activity.getApplicationContext(), ProfileActivity.class));
                         result.closeDrawer();
                         break;
                     case "login":

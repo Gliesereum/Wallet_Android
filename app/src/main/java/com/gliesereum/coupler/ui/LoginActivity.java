@@ -49,6 +49,7 @@ import static com.gliesereum.coupler.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.coupler.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.coupler.util.Constants.USER_AVATAR;
 import static com.gliesereum.coupler.util.Constants.USER_ID;
+import static com.gliesereum.coupler.util.Constants.USER_INFO;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
 import static com.gliesereum.coupler.util.Constants.USER_SECOND_NAME;
 
@@ -82,6 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initData() {
+        FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         doubleBackToExitPressedOnce = false;
@@ -144,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FastSave.getInstance().saveString(REFRESH_TOKEN, user.getTokenInfo().getRefreshToken());
         FastSave.getInstance().saveLong(ACCESS_EXPIRATION_DATE, user.getTokenInfo().getAccessExpirationDate());
         FastSave.getInstance().saveLong(REFRESH_EXPIRATION_DATE, user.getTokenInfo().getRefreshExpirationDate());
-        FastSave.getInstance().saveObject("userInfo", user);
+        FastSave.getInstance().saveObject(USER_INFO, user);
         getRegToken(user);
     }
 

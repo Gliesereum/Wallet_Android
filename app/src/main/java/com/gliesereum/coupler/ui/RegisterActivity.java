@@ -26,6 +26,7 @@ import retrofit2.Response;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.ANDROID_APP;
 import static com.gliesereum.coupler.util.Constants.USER_ID;
+import static com.gliesereum.coupler.util.Constants.USER_INFO;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
 import static com.gliesereum.coupler.util.Constants.USER_SECOND_NAME;
 
@@ -57,9 +58,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initData() {
+        FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
-        user = FastSave.getInstance().getObject("userInfo", User.class);
+        user = FastSave.getInstance().getObject(USER_INFO, User.class);
         doubleBackToExitPressedOnce = false;
     }
 
@@ -67,22 +69,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         secondNameTextView = findViewById(R.id.secondNameTextView);
         nameTextView = findViewById(R.id.nameTextView);
         thirdNameTextView = findViewById(R.id.thirdNameTextView);
-        registrationBtn = findViewById(R.id.registrationBtn);
-        registrationBtn.setOnClickListener(this);
-        if (user.getFirstName() != null) {
-            nameTextView.setText(user.getFirstName().toString());
-        }
-        if (user.getLastName() != null) {
-            secondNameTextView.setText(user.getLastName().toString());
-        }
-        if (user.getMiddleName() != null) {
-            thirdNameTextView.setText(user.getMiddleName().toString());
-        }
-
-
         secondNameTextInputLayout = findViewById(R.id.secondNameTextInputLayout);
         nameTextInputLayout = findViewById(R.id.nameTextInputLayout);
         thirdNameTextInputLayout = findViewById(R.id.thirdNameTextInputLayout);
+        registrationBtn = findViewById(R.id.registrationBtn);
+        registrationBtn.setOnClickListener(this);
+
+        if (user != null) {
+            if (user.getFirstName() != null) {
+                nameTextView.setText(user.getFirstName().toString());
+            }
+            if (user.getLastName() != null) {
+                secondNameTextView.setText(user.getLastName().toString());
+            }
+            if (user.getMiddleName() != null) {
+                thirdNameTextView.setText(user.getMiddleName().toString());
+            }
+        }
+
+
 
         nameTextView.addTextChangedListener(firstNameListener);
         secondNameTextView.addTextChangedListener(secondNameListener);
@@ -132,6 +137,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<User>() {
                         @Override
                         public void onSuccessful(Call<User> call, Response<User> response) {
+                            FastSave.getInstance().saveObject(USER_INFO, user);
                             FastSave.getInstance().saveString(USER_ID, response.body().getId());
                             FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
