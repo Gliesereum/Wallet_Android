@@ -50,32 +50,33 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void fillList() {
-        for (int i = 0; i < serviceList.size(); i++) {
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, 4, 0, 4);
-            CheckableChipView checkableChipView = new CheckableChipView(TestActivity.this);
-            checkableChipView.setText(serviceList.get(i).getName());
-            checkableChipView.setTag(serviceList.get(i).getId());
-            if (serviceIdList.contains(serviceList.get(i).getId())) {
-                checkableChipView.setChecked(true);
-            }
-            checkableChipView.setOutlineCornerRadius(10f);
-            checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
-            checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
-            checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
-            checkableChipView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (((CheckableChipView) v).isChecked()) {
-                        serviceIdList.add((String) v.getTag());
-                    } else {
-                        serviceIdList.remove((String) v.getTag());
-                    }
+        if (serviceList != null) {
+            for (int i = 0; i < serviceList.size(); i++) {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0, 4, 0, 4);
+                CheckableChipView checkableChipView = new CheckableChipView(TestActivity.this);
+                checkableChipView.setText(serviceList.get(i).getName());
+                checkableChipView.setTag(serviceList.get(i).getId());
+                if (serviceIdList.contains(serviceList.get(i).getId())) {
+                    checkableChipView.setChecked(true);
                 }
-            });
-            filterLianerLayout.addView(checkableChipView, layoutParams);
+                checkableChipView.setOutlineCornerRadius(10f);
+                checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
+                checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
+                checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+                checkableChipView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (((CheckableChipView) v).isChecked()) {
+                            serviceIdList.add((String) v.getTag());
+                        } else {
+                            serviceIdList.remove((String) v.getTag());
+                        }
+                    }
+                });
+                filterLianerLayout.addView(checkableChipView, layoutParams);
+            }
         }
-
     }
 
     private void initData() {

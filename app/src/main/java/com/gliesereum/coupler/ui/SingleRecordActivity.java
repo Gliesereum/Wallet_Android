@@ -101,6 +101,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void initData() {
+        FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         record = FastSave.getInstance().getObject("RECORD", AllRecordResponse.class);
