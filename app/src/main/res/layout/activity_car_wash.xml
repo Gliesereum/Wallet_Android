@@ -80,7 +80,8 @@
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_logo_coupler" />
 
                     <TextView
                         android:id="@+id/textView15"

@@ -1,4 +1,4 @@
-package com.gliesereum.coupler;
+package com.gliesereum.coupler.service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.ui.RecordListActivity;
 import com.gliesereum.coupler.ui.SingleRecordActivity;
 import com.gliesereum.coupler.ui.SplashActivity;

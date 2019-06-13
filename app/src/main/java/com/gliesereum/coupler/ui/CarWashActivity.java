@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gliesereum.coupler.GlideApp;
 import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.adapter.CommentListAdapter;
 import com.gliesereum.coupler.data.network.APIClient;
@@ -76,6 +75,8 @@ import static com.gliesereum.coupler.util.Constants.SUNDAY;
 import static com.gliesereum.coupler.util.Constants.THURSDAY;
 import static com.gliesereum.coupler.util.Constants.TUESDAY;
 import static com.gliesereum.coupler.util.Constants.WEDNESDAY;
+
+//import com.gliesereum.coupler.GlideApp;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -158,7 +159,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         orderButton.setOnClickListener(this);
         workTimeImage.setOnClickListener(this);
         sendCommentBtn.setOnClickListener(this);
-        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
+//        Picasso.get().load(R.mipmap.ic_launcher_round).transform(new CircleTransform()).into(logoImageView);
+//        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
         carWashRating = findViewById(R.id.carWashRating);
         nowStatus = findViewById(R.id.nowStatus);
     }

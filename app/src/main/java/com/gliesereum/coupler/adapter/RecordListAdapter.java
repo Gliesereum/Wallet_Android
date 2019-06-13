@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gliesereum.coupler.GlideApp;
 import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
 import com.gliesereum.coupler.ui.SingleRecordActivity;
@@ -26,6 +25,8 @@ import static com.gliesereum.coupler.util.Constants.COMPLETED;
 import static com.gliesereum.coupler.util.Constants.IN_PROCESS;
 import static com.gliesereum.coupler.util.Constants.RECORD;
 import static com.gliesereum.coupler.util.Constants.WAITING;
+
+//import com.gliesereum.coupler.GlideApp;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -110,7 +111,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
                 carWashName.setText(recordInfo.getBusiness().getName());
             }
             recordId.setText(recordInfo.getId());
-            GlideApp.with(context).load(R.mipmap.ic_launcher_round).circleCrop().into(carWashLogo);
+//            Picasso.get().load(R.mipmap.ic_launcher_round).into(carWashLogo);
         }
     }
 
