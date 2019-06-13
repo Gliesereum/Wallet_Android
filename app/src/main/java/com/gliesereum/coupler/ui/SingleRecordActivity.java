@@ -239,7 +239,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
                         .setDescription("Вы действительно хотите отменить заказ?\n(Эту операцию нельзя отменить)")
                         .setPositiveText("Да")
                         .setNegativeText("Нет")
-                        .setPositiveButtonColor(getResources().getColor(R.color.md_red_A200))
+                        .setPositiveButtonColor(getResources().getColor(R.color.red))
                         .setPositiveListener(new ClickListener() {
                             @Override
                             public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {

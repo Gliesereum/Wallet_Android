@@ -55,6 +55,7 @@ import net.sharewire.googlemapsclustering.ClusterManager;
 import net.sharewire.googlemapsclustering.IconStyle;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -75,9 +76,9 @@ import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.coupler.util.Constants.FILTER_CARWASH_BODY;
 import static com.gliesereum.coupler.util.Constants.FIRST_START;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
+import static com.gliesereum.coupler.util.Constants.MARKER_LIST;
 import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
 import static com.gliesereum.coupler.util.Constants.SERVICE_LIST;
-import static com.gliesereum.coupler.util.Constants.TEST_LOG;
 import static com.gliesereum.coupler.util.Constants.UPDATE_MAP;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
@@ -96,6 +97,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private List<AllCarWashResponse> carWashList;
     private List<CarWashResponse> carWashListNew;
+    private List<CarWashResponse> carWashListCache;
     private APIInterface API;
     private CustomCallback customCallback;
     private List<ServiceResponse> serviceList;
@@ -105,8 +107,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LottieAlertDialog alertDialog;
     private ImageView couplerLogoImg;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+        setupWindowAnimations();
+        initData();
+        initView();
+        firstStartNotify();
+        initMap(savedInstanceState);
+        getLocationPermission();
+        getAllService();
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            getAllCars();
+        }
+    }
+
     private void initData() {
         FastSave.init(getApplicationContext());
+        Log.d(TAG, "initData: ");
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         serviceIdList = new HashSet<>();
@@ -115,24 +134,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDefaultLocation = new LatLng(50, 30);
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             startService(new Intent(this, MyFirebaseMessagingService.class));
-            Log.d(TEST_LOG, "sendBroadcast: ");
-//            sendBroadcast(new Intent(this, RestartServiceReceiver.class));
         }
-    }
-
-    private void firstStartNotify() {
-        if (FastSave.getInstance().getBoolean(FIRST_START, true)) {
-            alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_SUCCESS)
-                    .setTitle("Тестовый режим")
-                    .setDescription("В данный момент интерактивная карта запущена в тестовом режиме. Услуги указанных компаний недоступны. Мы работаем над тем, чтобы как можно скорее наполнить карту нужными вам сервисами.")
-                    .setPositiveText("Понятно")
-                    .setPositiveListener(lottieAlertDialog -> {
-                        FastSave.getInstance().saveBoolean(FIRST_START, false);
-                        alertDialog.dismiss();
-                    })
-                    .build();
-            alertDialog.setCancelable(false);
-            alertDialog.show();
+        if (FastSave.getInstance().getObjectsList(MARKER_LIST, CarWashResponse.class) != null) {
+            carWashListCache = FastSave.getInstance().getObjectsList(MARKER_LIST, CarWashResponse.class);
+        } else {
+            carWashListCache = new ArrayList<>();
         }
     }
 
@@ -161,19 +167,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new Util(this, toolbar, 1).addNavigation();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-        setupWindowAnimations();
-        initData();
-        initView();
-        firstStartNotify();
-        initMap(savedInstanceState);
-        getLocationPermission();
-        getAllService();
-        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-            getAllCars();
+    private void firstStartNotify() {
+        if (FastSave.getInstance().getBoolean(FIRST_START, true)) {
+            alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_SUCCESS)
+                    .setTitle("Тестовый режим")
+                    .setDescription("В данный момент интерактивная карта запущена в тестовом режиме. Услуги указанных компаний недоступны. Мы работаем над тем, чтобы как можно скорее наполнить карту нужными вам сервисами.")
+                    .setPositiveText("Понятно")
+                    .setPositiveListener(lottieAlertDialog -> {
+                        FastSave.getInstance().saveBoolean(FIRST_START, false);
+                        alertDialog.dismiss();
+                    })
+                    .build();
+            alertDialog.setCancelable(false);
+            alertDialog.show();
         }
     }
 
@@ -181,6 +187,91 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Slide slide = new Slide();
         slide.setDuration(1000);
         getWindow().setExitTransition(slide);
+    }
+
+    private void initMap(Bundle savedInstanceState) {
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        }
+        mapView.getMapAsync(this);
+        mapView.onCreate(mapViewBundle);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        try {
+            boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.coupler_map));
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+
+        mMap.clear();
+        List<SampleClusterItem> clusterItems = new ArrayList<>();
+        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+        IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
+        stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
+        stilo.setClusterTextColor(getResources().getColor(R.color.white));
+        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
+        iconGenerator.setIconStyle(stilo.build());
+        clusterManager.setIconGenerator(iconGenerator);
+        clusterManager.setMinClusterSize(4);
+        mMap.setOnCameraIdleListener(clusterManager);
+        clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
+            @Override
+            public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
+                Log.d(TAG, "onClusterClick");
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
+                return true;
+            }
+
+            @Override
+            public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
+                Log.d(TAG, "onClusterItemClick");
+                return false;
+            }
+        });
+        for (CarWashResponse coordinate : carWashListCache) {
+            clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
+        }
+        clusterManager.setItems(clusterItems);
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+        mMap.getUiSettings().setMapToolbarEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setAllGesturesEnabled(true);
+        updateLocationUI();
+        getDeviceLocation();
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
+                if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+                    if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+                        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, false);
+                        FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
+                        startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
+                    } else {
+                        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
+                        startActivity(new Intent(MapsActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                    }
+                } else {
+                    FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
+                    startActivity(new Intent(MapsActivity.this, LoginActivity.class));
+                    finish();
+                }
+
+            }
+        });
+        if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
+            getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class));
+        } else {
+            getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
+        }
     }
 
     private void getAllCars() {
@@ -229,158 +320,55 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void initMap(Bundle savedInstanceState) {
-        Bundle mapViewBundle = null;
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
-        }
-        mapView.getMapAsync(this);
-        mapView.onCreate(mapViewBundle);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
-            boolean success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.coupler_map));
-
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.");
-            }
-        } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "Can't find style. Error: ", e);
-        }
-        getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
-                if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-                    if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
-                        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, false);
-                        FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
-                        startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
-                    } else {
-                        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
-                        startActivity(new Intent(MapsActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
-                    }
-                } else {
-                    FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
-                    startActivity(new Intent(MapsActivity.this, LoginActivity.class));
-                    finish();
-                }
-
-            }
-        });
-    }
-
-//    private void getAllCarWash(FilterCarWashBody filterCarWashBody) {
-//        API.getAllCarWash(filterCarWashBody)
-//                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<AllCarWashResponse>>() {
-//                    @Override
-//                    public void onSuccessful(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
-//                        carWashList = response.body();
-//                        mMap.clear();
-//                        List<SampleClusterItem> clusterItems = new ArrayList<>();
-//                        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
-//                        IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
-//                        stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
-//                        stilo.setClusterTextColor(getResources().getColor(R.color.white));
-//                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
-//                        iconGenerator.setIconStyle(stilo.build());
-//                        clusterManager.setIconGenerator(iconGenerator);
-//                        clusterManager.setMinClusterSize(3);
-//                        mMap.setOnCameraIdleListener(clusterManager);
-//                        clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
-//                            @Override
-//                            public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
-//                                Log.d(TAG, "onClusterClick");
-//                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
-//                                return true;
-//                            }
-//
-//                            @Override
-//                            public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
-//                                Log.d(TAG, "onClusterItemClick");
-//                                return false;
-//                            }
-//                        });
-//                        for (AllCarWashResponse coordinate : carWashList) {
-//                            clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
-//                        }
-//                        clusterManager.setItems(clusterItems);
-//                        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-//                        mMap.setBuildingsEnabled(false);
-//                        mMap.getUiSettings().setMapToolbarEnabled(true);
-//                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//                        mMap.getUiSettings().setAllGesturesEnabled(true);
-//                        updateLocationUI();
-//                        getDeviceLocation();
-//                    }
-//
-//                    @Override
-//                    public void onEmpty(Call<List<AllCarWashResponse>> call, Response<List<AllCarWashResponse>> response) {
-//                        mMap.clear();
-//                        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
-//                        List<SampleClusterItem> clusterItems = new ArrayList<>();
-//                        clusterManager.setItems(clusterItems);
-//                        mMap.setBuildingsEnabled(true);
-//                        mMap.getUiSettings().setMapToolbarEnabled(true);
-//                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//                        mMap.getUiSettings().setAllGesturesEnabled(true);
-//                        updateLocationUI();
-//                        getDeviceLocation();
-//                    }
-//                }));
-//    }
-
     public void getAllCarWash(FilterCarWashBody filterCarWashBody) {
         API.getAllCarWashNew(filterCarWashBody)
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<CarWashResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
+//                        Collection<CarWashResponse> different = compareCarWashList(response);
                         carWashListNew = response.body();
-                        mMap.clear();
-                        List<SampleClusterItem> clusterItems = new ArrayList<>();
-                        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
-                        IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
-                        stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
-                        stilo.setClusterTextColor(getResources().getColor(R.color.white));
-                        IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
-                        iconGenerator.setIconStyle(stilo.build());
-                        clusterManager.setIconGenerator(iconGenerator);
-                        clusterManager.setMinClusterSize(4);
-                        mMap.setOnCameraIdleListener(clusterManager);
-                        clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
-                            @Override
-                            public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
-                                Log.d(TAG, "onClusterClick");
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
-                                return true;
-                            }
+                        Log.d(TAG, "onSuccessful: " + carWashListCache.equals(response.body()));
+                        if (!carWashListCache.equals(carWashListNew)) {
+                            FastSave.getInstance().saveObjectsList(MARKER_LIST, carWashListNew);
+                            carWashListCache = carWashListNew;
+                            mMap.clear();
+                            List<SampleClusterItem> clusterItems = new ArrayList<>();
+                            ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+                            IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
+                            stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
+                            stilo.setClusterTextColor(getResources().getColor(R.color.white));
+                            IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
+                            iconGenerator.setIconStyle(stilo.build());
+                            clusterManager.setIconGenerator(iconGenerator);
+                            clusterManager.setMinClusterSize(4);
+                            mMap.setOnCameraIdleListener(clusterManager);
+                            clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
+                                @Override
+                                public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
+                                    Log.d(TAG, "onClusterClick");
+                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
+                                    return true;
+                                }
 
-                            @Override
-                            public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
-                                Log.d(TAG, "onClusterItemClick");
-                                return false;
+                                @Override
+                                public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
+                                    Log.d(TAG, "onClusterItemClick");
+                                    return false;
+                                }
+                            });
+                            for (CarWashResponse coordinate : carWashListNew) {
+                                clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
                             }
-                        });
-                        for (CarWashResponse coordinate : carWashListNew) {
-                            clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
+                            clusterManager.setItems(clusterItems);
+
+                            mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+                            mMap.getUiSettings().setMapToolbarEnabled(true);
+                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                            mMap.getUiSettings().setAllGesturesEnabled(true);
+                            updateLocationUI();
+                            getDeviceLocation();
                         }
-                        clusterManager.setItems(clusterItems);
 
-                        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-                        mMap.getUiSettings().setMapToolbarEnabled(true);
-                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                        mMap.getUiSettings().setAllGesturesEnabled(true);
-                        updateLocationUI();
-                        getDeviceLocation();
                     }
 
                     @Override
@@ -397,6 +385,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         getDeviceLocation();
                     }
                 }));
+    }
+
+    private Collection<CarWashResponse> compareCarWashList(Response<List<CarWashResponse>> response) {
+        carWashListNew = response.body();
+        Collection<CarWashResponse> similar = new HashSet<CarWashResponse>(carWashListCache);
+        Collection<CarWashResponse> different = new HashSet<CarWashResponse>(carWashListCache);
+        different.addAll(carWashListNew);
+        similar.retainAll(carWashListNew);
+        different.removeAll(similar);
+        return different;
     }
 
 
@@ -627,7 +625,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onPostResume();
         Log.d("serviceIdList", "onPostResume: ");
         if (FastSave.getInstance().getBoolean(UPDATE_MAP, false)) {
-            getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class));
+            if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
+                getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class));
+            } else {
+                getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
+            }
             FastSave.getInstance().deleteValue(UPDATE_MAP);
         }
     }

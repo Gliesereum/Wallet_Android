@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Coupler</string>
     <string name="ucrop_label_edit_photo">Редактировать</string>
+    <string name="title_choose_image_provider">Выбрать</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="title_gallery">Галерея</string>
+    <string name="title_camera">Камера</string>
     <string name="error">Ошибка!</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="error_1160">Value empty is</string>

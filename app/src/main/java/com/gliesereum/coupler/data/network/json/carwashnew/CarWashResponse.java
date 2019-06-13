@@ -3,6 +3,7 @@ package com.gliesereum.coupler.data.network.json.carwashnew;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Generated;
 
@@ -205,5 +206,24 @@ public class CarWashResponse {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CarWashResponse that = (CarWashResponse) o;
+        return Double.compare(that.latitude, latitude) == 0 &&
+                timeZone == that.timeZone &&
+                Double.compare(that.longitude, longitude) == 0 &&
+                Objects.equals(logoUrl, that.logoUrl) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(businessCategoryId, that.businessCategoryId) &&
+                Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(latitude, timeZone, logoUrl, name, businessCategoryId, id, longitude);
     }
 }

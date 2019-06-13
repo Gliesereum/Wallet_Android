@@ -107,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 ImagePicker.Companion.with(ProfileActivity.this)
-                        .galleryOnly()
+//                        .galleryOnly()
                         .compress(1024)
                         .maxResultSize(640, 640)
                         .cropSquare()

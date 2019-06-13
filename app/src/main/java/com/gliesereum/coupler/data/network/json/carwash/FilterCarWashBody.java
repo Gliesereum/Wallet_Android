@@ -2,7 +2,6 @@ package com.gliesereum.coupler.data.network.json.carwash;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -11,7 +10,7 @@ import javax.annotation.Generated;
 public class FilterCarWashBody {
 
     @SerializedName("serviceIds")
-    private List<String> serviceIds = new ArrayList<>();
+    private List<String> serviceIds;
 
     @SerializedName("targetId")
     private String targetId;

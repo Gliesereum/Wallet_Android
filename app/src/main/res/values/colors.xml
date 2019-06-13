@@ -6,7 +6,7 @@
     <color name="colorAccent">@color/material_drawer_accent</color>
     <color name="white">#F2F2F2</color>
     <color name="black">#282828</color>
-    <color name="red">#ff0000</color>
+    <color name="red">#FF5252</color>
     <color name="purple">#ff00FF</color>
     <color name="yellow">#ffff00</color>
     <color name="green">#00ff00</color>

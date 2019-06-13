@@ -15,6 +15,7 @@ public class Constants {
     public static final String UPDATE_MAP = "UPDATE_MAP";
     public static final String FILTER_CARWASH_BODY = "FILTER_CARWASH_BODY";
     public static final String SERVICE_ID_LIST = "SERVICE_ID_LIST";
+    public static final String MARKER_LIST = "MARKER_LIST";
 
     public static final String USER_AVATAR = "USER_AVATAR";
     public static final String USER_INFO = "USER_INFO";
