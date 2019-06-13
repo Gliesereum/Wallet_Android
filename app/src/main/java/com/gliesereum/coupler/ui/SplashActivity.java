@@ -65,10 +65,6 @@ public class SplashActivity extends AppCompatActivity {
 //        getLocationPermission();
         initData();
         initView();
-        if (FastSave.getInstance().getBoolean("CLEAN_STORAGE_1", true)) {
-            FastSave.getInstance().clearSession();
-            FastSave.getInstance().saveBoolean("CLEAN_STORAGE_1", false);
-        }
         checkStatus();
     }
 
@@ -264,9 +260,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void showProgressDialog() {
-//        progressDialog = ProgressDialog.show(this, "Ща сек...", "Ща все сделаю...");
-//        ProgressLoadingJIGB.startLoadingJIGB(this, R.raw.loading,"Загрузка",1000,200,200);
-
         alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_LOADING)
                 .setTitle("Загрузка")
                 .setDescription("Загружается контент, подождите")

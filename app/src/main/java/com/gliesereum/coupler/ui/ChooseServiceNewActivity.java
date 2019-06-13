@@ -21,9 +21,12 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.gliesereum.coupler.util.Constants.CAR_SERVICE;
+import static com.gliesereum.coupler.util.Constants.CAR_WASH;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_SERVICE_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_WASH_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_TIRE_FITTING_ID;
+import static com.gliesereum.coupler.util.Constants.TIRE_FITTING;
 
 public class ChooseServiceNewActivity extends AppCompatActivity {
 
@@ -69,13 +72,13 @@ public class ChooseServiceNewActivity extends AppCompatActivity {
                         chooseServiceAdapter.setItems(response.body());
                         for (int i = 0; i < response.body().size(); i++) {
                             switch (response.body().get(i).getCode()) {
-                                case "CAR_WASH":
+                                case CAR_WASH:
                                     FastSave.getInstance().saveString(SERVICE_CAR_WASH_ID, response.body().get(i).getId());
                                     break;
-                                case "TIRE_FITTING":
+                                case TIRE_FITTING:
                                     FastSave.getInstance().saveString(SERVICE_TIRE_FITTING_ID, response.body().get(i).getId());
                                     break;
-                                case "CAR_SERVICE":
+                                case CAR_SERVICE:
                                     FastSave.getInstance().saveString(SERVICE_CAR_SERVICE_ID, response.body().get(i).getId());
                                     break;
                             }

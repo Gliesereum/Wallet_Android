@@ -55,10 +55,19 @@ import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.coupler.util.Constants.CARWASH;
 import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
+import static com.gliesereum.coupler.util.Constants.FRIDAY;
+import static com.gliesereum.coupler.util.Constants.MONDAY;
 import static com.gliesereum.coupler.util.Constants.ORDER_ACTIVITY;
+import static com.gliesereum.coupler.util.Constants.RECORD;
+import static com.gliesereum.coupler.util.Constants.SATURDAY;
+import static com.gliesereum.coupler.util.Constants.SUNDAY;
+import static com.gliesereum.coupler.util.Constants.THURSDAY;
+import static com.gliesereum.coupler.util.Constants.TUESDAY;
+import static com.gliesereum.coupler.util.Constants.WEDNESDAY;
 
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -110,7 +119,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private void initData() {
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
-        carWash = FastSave.getInstance().getObject("carWash", AllCarWashResponse.class);
+        carWash = FastSave.getInstance().getObject(CARWASH, AllCarWashResponse.class);
         orderBody = new OrderBody();
         packageMap = new HashMap<>();
         servicePriceMap = new HashMap<>();
@@ -144,7 +153,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     .setDismissType(DismissType.anywhere)
                     .setGuideListener(view -> new GuideView.Builder(OrderActivity.this)
                             .setTitle("Пакеты услуг")
-                            .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
+                            .setContentText("Ознакомтесь с пакетами услуг тут")
                             .setTargetView(horizontalScrollView)
                             .setDismissType(DismissType.anywhere)
                             .setGuideListener(new GuideListener() {
@@ -152,7 +161,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                 public void onDismiss(View view) {
                                     new GuideView.Builder(OrderActivity.this)
                                             .setTitle("Заказать мойку")
-                                            .setContentText("После того как Вы все выбрали, можете заказывать мойку. У Вас будет возмодность заказать мойку на ближайшее вермя или забронировать на удобное для Вас")
+                                            .setContentText("После того как Вы все выбрали, можете совершить заказ. У Вас будет возможность совершить заказ на ближайшее вермя или забронировать на удобное для Вас")
                                             .setTargetView(orderButton)
                                             .setDismissType(DismissType.anywhere)
                                             .setGuideListener(new GuideListener() {
@@ -273,12 +282,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     for (int j = 0; j < packageScroll.getChildCount(); j++) {
                         ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
                         if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                            Log.d(TAG, "onClick: 3");
                             ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
 
 
                         } else {
-                            Log.d(TAG, "onClick: 4");
                             ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
 
                         }
@@ -348,34 +355,31 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         switch (day) {
             case Calendar.MONDAY:
-                dayOfWeek = "MONDAY";
+                dayOfWeek = MONDAY;
                 break;
             case Calendar.TUESDAY:
-                dayOfWeek = "TUESDAY";
+                dayOfWeek = TUESDAY;
                 break;
             case Calendar.WEDNESDAY:
-                dayOfWeek = "WEDNESDAY";
+                dayOfWeek = WEDNESDAY;
                 break;
             case Calendar.THURSDAY:
-                dayOfWeek = "THURSDAY";
+                dayOfWeek = THURSDAY;
                 break;
             case Calendar.FRIDAY:
-                dayOfWeek = "FRIDAY";
+                dayOfWeek = FRIDAY;
                 break;
             case Calendar.SATURDAY:
-                dayOfWeek = "SATURDAY";
+                dayOfWeek = SATURDAY;
                 break;
             case Calendar.SUNDAY:
-                dayOfWeek = "SUNDAY";
+                dayOfWeek = SUNDAY;
                 break;
         }
 
         for (int i = 0; i < carWash.getWorkTimes().size(); i++) {
             if (carWash.getWorkTimes().get(i).getDayOfWeek().equals(dayOfWeek)) {
                 if (carWash.getWorkTimes().get(i).getFrom() < (System.currentTimeMillis() + (carWash.getTimeZone() * 60000)) && carWash.getWorkTimes().get(i).getTo() > (System.currentTimeMillis() + (carWash.getTimeZone() * 60000))) {
-                    Log.d("test_log", "openPreOrderDialog: " + carWash.getWorkTimes().get(i).getFrom());
-                    Log.d("test_log", "openPreOrderDialog: " + (System.currentTimeMillis() + (carWash.getTimeZone() * 60000)));
-                    Log.d("test_log", "openPreOrderDialog: " + carWash.getWorkTimes().get(i).getTo());
                     return true;
                 }
             }
@@ -445,7 +449,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             if (((CheckableChipView) servicePriceItem.getChildAt(i)).isChecked()) {
                 list.add((String) ((CheckableChipView) servicePriceItem.getChildAt(i)).getTag());
             }
-            Log.d(TAG, "getRecordFreeTime: ");
         }
         orderBody.setServicesIds(list);
         API.preOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody)
@@ -476,7 +479,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                                             nDialog.dismiss();
                                                             Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
 //                                                            startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
-                                                            FastSave.getInstance().saveObject("RECORD", response.body());
+                                                            FastSave.getInstance().saveObject(RECORD, response.body());
                                                             startActivity(new Intent(OrderActivity.this, SingleRecordActivity.class));
                                                             finish();
                                                         }

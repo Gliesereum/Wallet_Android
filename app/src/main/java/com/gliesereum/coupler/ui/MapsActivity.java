@@ -125,7 +125,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initData() {
         FastSave.init(getApplicationContext());
-        Log.d(TAG, "initData: ");
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         serviceIdList = new HashSet<>();
@@ -225,14 +224,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
             @Override
             public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
-                Log.d(TAG, "onClusterClick");
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
                 return true;
             }
 
             @Override
             public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
-                Log.d(TAG, "onClusterItemClick");
                 return false;
             }
         });
@@ -345,14 +342,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
                                 @Override
                                 public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
-                                    Log.d(TAG, "onClusterClick");
                                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
                                     return true;
                                 }
 
                                 @Override
                                 public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
-                                    Log.d(TAG, "onClusterItemClick");
                                     return false;
                                 }
                             });
@@ -417,7 +412,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     updateLocationUI();
                     getDeviceLocation();
                 } else {
-//                    Toast.makeText(this, "FAIL", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -505,67 +499,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.filter_menu, menu);
-//        BubbleShowCaseBuilder first =  new BubbleShowCaseBuilder(this) //Activity instance
-//                .title("Заказать мойку")//Any title for the bubble view
-//                .targetView(menu.getItem(0).); //View to point out
-//
-//        new BubbleShowCaseSequence()
-//                .addShowCase(first)
-//                .show();
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.filter_menu:
-//                NDialog nDialog = new NDialog(MapsActivity.this, ButtonType.NO_BUTTON);
-//                nDialog.setTitle("Фильтр");
-//                nDialog.setMessage("Накликай фильтров");
-//                nDialog.isCancelable(true);
-//                nDialog.setCustomView(R.layout.service_chip_view);
-//                List<View> childViews = nDialog.getCustomViewChildren();
-//                for (View childView : childViews) {
-//                    switch (childView.getId()) {
-//                        case R.id.timeOrderBtn:
-//                            MaterialButton okBtn = childView.findViewById(R.id.timeOrderBtn);
-//                            okBtn.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    FilterCarWashBody filterCarWashBody = new FilterCarWashBody();
-//                                    filterCarWashBody.setTargetId(FastSave.getInstance().getString(CAR_ID, null));
-//                                    filterCarWashBody.setBusinessCategoryId(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""));
-//                                    filterCarWashBody.setServiceIds(new ArrayList<>(serviceIdList));
-//                                    getAllCarWash(filterCarWashBody);
-//                                    nDialog.dismiss();
-//                                }
-//                            });
-//                            break;
-//                        case R.id.serviceGroup:
-//                            LinearLayout checkGroup = childView.findViewById(R.id.serviceGroup);
-//                            for (int i = 0; i < mapServise.size(); i++) {
-//                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//                                layoutParams.setMargins(0, 4, 0, 4);
-//                                CheckBox checkBox = new CheckBox(MapsActivity.this);
-//                                checkBox.setText(serviceList.get(i).getName());
-//                                checkBox.setOnCheckedChangeListener(this);
-//                                if (serviceIdList.contains(mapServise.get(serviceList.get(i).getName()))) {
-//                                    checkBox.setChecked(true);
-//                                }
-//                                checkGroup.addView(checkBox);
-//                            }
-//                            break;
-//                    }
-//                }
-//                nDialog.show();
-
-
                 startActivity(new Intent(MapsActivity.this, TestActivity.class));
                 overridePendingTransition(R.anim.enter, R.anim.no_animation);
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -59,6 +59,7 @@ import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.coupler.util.Constants.CARWASH;
 import static com.gliesereum.coupler.util.Constants.CARWASHA_CTIVITY;
 import static com.gliesereum.coupler.util.Constants.CARWASH_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
@@ -66,8 +67,15 @@ import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
+import static com.gliesereum.coupler.util.Constants.FRIDAY;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
+import static com.gliesereum.coupler.util.Constants.MONDAY;
 import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
+import static com.gliesereum.coupler.util.Constants.SATURDAY;
+import static com.gliesereum.coupler.util.Constants.SUNDAY;
+import static com.gliesereum.coupler.util.Constants.THURSDAY;
+import static com.gliesereum.coupler.util.Constants.TUESDAY;
+import static com.gliesereum.coupler.util.Constants.WEDNESDAY;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -160,7 +168,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.orderButton:
                 carWash.setId(carWashId);
-                FastSave.getInstance().saveObject("carWash", carWash);
+                FastSave.getInstance().saveObject(CARWASH, carWash);
                 startActivity(new Intent(CarWashActivity.this, OrderActivity.class));
                 break;
             case R.id.workTimeImage:
@@ -291,38 +299,38 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private void setWorkTime() {
         if (workTimeMap.size() > 0) {
             String monday, tuesday, wednesday, thursday, friday, saturday, sunday = "";
-            if (workTimeMap.get("MONDAY") != null && workTimeMap.get("MONDAY").isIsWork()) {
-                monday = "Пн: " + Util.getStringTime(workTimeMap.get("MONDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("MONDAY").getTo());
+            if (workTimeMap.get(MONDAY) != null && workTimeMap.get(MONDAY).isIsWork()) {
+                monday = "Пн: " + Util.getStringTime(workTimeMap.get(MONDAY).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(MONDAY).getTo());
             } else {
                 monday = "Пн: Не работает";
             }
-            if (workTimeMap.get("TUESDAY") != null && workTimeMap.get("TUESDAY").isIsWork()) {
-                tuesday = "Вт: " + Util.getStringTime(workTimeMap.get("TUESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("TUESDAY").getTo());
+            if (workTimeMap.get(TUESDAY) != null && workTimeMap.get(TUESDAY).isIsWork()) {
+                tuesday = "Вт: " + Util.getStringTime(workTimeMap.get(TUESDAY).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(TUESDAY).getTo());
             } else {
                 tuesday = "Вт: Не работает";
             }
-            if (workTimeMap.get("WEDNESDAY") != null && workTimeMap.get("WEDNESDAY").isIsWork()) {
-                wednesday = "Ср: " + Util.getStringTime(workTimeMap.get("WEDNESDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("WEDNESDAY").getTo());
+            if (workTimeMap.get(WEDNESDAY) != null && workTimeMap.get(WEDNESDAY).isIsWork()) {
+                wednesday = "Ср: " + Util.getStringTime(workTimeMap.get(WEDNESDAY).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(WEDNESDAY).getTo());
             } else {
                 wednesday = "Ср: Не работает";
             }
-            if (workTimeMap.get("THURSDAY") != null && workTimeMap.get("THURSDAY").isIsWork()) {
-                thursday = "Чт: " + Util.getStringTime(workTimeMap.get("THURSDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("THURSDAY").getTo());
+            if (workTimeMap.get(THURSDAY) != null && workTimeMap.get(THURSDAY).isIsWork()) {
+                thursday = "Чт: " + Util.getStringTime(workTimeMap.get(THURSDAY).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(THURSDAY).getTo());
             } else {
                 thursday = "Чт: Не работает";
             }
-            if (workTimeMap.get("FRIDAY") != null && workTimeMap.get("FRIDAY").isIsWork()) {
-                friday = "Пт: " + Util.getStringTime(workTimeMap.get("FRIDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("FRIDAY").getTo());
+            if (workTimeMap.get(FRIDAY) != null && workTimeMap.get(FRIDAY).isIsWork()) {
+                friday = "Пт: " + Util.getStringTime(workTimeMap.get(FRIDAY).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(FRIDAY).getTo());
             } else {
                 friday = "Пт: Не работает";
             }
-            if (workTimeMap.get("SATURDAY") != null && workTimeMap.get("SATURDAY").isIsWork()) {
-                saturday = "Сб: " + Util.getStringTime(workTimeMap.get("SATURDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SATURDAY").getTo());
+            if (workTimeMap.get(SATURDAY) != null && workTimeMap.get(SATURDAY).isIsWork()) {
+                saturday = "Сб: " + Util.getStringTime(workTimeMap.get(SATURDAY).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(SATURDAY).getTo());
             } else {
                 saturday = "Сб: Не работает";
             }
-            if (workTimeMap.get("SUNDAY") != null && workTimeMap.get("SUNDAY").isIsWork()) {
-                sunday = "Вс: " + Util.getStringTime(workTimeMap.get("SUNDAY").getFrom()) + "-" + Util.getStringTime(workTimeMap.get("SUNDAY").getTo());
+            if (workTimeMap.get(SUNDAY) != null && workTimeMap.get(SUNDAY).isIsWork()) {
+                sunday = "Вс: " + Util.getStringTime(workTimeMap.get(SUNDAY).getFrom()) + "-" + Util.getStringTime(workTimeMap.get(SUNDAY).getTo());
             } else {
                 sunday = "Вс: Не работает";
             }
@@ -459,38 +467,26 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         if (FastSave.getInstance().getBoolean(CARWASHA_CTIVITY, true)) {
             new GuideView.Builder(CarWashActivity.this)
                     .setTitle("Расписание")
-                    .setContentText("Тут Вы можете посмотреть расписание мойки")
+                    .setContentText("Тут Вы можете посмотреть расписание")
                     .setTargetView(workTimeImage)
                     .setDismissType(DismissType.anywhere)
-                    .setGuideListener(view -> new GuideView.Builder(CarWashActivity.this)
-                            .setTitle("Пакеты услуг")
-                            .setContentText("Ознакомтесь с пакетами услуг данной мойки тут")
-                            .setTargetView(horizontalScrollView)
+                    .setGuideListener(view1 -> new GuideView.Builder(CarWashActivity.this)
+                            .setTitle("Фото")
+                            .setContentText("Тут можно посмотреть фотографии")
+                            .setTargetView(photoScrollView)
                             .setDismissType(DismissType.anywhere)
                             .setGuideListener(new GuideListener() {
                                 @Override
-                                public void onDismiss(View view) {
+                                public void onDismiss(View view1) {
                                     new GuideView.Builder(CarWashActivity.this)
-                                            .setTitle("Фото мойки")
-                                            .setContentText("Тут можно посмотреть фотографии мойки")
-                                            .setTargetView(photoScrollView)
+                                            .setTitle("Заказать")
+                                            .setContentText("Перейти к заказу")
+                                            .setTargetView(orderButton)
                                             .setDismissType(DismissType.anywhere)
                                             .setGuideListener(new GuideListener() {
                                                 @Override
-                                                public void onDismiss(View view) {
-                                                    new GuideView.Builder(CarWashActivity.this)
-                                                            .setTitle("Заказать мойку")
-                                                            .setContentText("Перейти к заказу мойки")
-                                                            .setTargetView(orderButton)
-                                                            .setDismissType(DismissType.anywhere)
-                                                            .setGuideListener(new GuideListener() {
-                                                                @Override
-                                                                public void onDismiss(View view) {
-                                                                    FastSave.getInstance().saveBoolean(CARWASHA_CTIVITY, false);
-                                                                }
-                                                            })
-                                                            .build()
-                                                            .show();
+                                                public void onDismiss(View view1) {
+                                                    FastSave.getInstance().saveBoolean(CARWASHA_CTIVITY, false);
                                                 }
                                             })
                                             .build()

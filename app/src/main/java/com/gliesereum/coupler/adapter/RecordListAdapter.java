@@ -21,6 +21,12 @@ import com.gliesereum.coupler.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gliesereum.coupler.util.Constants.CANCELED;
+import static com.gliesereum.coupler.util.Constants.COMPLETED;
+import static com.gliesereum.coupler.util.Constants.IN_PROCESS;
+import static com.gliesereum.coupler.util.Constants.RECORD;
+import static com.gliesereum.coupler.util.Constants.WAITING;
+
 //import com.appizona.yehiahd.fastsave.FastSave;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.ViewHolder> {
@@ -34,10 +40,9 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_item, parent, false);
         view.setOnClickListener(v -> {
-//            FastSave.getInstance().saveObject("RECORD", allRecordList.get(Integer.parseInt(((TextView) v.findViewById(R.id.recordId)).getText().toString())));
             AllRecordResponse allRecordResponse = new AllRecordResponse();
             allRecordResponse.setId(((TextView) v.findViewById(R.id.recordId)).getText().toString());
-            FastSave.getInstance().saveObject("RECORD", allRecordList.get(allRecordList.indexOf(allRecordResponse)));
+            FastSave.getInstance().saveObject(RECORD, allRecordList.get(allRecordList.indexOf(allRecordResponse)));
             Intent intent = new Intent(context, SingleRecordActivity.class);
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
         });
@@ -78,20 +83,20 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         public void bind(AllRecordResponse recordInfo) {
             dataTextView.setText(Util.getStringDate(recordInfo.getBegin()));
             timeTextView.setText(Util.getStringTime(recordInfo.getBegin()));
-            if (recordInfo.getStatusRecord().equals("CANCELED")) {
+            if (recordInfo.getStatusRecord().equals(CANCELED)) {
                 statusLabel.setText("Отменена");
                 statusLabel.setTextColor(context.getResources().getColor(R.color.md_red_A200));
             } else {
                 switch (recordInfo.getStatusProcess()) {
-                    case "WAITING":
+                    case WAITING:
                         statusLabel.setText("В ожидании");
                         statusLabel.setTextColor(context.getResources().getColor(R.color.material_drawer_selected));
                         break;
-                    case "IN_PROCESS":
+                    case IN_PROCESS:
                         statusLabel.setText("В процессе");
                         statusLabel.setTextColor(context.getResources().getColor(R.color.accent));
                         break;
-                    case "COMPLETED":
+                    case COMPLETED:
                         statusLabel.setText("Завершена");
                         statusLabel.setTextColor(context.getResources().getColor(R.color.md_green_300));
                         break;

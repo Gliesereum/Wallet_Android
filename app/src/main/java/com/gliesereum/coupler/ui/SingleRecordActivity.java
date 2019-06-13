@@ -39,6 +39,11 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.coupler.util.Constants.CANCELED;
+import static com.gliesereum.coupler.util.Constants.COMPLETED;
+import static com.gliesereum.coupler.util.Constants.IN_PROCESS;
+import static com.gliesereum.coupler.util.Constants.OBJECT_ID;
+import static com.gliesereum.coupler.util.Constants.RECORD;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -73,8 +78,8 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         initData();
         initView();
 //        getDeviceLocation();
-        if (getIntent().getStringExtra("objectId") != null) {
-            getSingleRecord(getIntent().getStringExtra("objectId"));
+        if (getIntent().getStringExtra(OBJECT_ID) != null) {
+            getSingleRecord(getIntent().getStringExtra(OBJECT_ID));
         } else {
             getDeviceLocation();
             getCar(record.getTargetId());
@@ -104,7 +109,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
-        record = FastSave.getInstance().getObject("RECORD", AllRecordResponse.class);
+        record = FastSave.getInstance().getObject(RECORD, AllRecordResponse.class);
     }
 
     private void fillActivity(AllRecordResponse record) {
@@ -113,7 +118,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         duration.setText(String.valueOf((record.getFinish() - record.getBegin()) / 60000) + " мин");
         price.setText(String.valueOf(record.getPrice()) + " грн");
         carWashName.setText(record.getBusiness().getName());
-        if (record.getStatusProcess().equals("COMPLETED") || record.getStatusProcess().equals("IN_PROCESS")) {
+        if (record.getStatusProcess().equals(COMPLETED) || record.getStatusProcess().equals(IN_PROCESS)) {
             cancelRecordBtn.setVisibility(View.GONE);
         }
         if (record.getPackageDto() != null) {
@@ -191,7 +196,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void getDeviceLocation() {
-        if (!record.getStatusProcess().equals("CANCELED")) {
+        if (!record.getStatusProcess().equals(CANCELED)) {
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             try {
                 Task locationResult = mFusedLocationClient.getLastLocation();
