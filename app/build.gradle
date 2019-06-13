@@ -11,8 +11,8 @@ android {
         applicationId "com.gliesereum.coupler"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 35
-        versionName "0.0.35"
+        versionCode 36
+        versionName "0.0.36"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
