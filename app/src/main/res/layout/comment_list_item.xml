@@ -55,7 +55,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/dataTextView"
         app:maxRating="5"
-        app:orientation="vertical"
         app:rating="5" />
 
     <ImageView
