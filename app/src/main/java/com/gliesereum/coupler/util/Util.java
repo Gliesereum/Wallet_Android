@@ -102,7 +102,7 @@ public class Util {
             record_listItem.withEnabled(false);
             profileItem.withEnabled(false);
         }
-        referralItem.withEnabled(false);
+//        referralItem.withEnabled(false);
 
         if (FastSave.getInstance().getString(BUSINESS_CODE, "").equals("")) {
             mapsItem.withEnabled(false);

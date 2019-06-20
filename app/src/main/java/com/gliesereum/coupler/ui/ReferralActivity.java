@@ -1,10 +1,13 @@
 package com.gliesereum.coupler.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,10 +23,9 @@ import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
+import com.google.zxing.EncodeHintType;
 
 import net.glxn.qrgen.android.QRCode;
-
-import static com.gliesereum.coupler.util.Constants.USER_ID;
 
 public class ReferralActivity extends AppCompatActivity {
 
@@ -35,6 +37,7 @@ public class ReferralActivity extends AppCompatActivity {
     private Uri mInvitationUrl;
     private String TAG = "referral";
     private InstallReferrerClient mReferrerClient;
+    private Button button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +46,11 @@ public class ReferralActivity extends AppCompatActivity {
         initData();
         initView();
 
+
         mReferrerClient = InstallReferrerClient.newBuilder(this).build();
         mReferrerClient.startConnection(installReferrerStateListener);
 
-        Bitmap myBitmap = QRCode.from("https://coupler.app/r/" + FastSave.getInstance().getString(USER_ID, "fail")).withSize(1024, 1024).bitmap();
+        Bitmap myBitmap = QRCode.from("https://coupler.app/r/suPeRCOdE").withHint(EncodeHintType.MARGIN, "1").withSize(700, 700).bitmap();
         qrCode.setImageBitmap(myBitmap);
     }
 
@@ -100,8 +104,17 @@ public class ReferralActivity extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         new Util(this, toolbar, 9).addNavigation();
-
-        textView10 = findViewById(R.id.textView10);
         qrCode = findViewById(R.id.qrCode);
+        button2 = findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "А ты видел Coupler? Нет? Так вот тебе ссылочка на скачивание!" + "\n" + "https://coupler.app/r/suPeRCOdE");
+                sendIntent.setType("text/plain");
+                ReferralActivity.this.startActivity(Intent.createChooser(sendIntent, "Пригласи друга"));
+            }
+        });
     }
 }
