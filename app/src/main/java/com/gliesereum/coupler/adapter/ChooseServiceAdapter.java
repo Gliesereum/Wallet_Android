@@ -27,6 +27,7 @@ import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_NAME;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
+import static com.gliesereum.coupler.util.Constants.FILTER_CARWASH_BODY;
 import static com.gliesereum.coupler.util.Constants.SERVICE_ID_LIST;
 
 public class ChooseServiceAdapter extends RecyclerView.Adapter<ChooseServiceAdapter.ViewHolder> {
@@ -43,6 +44,7 @@ public class ChooseServiceAdapter extends RecyclerView.Adapter<ChooseServiceAdap
         view.setOnClickListener(v -> {
             if (businesCategoryList.get(businesCategoryList.indexOf(new BusinesCategoryResponse(((TextView) v.findViewById(R.id.businessCategoryId)).getText().toString()))).getActive()) {
                 FastSave.getInstance().deleteValue(SERVICE_ID_LIST);
+                FastSave.getInstance().deleteValue(FILTER_CARWASH_BODY);
                 FastSave.getInstance().saveString(BUSINESS_CODE, ((TextView) v.findViewById(R.id.businessCode)).getText().toString());
                 FastSave.getInstance().saveString(BUSINESS_TYPE, ((TextView) v.findViewById(R.id.businessType)).getText().toString());
                 FastSave.getInstance().saveString(BUSINESS_CATEGORY_ID, ((TextView) v.findViewById(R.id.businessCategoryId)).getText().toString());
