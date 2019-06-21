@@ -12,6 +12,7 @@ import com.gliesereum.coupler.data.network.json.carwash.Rating;
 import com.gliesereum.coupler.data.network.json.carwashnew.CarWashResponse;
 import com.gliesereum.coupler.data.network.json.classservices.ClassServiceResponse;
 import com.gliesereum.coupler.data.network.json.code.CodeResponse;
+import com.gliesereum.coupler.data.network.json.code.ReferralCodeResponse;
 import com.gliesereum.coupler.data.network.json.code.SigninBody;
 import com.gliesereum.coupler.data.network.json.filter.FilterResponse;
 import com.gliesereum.coupler.data.network.json.notificatoin.NotificatoinBody;
@@ -79,6 +80,9 @@ public interface APIInterface {
     @Multipart
     @POST("file/v1/upload")
     Call<UploadResponse> uploadAvatar(@Header("Authorization") String accessToken, @Part MultipartBody.Part file, @Part("open") RequestBody open);
+
+    @GET("account/v1/user/referral-code/me")
+    Call<ReferralCodeResponse> getReferralCode(@Header("Authorization") String accessToken);
 
 
     //CAR

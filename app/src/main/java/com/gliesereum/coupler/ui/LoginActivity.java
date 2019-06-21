@@ -51,6 +51,7 @@ import static com.gliesereum.coupler.util.Constants.KARMA_USER_REMIND_RECORD;
 import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
 import static com.gliesereum.coupler.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.coupler.util.Constants.REFRESH_TOKEN;
+import static com.gliesereum.coupler.util.Constants.REF_CODE;
 import static com.gliesereum.coupler.util.Constants.USER_AVATAR;
 import static com.gliesereum.coupler.util.Constants.USER_ID;
 import static com.gliesereum.coupler.util.Constants.USER_INFO;
@@ -86,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         initData();
         initView();
+        getRefCode();
     }
 
     private void initData() {
@@ -122,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.loginBtn:
                 v.setEnabled(false);
-                signIn(new SigninBody(ccp.getFullNumber() + phoneTextView.getText().toString(), code, "PHONE"));
+                signIn(new SigninBody(ccp.getFullNumber() + phoneTextView.getText().toString(), code, "PHONE", FastSave.getInstance().getString(REF_CODE, "")));
                 break;
             case R.id.mapImageBtn:
                 startActivity(new Intent(LoginActivity.this, MapsActivity.class));
@@ -191,7 +193,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 response.body().getUser().getLastName() == null ||
                                 response.body().getUser().getMiddleName() == null) {
                             saveUserInfo(response.body());
-                            getRefCode();
                             startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         } else {
                             FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
@@ -230,7 +231,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 response.getReferrerClickTimestampSeconds();
                                 referrerClient.endConnection();
                                 if (response.getReferrerClickTimestampSeconds() != 0) {
-                                    sendCodeToServer(response.getInstallReferrer());
+                                    FastSave.getInstance().saveString(REF_CODE, response.getInstallReferrer());
                                 }
                             } catch (RemoteException e) {
                                 e.printStackTrace();
@@ -250,9 +251,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     referrerClient.startConnection(installReferrerStateListener);
                 }
             };
-
-    private void sendCodeToServer(String installReferrer) {
-    }
 
     public void getPhoneCode(String phone) {
         API.getPhoneCode(phone)

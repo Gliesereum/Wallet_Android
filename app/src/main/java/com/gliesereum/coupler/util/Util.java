@@ -92,7 +92,7 @@ public class Util {
         SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withSelectable(false).withIcon(R.drawable.ic_outline_directions_car_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.ic_outline_list_alt_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.ic_outline_account_circle_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem referralItem = new SecondaryDrawerItem().withName("Привлечь друга").withIdentifier(9).withTag("referral").withSelectable(false).withIcon(R.drawable.ic_outline_account_circle_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem referralItem = new SecondaryDrawerItem().withName("Привлечь друга").withIdentifier(9).withTag("referral").withSelectable(false).withIcon(R.drawable.ic_outline_person_add_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О приложении").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_outline_info_24px).withIconTintingEnabled(true);
@@ -102,6 +102,7 @@ public class Util {
             car_listItem.withEnabled(false);
             record_listItem.withEnabled(false);
             profileItem.withEnabled(false);
+            referralItem.withEnabled(false);
         }
 //        referralItem.withEnabled(false);
 

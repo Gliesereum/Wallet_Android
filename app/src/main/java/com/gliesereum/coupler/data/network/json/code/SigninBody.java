@@ -16,6 +16,17 @@ public class SigninBody {
     @SerializedName("type")
     private String type;
 
+    @SerializedName("referralCode")
+    private String referralCode;
+
+    public String getReferralCode() {
+        return referralCode;
+    }
+
+    public void setReferralCode(String referralCode) {
+        this.referralCode = referralCode;
+    }
+
     public String getValue() {
         return value;
     }
@@ -40,9 +51,10 @@ public class SigninBody {
         this.type = type;
     }
 
-    public SigninBody(String value, String code, String type) {
+    public SigninBody(String value, String code, String type, String referralCode) {
         this.value = value;
         this.code = code;
         this.type = type;
+        this.referralCode = referralCode;
     }
 }
