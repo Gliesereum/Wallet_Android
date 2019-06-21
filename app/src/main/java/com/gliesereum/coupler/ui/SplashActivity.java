@@ -153,6 +153,7 @@ public class SplashActivity extends AppCompatActivity {
         if (accessExpirationDate != 0) {
             if (Util.checkExpirationToken(accessExpirationDate)) {
                 FastSave.getInstance().saveBoolean(IS_LOGIN, true);
+                getUserCodeAndScore();
                 if (FastSave.getInstance().getString(USER_NAME, "").equals("") || FastSave.getInstance().getString(USER_SECOND_NAME, "").equals("")) {
                     startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
                     finish();
@@ -188,6 +189,10 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    private void getUserCodeAndScore() {
+
+    }
+
     public void refreshToken(String refreshToken) {
         Log.d(TAG, "refreshToken: ");
         API = APIClient.getClient().create(APIInterface.class);
@@ -197,6 +202,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (response.code() == 200) {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, true);
+                    getUserCodeAndScore();
                     Toast.makeText(SplashActivity.this, "Refresh!", Toast.LENGTH_SHORT).show();
                     setTokenInfo(response.body().getTokenInfo());
                     if (FastSave.getInstance().getString(USER_NAME, "").equals("") || FastSave.getInstance().getString(USER_SECOND_NAME, "").equals("")) {

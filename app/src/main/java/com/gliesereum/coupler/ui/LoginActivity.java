@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.installreferrer.api.InstallReferrerClient;
+import com.android.installreferrer.api.InstallReferrerStateListener;
+import com.android.installreferrer.api.ReferrerDetails;
 import com.chaos.view.PinView;
 import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.data.network.APIClient;
@@ -72,6 +76,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private CustomCallback customCallback;
     private ImageView mapImageBtn;
     boolean doubleBackToExitPressedOnce;
+    private InstallReferrerClient referrerClient;
+
 
 
     @Override
@@ -185,6 +191,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 response.body().getUser().getLastName() == null ||
                                 response.body().getUser().getMiddleName() == null) {
                             saveUserInfo(response.body());
+                            getRefCode();
                             startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         } else {
                             FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
@@ -204,6 +211,47 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     }
                 }));
+    }
+
+    private void getRefCode() {
+        referrerClient = InstallReferrerClient.newBuilder(this).build();
+        referrerClient.startConnection(installReferrerStateListener);
+    }
+
+    private InstallReferrerStateListener installReferrerStateListener =
+            new InstallReferrerStateListener() {
+                @Override
+                public void onInstallReferrerSetupFinished(int responseCode) {
+                    switch (responseCode) {
+                        case InstallReferrerClient.InstallReferrerResponse.OK:
+                            try {
+                                ReferrerDetails response = referrerClient.getInstallReferrer();
+                                response.getInstallReferrer();
+                                response.getReferrerClickTimestampSeconds();
+                                referrerClient.endConnection();
+                                if (response.getReferrerClickTimestampSeconds() != 0) {
+                                    sendCodeToServer(response.getInstallReferrer());
+                                }
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        case InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED:
+                            Toast.makeText(LoginActivity.this, "API не поддерживается текущей версией Google Play", Toast.LENGTH_SHORT).show();
+                            break;
+                        case InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE:
+                            Toast.makeText(LoginActivity.this, "Соединение не может быть установлено", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+
+                @Override
+                public void onInstallReferrerServiceDisconnected() {
+                    referrerClient.startConnection(installReferrerStateListener);
+                }
+            };
+
+    private void sendCodeToServer(String installReferrer) {
     }
 
     public void getPhoneCode(String phone) {

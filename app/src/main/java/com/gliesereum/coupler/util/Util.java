@@ -61,6 +61,7 @@ import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
+import static com.gliesereum.coupler.util.Constants.REF_SCORE;
 import static com.gliesereum.coupler.util.Constants.USER_AVATAR;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
 import static com.gliesereum.coupler.util.Constants.USER_SECOND_NAME;
@@ -127,12 +128,18 @@ public class Util {
         } else {
             profileDrawerItem.withIcon(FastSave.getInstance().getString(USER_AVATAR, ""));
         }
+        if (FastSave.getInstance().getInt(REF_SCORE, 0) != 0) {
+            profileDrawerItem.withEmail("Балы: " + FastSave.getInstance().getInt(REF_SCORE, 0));
+        } else {
+            profileDrawerItem.withEmail("Балы: 0");
+        }
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(activity)
-//                .withHeaderBackground(R.drawable.cover_karma_new)
+                .withTextColorRes(R.color.black)
                 .withHeaderBackground(R.drawable.cover_karma_new)
                 .withSelectionListEnabledForSingleProfile(false)
+                .withCompactStyle(true)
                 .addProfiles(profileDrawerItem)
 
 //                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
@@ -150,7 +157,6 @@ public class Util {
         drawerBuilder.withSelectedItem(identifier);
         drawerBuilder.addDrawerItems(
                 mapsItem,
-                new DividerDrawerItem(),
                 serviceItem,
                 car_listItem,
                 record_listItem,
@@ -250,6 +256,8 @@ public class Util {
         result.addItem(new DividerDrawerItem());
         result.addItem(aboutItem);
         result.addItem(versionItem);
+
+//        referralItem.withEnabled(false);
 
     }
 

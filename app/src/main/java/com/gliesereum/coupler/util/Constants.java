@@ -7,6 +7,8 @@ public class Constants {
     public static final String KARMA_USER_RECORD = "KARMA_USER_RECORD";
     public static final String KARMA_USER_REMIND_RECORD = "KARMA_USER_REMIND_RECORD";
     public static final String FIREBASE_TOKEN = "FIREBASE_TOKEN";
+    public static final String REF_SCORE = "REF_SCORE";
+    public static final String REF_CODE = "REF_CODE";
 
     public static final String RECORD_LIST_ACTIVITY = "RECORD_LIST_ACTIVITY";
     public static final String BUSINESS_TYPE = "BUSINESS_TYPE";
