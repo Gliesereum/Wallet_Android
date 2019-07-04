@@ -1,6 +1,7 @@
 package com.gliesereum.coupler.data.network;
 
 import com.gliesereum.coupler.data.network.json.avatar.UploadResponse;
+import com.gliesereum.coupler.data.network.json.bonus.BonusScoreResponse;
 import com.gliesereum.coupler.data.network.json.businesscategory.BusinesCategoryResponse;
 import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.car.BrandResponse;
@@ -84,6 +85,9 @@ public interface APIInterface {
     @GET("account/v1/user/referral-code/me")
     Call<ReferralCodeResponse> getReferralCode(@Header("Authorization") String accessToken);
 
+    @GET("karma/v1/bonus-score/me")
+    Call<BonusScoreResponse> getBonusScore(@Header("Authorization") String accessToken);
+
 
     //CAR
     @GET("karma/v1/car/brands")
@@ -162,7 +166,7 @@ public interface APIInterface {
     Call<AllRecordResponse> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
 
     @PUT("karma/v1/record/record/canceled")
-    Call<AllRecordResponse> canceleRecord(@Header("Authorization") String accessToken, @Query("idRecord") String idRecord);
+    Call<AllRecordResponse> canceleRecord(@Header("Authorization") String accessToken, @Query("idRecord") String idRecord, @Query("message") String message);
 
     //COMMENT
     @POST("karma/v1/business/{carwashId}/comment")

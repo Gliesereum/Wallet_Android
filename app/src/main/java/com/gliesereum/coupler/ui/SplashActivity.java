@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.data.network.APIClient;
 import com.gliesereum.coupler.data.network.APIInterface;
+import com.gliesereum.coupler.data.network.json.bonus.BonusScoreResponse;
 import com.gliesereum.coupler.data.network.json.status.StatusResponse;
 import com.gliesereum.coupler.data.network.json.user.TokenInfo;
 import com.gliesereum.coupler.data.network.json.user.UserResponse;
@@ -39,6 +40,7 @@ import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.coupler.util.Constants.REFRESH_TOKEN;
+import static com.gliesereum.coupler.util.Constants.REF_SCORE;
 import static com.gliesereum.coupler.util.Constants.STATUS_UP;
 import static com.gliesereum.coupler.util.Constants.USER_ID;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
@@ -190,6 +192,21 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void getUserCodeAndScore() {
+        API = APIClient.getClient().create(APIInterface.class);
+        Call<BonusScoreResponse> call = API.getBonusScore(FastSave.getInstance().getString(ACCESS_TOKEN, ""));
+        call.enqueue(new Callback<BonusScoreResponse>() {
+            @Override
+            public void onResponse(Call<BonusScoreResponse> call, Response<BonusScoreResponse> response) {
+                if (response.code() == 200) {
+                    FastSave.getInstance().saveInt(REF_SCORE, response.body().getScore());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BonusScoreResponse> call, Throwable t) {
+                errorHandler.showCustomError(t.getMessage());
+            }
+        });
 
     }
 

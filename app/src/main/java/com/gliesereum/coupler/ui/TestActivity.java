@@ -1,7 +1,6 @@
 package com.gliesereum.coupler.ui;
 
 import android.os.Bundle;
-import android.transition.Fade;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -104,12 +103,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         cancelBtn = findViewById(R.id.cancelBtn);
         acceptBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
-    }
-
-    private void setupWindowAnimations() {
-        Fade fade = new Fade();
-        fade.setDuration(1000);
-        getWindow().setEnterTransition(fade);
     }
 
     @Override

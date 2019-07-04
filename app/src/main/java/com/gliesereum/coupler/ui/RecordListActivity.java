@@ -72,9 +72,7 @@ public class RecordListActivity extends AppCompatActivity {
                             recordsList = new ArrayList<>();
                             if (response.body() != null && response.body().size() > 0) {
                                 for (int i = 0; i < response.body().size(); i++) {
-                                    if (response.body().get(i).getTargetId() != null) {
                                         recordsList.add(response.body().get(i));
-                                    }
                                 }
                                 recordListAdapter.setItems(recordsList);
                             }

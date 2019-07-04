@@ -30,7 +30,7 @@
     <color name="material_drawer_primary_icon">#282828</color>
     <color name="material_drawer_secondary_text">#282828</color>
     <!--<color name="material_drawer_hint_text">#00ff00</color>   Disable text color-->
-    <color name="material_drawer_divider">#282828</color>
+    <color name="material_drawer_divider">#14000000</color>
     <!-- Material DEFAULT drawer colors -->
     <!--<color name="material_drawer_selected">#FF9944</color>-->
     <color name="material_drawer_selected">#DADBDD</color>

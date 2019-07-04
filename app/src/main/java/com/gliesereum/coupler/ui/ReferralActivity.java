@@ -57,7 +57,7 @@ public class ReferralActivity extends AppCompatActivity {
                     @Override
                     public void onSuccessful(Call<ReferralCodeResponse> call, Response<ReferralCodeResponse> response) {
                         referralCode = response.body().getCode();
-                        Bitmap myBitmap = QRCode.from("https://coupler.app/r/" + referralCode).withHint(EncodeHintType.MARGIN, "1").withSize(700, 700).bitmap();
+                        Bitmap myBitmap = QRCode.from("https://coupler.app/r/" + referralCode).withHint(EncodeHintType.MARGIN, "1").withSize(500, 500).bitmap();
                         qrCode.setImageBitmap(myBitmap);
                     }
 

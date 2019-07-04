@@ -27,6 +27,7 @@ import com.gliesereum.coupler.adapter.CustomInfoWindowAdapter;
 import com.gliesereum.coupler.data.network.APIClient;
 import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
+import com.gliesereum.coupler.data.network.json.bonus.BonusScoreResponse;
 import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.coupler.data.network.json.carwash.FilterCarWashBody;
@@ -78,6 +79,7 @@ import static com.gliesereum.coupler.util.Constants.FIRST_START;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.MARKER_LIST;
 import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
+import static com.gliesereum.coupler.util.Constants.REF_SCORE;
 import static com.gliesereum.coupler.util.Constants.SERVICE_LIST;
 import static com.gliesereum.coupler.util.Constants.UPDATE_MAP;
 
@@ -119,8 +121,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLocationPermission();
         getAllService();
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            getBonusScore();
             getAllCars();
         }
+    }
+
+    private void getBonusScore() {
+        API.getBonusScore(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<BonusScoreResponse>() {
+                    @Override
+                    public void onSuccessful(Call<BonusScoreResponse> call, Response<BonusScoreResponse> response) {
+                        Log.d(TAG, "onSuccessful: " + response.body().getScore());
+                        FastSave.getInstance().saveInt(REF_SCORE, response.body().getScore());
+                    }
+
+                    @Override
+                    public void onEmpty(Call<BonusScoreResponse> call, Response<BonusScoreResponse> response) {
+
+                    }
+                }));
+
     }
 
     private void initData() {

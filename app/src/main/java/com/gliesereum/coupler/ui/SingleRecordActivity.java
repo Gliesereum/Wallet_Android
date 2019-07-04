@@ -25,15 +25,15 @@ import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
+import com.gohn.nativedialog.ButtonType;
+import com.gohn.nativedialog.NDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.labters.lottiealertdialoglibrary.ClickListener;
-import com.labters.lottiealertdialoglibrary.DialogTypes;
 import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -69,6 +69,8 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
     private TextView servicePriceLabel;
     private Button cancelRecordBtn;
     private LottieAlertDialog alertDialog;
+    private TextView textView26;
+    TextView commentTextView;
 
 
     @Override
@@ -82,7 +84,12 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
             getSingleRecord(getIntent().getStringExtra(OBJECT_ID));
         } else {
             getDeviceLocation();
-            getCar(record.getTargetId());
+            if (record.getTargetId() != null) {
+                getCar(record.getTargetId());
+            } else {
+                car.setVisibility(View.GONE);
+                textView26.setVisibility(View.GONE);
+            }
             fillActivity(record);
         }
     }
@@ -178,6 +185,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         price = findViewById(R.id.price);
         car = findViewById(R.id.car);
         servicePriceLabel = findViewById(R.id.servicePriceLabel);
+        textView26 = findViewById(R.id.textView26);
     }
 
     private void getCar(String targetId) {
@@ -239,33 +247,70 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
                 startActivity(intent);
                 break;
             case R.id.cancelRecord:
-                alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_QUESTION)
-                        .setTitle("Отменить заказ")
-                        .setDescription("Вы действительно хотите отменить заказ?\n(Эту операцию нельзя отменить)")
-                        .setPositiveText("Да")
-                        .setNegativeText("Нет")
-                        .setPositiveButtonColor(getResources().getColor(R.color.red))
-                        .setPositiveListener(new ClickListener() {
-                            @Override
-                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
-                                cancelRecord();
-                            }
-                        })
-                        .setNegativeListener(new ClickListener() {
-                            @Override
-                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
-                                alertDialog.dismiss();
-                            }
-                        })
-                        .build();
-                alertDialog.setCancelable(false);
-                alertDialog.show();
+                NDialog cancelDialog = new NDialog(SingleRecordActivity.this, ButtonType.NO_BUTTON);
+                cancelDialog.setCustomView(R.layout.cancele_dialog);
+                List<View> childViews = cancelDialog.getCustomViewChildren();
+                for (View childView : childViews) {
+                    switch (childView.getId()) {
+                        case R.id.commentTextView:
+                            commentTextView = childView.findViewById(R.id.commentTextView);
+                            break;
+                        case R.id.deleteRecord:
+                            Button deleteRecord = childView.findViewById(R.id.deleteRecord);
+                            deleteRecord.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (!commentTextView.getText().toString().equals("")) {
+                                        cancelRecord();
+                                        cancelDialog.dismiss();
+                                    } else {
+                                        Toast.makeText(SingleRecordActivity.this, "Введите причину отмены заказа", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            break;
+                        case R.id.cancelBtn:
+                            Button cancelBtn = childView.findViewById(R.id.cancelBtn);
+                            cancelBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    cancelDialog.dismiss();
+                                }
+                            });
+                            break;
+
+                    }
+                }
+                cancelDialog.show();
                 break;
+
+//                alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_QUESTION)
+//                        .setTitle("Отменить заказ")
+//                        .setDescription("Вы действительно хотите отменить заказ?\n(Эту операцию нельзя отменить)")
+//                        .setPositiveText("Да")
+//                        .setNegativeText("Нет")
+//                        .setPositiveButtonColor(getResources().getColor(R.color.red))
+//                        .setPositiveListener(new ClickListener() {
+//                            @Override
+//                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
+//                                cancelRecord();
+//                            }
+//                        })
+//                        .setNegativeListener(new ClickListener() {
+//                            @Override
+//                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
+//                                alertDialog.dismiss();
+//                            }
+//                        })
+//                        .build();
+//                alertDialog.setCancelable(false);
+//                alertDialog.show();
+//                break;
         }
     }
 
     private void cancelRecord() {
-        API.canceleRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), record.getId())
+        API.canceleRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), record.getId(), commentTextView.getText().toString())
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllRecordResponse>() {
                     @Override
                     public void onSuccessful(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
