@@ -21,6 +21,7 @@ import com.gliesereum.coupler.data.network.json.notificatoin.RegistrationTokenDe
 import com.gliesereum.coupler.data.network.json.order.OrderBody;
 import com.gliesereum.coupler.data.network.json.order.OrderResponse;
 import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
+import com.gliesereum.coupler.data.network.json.record_new.RecordNewResponse;
 import com.gliesereum.coupler.data.network.json.service.ServiceResponse;
 import com.gliesereum.coupler.data.network.json.status.StatusResponse;
 import com.gliesereum.coupler.data.network.json.user.User;
@@ -160,7 +161,7 @@ public interface APIInterface {
     Call<AllRecordResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @GET("karma/v1/record/client/all")
-    Call<List<AllRecordResponse>> getAllRecord(@Header("Authorization") String accessToken);
+    Call<RecordNewResponse> getAllRecord(@Header("Authorization") String accessToken);
 
     @GET("karma/v1/record/{recordId}")
     Call<AllRecordResponse> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);

@@ -18,7 +18,8 @@ import com.gliesereum.coupler.adapter.RecordListAdapter;
 import com.gliesereum.coupler.data.network.APIClient;
 import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
-import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
+import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
+import com.gliesereum.coupler.data.network.json.record_new.RecordNewResponse;
 import com.gliesereum.coupler.util.ErrorHandler;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
@@ -42,7 +43,7 @@ public class RecordListActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private RecordListAdapter recordListAdapter;
-    private List<AllRecordResponse> recordsList = new ArrayList<>();
+    private List<ContentItem> recordsList = new ArrayList<>();
     private Map<String, String> carWashNameMap = new HashMap<>();
     private APIInterface API;
     private ErrorHandler errorHandler;
@@ -66,13 +67,13 @@ public class RecordListActivity extends AppCompatActivity {
     private void getAllRecord() {
         if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
             API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
-                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<List<AllRecordResponse>>() {
+                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<RecordNewResponse>() {
                         @Override
-                        public void onSuccessful(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
+                        public void onSuccessful(Call<RecordNewResponse> call, Response<RecordNewResponse> response) {
                             recordsList = new ArrayList<>();
-                            if (response.body() != null && response.body().size() > 0) {
-                                for (int i = 0; i < response.body().size(); i++) {
-                                        recordsList.add(response.body().get(i));
+                            if (response.body() != null && response.body().getContent().size() > 0) {
+                                for (int i = 0; i < response.body().getContent().size(); i++) {
+                                    recordsList.add(response.body().getContent().get(i));
                                 }
                                 recordListAdapter.setItems(recordsList);
                             }
@@ -81,7 +82,7 @@ public class RecordListActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onEmpty(Call<List<AllRecordResponse>> call, Response<List<AllRecordResponse>> response) {
+                        public void onEmpty(Call<RecordNewResponse> call, Response<RecordNewResponse> response) {
                             splashTextView.setVisibility(View.VISIBLE);
                             Log.d(TAG, "onEmpty: ");
                             FastSave.getInstance().saveBoolean(RECORD_LIST_ACTIVITY, true);
