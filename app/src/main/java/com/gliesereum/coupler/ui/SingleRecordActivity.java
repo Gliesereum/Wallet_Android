@@ -70,7 +70,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
     private Button cancelRecordBtn;
     private LottieAlertDialog alertDialog;
     private TextView textView26;
-    TextView commentTextView;
+    private TextView commentTextView;
 
 
     @Override
