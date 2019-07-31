@@ -21,8 +21,10 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.gliesereum.coupler.util.Constants.BEAUTY_SALONS;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE;
 import static com.gliesereum.coupler.util.Constants.CAR_WASH;
+import static com.gliesereum.coupler.util.Constants.SERVICE_BEAUTY_SALONS_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_SERVICE_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_WASH_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_TIRE_FITTING_ID;
@@ -72,6 +74,9 @@ public class ChooseServiceNewActivity extends AppCompatActivity {
                         chooseServiceAdapter.setItems(response.body());
                         for (int i = 0; i < response.body().size(); i++) {
                             switch (response.body().get(i).getCode()) {
+                                case BEAUTY_SALONS:
+                                    FastSave.getInstance().saveString(SERVICE_BEAUTY_SALONS_ID, response.body().get(i).getId());
+                                    break;
                                 case CAR_WASH:
                                     FastSave.getInstance().saveString(SERVICE_CAR_WASH_ID, response.body().get(i).getId());
                                     break;

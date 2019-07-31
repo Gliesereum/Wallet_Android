@@ -24,6 +24,7 @@ public class Constants {
     public static final String WAITING = "WAITING";
 
     public static final String CAR_WASH = "CAR_WASH";
+    public static final String BEAUTY_SALONS = "BEAUTY_SALONS";
     public static final String TIRE_FITTING = "TIRE_FITTING";
     public static final String CAR_SERVICE = "CAR_SERVICE";
 
@@ -51,10 +52,12 @@ public class Constants {
     public static final String SERVICE_CAR_WASH = "CAR_WASH";
     public static final String SERVICE_TIRE_FITTING = "TIRE_FITTING";
     public static final String SERVICE_CAR_SERVICE = "CAR_SERVICE";
+    public static final String SERVICE_BEAUTY_SALONS = "BEAUTY_SALONS";
 
     public static final String SERVICE_CAR_WASH_ID = "CAR_WASH_ID";
     public static final String SERVICE_TIRE_FITTING_ID = "TIRE_FITTING_ID";
     public static final String SERVICE_CAR_SERVICE_ID = "CAR_SERVICE_ID";
+    public static final String SERVICE_BEAUTY_SALONS_ID = "SERVICE_BEAUTY_SALONS_ID";
 
     public static final String SERVICE_LIST = "SERVICE_LIST";
 

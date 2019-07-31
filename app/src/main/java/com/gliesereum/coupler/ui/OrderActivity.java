@@ -456,6 +456,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onSuccessful(Call<OrderResponse> call, Response<OrderResponse> response) {
                         orderBody.setWorkingSpaceId(response.body().getWorkingSpaceId());
+                        orderBody.setWorkerId(response.body().getWorkerId());
                         orderBody.setBegin(response.body().getBegin());
                         NDialog nDialog = new NDialog(OrderActivity.this, ButtonType.NO_BUTTON);
                         nDialog.isCancelable(false);

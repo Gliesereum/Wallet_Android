@@ -221,7 +221,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onSuccessful(Call<User> call, Response<User> response) {
                         FastSave.getInstance().saveObject(USER_INFO, response.body());
-                        if (response.body().getAvatarUrl() != null) {
+                        if (response.body().getAvatarUrl() != null && !response.body().getAvatarUrl().equals("")) {
                             Picasso.get().load(response.body().getAvatarUrl()).transform(new CircleTransform()).into(avatarImg);
                         }
                         nameTextView.setText(response.body().getFirstName());

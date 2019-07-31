@@ -16,6 +16,7 @@ import net.sharewire.googlemapsclustering.ClusterItem;
 import net.sharewire.googlemapsclustering.DefaultIconGenerator;
 
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
+import static com.gliesereum.coupler.util.Constants.SERVICE_BEAUTY_SALONS;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_SERVICE;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_WASH;
 import static com.gliesereum.coupler.util.Constants.SERVICE_TIRE_FITTING;
@@ -35,6 +36,9 @@ public class IconGenerator extends DefaultIconGenerator implements net.sharewire
     public BitmapDescriptor getClusterItemIcon(@NonNull ClusterItem clusterItem) {
         Drawable background;
         switch (FastSave.getInstance().getString(BUSINESS_CODE, "")) {
+            case SERVICE_BEAUTY_SALONS:
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_beauty_salons);
+                break;
             case SERVICE_CAR_WASH:
                 background = ContextCompat.getDrawable(context, R.drawable.ic_pin_car_wash);
                 break;
