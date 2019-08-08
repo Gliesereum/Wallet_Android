@@ -33,7 +33,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
-import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.RECORD_LIST_ACTIVITY;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
@@ -65,7 +64,6 @@ public class RecordListActivity extends AppCompatActivity {
     }
 
     private void getAllRecord() {
-        if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
             API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
                     .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<RecordNewResponse>() {
                         @Override
@@ -88,9 +86,6 @@ public class RecordListActivity extends AppCompatActivity {
                             FastSave.getInstance().saveBoolean(RECORD_LIST_ACTIVITY, true);
                         }
                     }));
-        } else {
-            splashTextView.setVisibility(View.VISIBLE);
-        }
     }
 
     private void initView() {

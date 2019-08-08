@@ -58,6 +58,7 @@ import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.CARWASH;
 import static com.gliesereum.coupler.util.Constants.CARWASHA_CTIVITY;
 import static com.gliesereum.coupler.util.Constants.CARWASH_ID;
@@ -122,7 +123,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         initData();
         initView();
         getCarWash();
-        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false) && FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
             getAllCars();
         }
     }
@@ -211,7 +212,9 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                 } else {
                                     descriptionDropdown.setVisibility(View.GONE);
                                 }
+//                                if (carWash.getRating()!=null){
                                 carWashRating.setRatingNum(carWash.getRating().getRating());
+//                                }
                                 if (Util.checkCarWashWorkTime(carWash)) {
                                     nowStatus.setText("работает");
                                     nowStatus.setTextColor(getResources().getColor(R.color.md_green_300));

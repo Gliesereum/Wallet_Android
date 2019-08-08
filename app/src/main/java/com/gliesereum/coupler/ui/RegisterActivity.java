@@ -25,6 +25,8 @@ import retrofit2.Response;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.ANDROID_APP;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
+import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
 import static com.gliesereum.coupler.util.Constants.USER_ID;
 import static com.gliesereum.coupler.util.Constants.USER_INFO;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
@@ -86,9 +88,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 thirdNameTextView.setText(user.getMiddleName().toString());
             }
         }
-
-
-
         nameTextView.addTextChangedListener(firstNameListener);
         secondNameTextView.addTextChangedListener(secondNameListener);
         thirdNameTextView.addTextChangedListener(thirdNameListener);
@@ -141,8 +140,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             FastSave.getInstance().saveString(USER_ID, response.body().getId());
                             FastSave.getInstance().saveString(USER_NAME, response.body().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getLastName());
-                            startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
-                            finish();
+                            if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
+                                startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
+                                finish();
+                            } else {
+                                if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
+                                    startActivity(new Intent(RegisterActivity.this, CarWashActivity.class));
+                                    finish();
+                                } else {
+                                    startActivity(new Intent(RegisterActivity.this, MapsActivity.class));
+                                    finish();
+                                }
+                            }
                         }
 
                         @Override

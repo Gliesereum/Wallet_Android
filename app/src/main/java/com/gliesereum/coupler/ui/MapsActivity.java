@@ -68,6 +68,7 @@ import retrofit2.Response;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.CARWASH_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
 import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
@@ -122,7 +123,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getAllService();
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             getBonusScore();
-            getAllCars();
+            if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
+                getAllCars();
+            }
         }
     }
 
@@ -165,23 +168,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         couplerLogoImg = findViewById(R.id.couplerLogoImg);
         mapView = findViewById(R.id.mapView);
         toolbar = findViewById(R.id.toolbar);
-        if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
-            if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
+        if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
+            if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+                if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
+                    FastSave.getInstance().deleteValue(CAR_ID);
+                    couplerLogoImg.setVisibility(View.VISIBLE);
+                    toolbar.setTitle("");
+                    toolbar.setSubtitle("");
+                } else {
+                    couplerLogoImg.setVisibility(View.GONE);
+                    toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
+                    toolbar.setSubtitle("Выбранный автомобиль");
+                }
+            } else {
                 FastSave.getInstance().deleteValue(CAR_ID);
                 couplerLogoImg.setVisibility(View.VISIBLE);
                 toolbar.setTitle("");
                 toolbar.setSubtitle("");
-            } else {
-                couplerLogoImg.setVisibility(View.GONE);
-                toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
-                toolbar.setSubtitle("Выбранный автомобиль");
             }
         } else {
-            FastSave.getInstance().deleteValue(CAR_ID);
             couplerLogoImg.setVisibility(View.VISIBLE);
             toolbar.setTitle("");
             toolbar.setSubtitle("");
         }
+
         setSupportActionBar(toolbar);
         new Util(this, toolbar, 1).addNavigation();
     }
@@ -268,14 +278,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onInfoWindowClick(Marker marker) {
                 FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
                 if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-                    if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+                    if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
+                        if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+                            FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, false);
+                            FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
+                            startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
+                        } else {
+                            FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
+                            startActivity(new Intent(MapsActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                        }
+                    } else {
                         FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, false);
                         FastSave.getInstance().saveString(CARWASH_ID, marker.getSnippet());
                         startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
-                    } else {
-                        FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
-                        startActivity(new Intent(MapsActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                     }
+
                 } else {
                     FastSave.getInstance().saveBoolean(OPEN_SERVICE_FLAG, true);
                     startActivity(new Intent(MapsActivity.this, LoginActivity.class));

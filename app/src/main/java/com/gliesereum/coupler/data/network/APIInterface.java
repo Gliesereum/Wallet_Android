@@ -21,7 +21,9 @@ import com.gliesereum.coupler.data.network.json.notificatoin.RegistrationTokenDe
 import com.gliesereum.coupler.data.network.json.order.OrderBody;
 import com.gliesereum.coupler.data.network.json.order.OrderResponse;
 import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
+import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
 import com.gliesereum.coupler.data.network.json.record_new.RecordNewResponse;
+import com.gliesereum.coupler.data.network.json.record_new.WorkersItem;
 import com.gliesereum.coupler.data.network.json.service.ServiceResponse;
 import com.gliesereum.coupler.data.network.json.status.StatusResponse;
 import com.gliesereum.coupler.data.network.json.user.User;
@@ -44,6 +46,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIInterface {
+
+    @GET("karma/v1/worker/by-id")
+    Call<WorkersItem> getWorkerById(@Header("Authorization") String accessToken, @Query("id") String id);
 
     //STATUS
     @GET("status")
@@ -140,8 +145,8 @@ public interface APIInterface {
     @POST("karma/v1/business/search/document")
     Call<List<CarWashResponse>> getAllCarWashNew(@Body FilterCarWashBody filterCarWashBody);
 
-    @GET("karma/v1/business/{carwashId}/full-model")
-    Call<AllCarWashResponse> getCarWashFull(@Header("Authorization") String accessToken, @Path("carwashId") String id);
+    @GET("karma/v1/business/full-model-by-id")
+    Call<AllCarWashResponse> getCarWashFull(@Header("Authorization") String accessToken, @Query("id") String id);
 
 //    @GET("karma/v1/business/{carwashId}")
 //    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
@@ -158,15 +163,15 @@ public interface APIInterface {
     Call<OrderResponse> preOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @POST("karma/v1/record")
-    Call<AllRecordResponse> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
+    Call<ContentItem> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
-    @GET("karma/v1/record/client/all")
+    @GET("karma/v1/record/by-current-user")
     Call<RecordNewResponse> getAllRecord(@Header("Authorization") String accessToken);
 
     @GET("karma/v1/record/{recordId}")
-    Call<AllRecordResponse> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
+    Call<ContentItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
 
-    @PUT("karma/v1/record/record/canceled")
+    @PUT("karma/v1/record/canceled-record")
     Call<AllRecordResponse> canceleRecord(@Header("Authorization") String accessToken, @Query("idRecord") String idRecord, @Query("message") String message);
 
     //COMMENT

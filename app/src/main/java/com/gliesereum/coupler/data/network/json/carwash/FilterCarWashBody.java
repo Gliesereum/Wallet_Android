@@ -18,6 +18,28 @@ public class FilterCarWashBody {
     @SerializedName("businessCategoryId")
     private String businessCategoryId;
 
+    @SerializedName("geoDistance")
+    private GeoDistanceDto geoDistance;
+
+    @SerializedName("fullTextQuery")
+    private String fullTextQuery;
+
+    public GeoDistanceDto getGeoDistance() {
+        return geoDistance;
+    }
+
+    public void setGeoDistance(GeoDistanceDto geoDistance) {
+        this.geoDistance = geoDistance;
+    }
+
+    public String getFullTextQuery() {
+        return fullTextQuery;
+    }
+
+    public void setFullTextQuery(String fullTextQuery) {
+        this.fullTextQuery = fullTextQuery;
+    }
+
     public List<String> getServiceIds() {
         return serviceIds;
     }

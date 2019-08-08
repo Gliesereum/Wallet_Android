@@ -23,6 +23,8 @@ import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
 import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
+import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
+import com.gliesereum.coupler.data.network.json.record_new.WorkersItem;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -53,7 +55,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
     private CustomCallback customCallback;
     private Button goRoad;
     private String TAG = "TAG";
-    private AllRecordResponse record;
+    private ContentItem record;
     private ConstraintLayout packageBlock;
     private LinearLayout packageItems;
     private ConstraintLayout servicePriceBlock;
@@ -71,6 +73,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
     private LottieAlertDialog alertDialog;
     private TextView textView26;
     private TextView commentTextView;
+    private TextView master;
 
 
     @Override
@@ -84,21 +87,27 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
             getSingleRecord(getIntent().getStringExtra(OBJECT_ID));
         } else {
             getDeviceLocation();
-            if (record.getTargetId() != null) {
-                getCar(record.getTargetId());
+            if (record.getBusiness().getBusinessCategory().getBusinessType().equals("CAR")) {
+                if (record.getTargetId() != null) {
+                    getCar(record.getTargetId());
+                } else {
+                    car.setVisibility(View.GONE);
+                    textView26.setVisibility(View.GONE);
+                }
             } else {
                 car.setVisibility(View.GONE);
                 textView26.setVisibility(View.GONE);
             }
+
             fillActivity(record);
         }
     }
 
     private void getSingleRecord(String objectId) {
         API.getSingleRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), objectId)
-                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<AllRecordResponse>() {
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<ContentItem>() {
                     @Override
-                    public void onSuccessful(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+                    public void onSuccessful(Call<ContentItem> call, Response<ContentItem> response) {
                         record = response.body();
                         getDeviceLocation();
                         getCar(record.getTargetId());
@@ -106,7 +115,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
                     }
 
                     @Override
-                    public void onEmpty(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+                    public void onEmpty(Call<ContentItem> call, Response<ContentItem> response) {
 
                     }
                 }));
@@ -116,10 +125,11 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
-        record = FastSave.getInstance().getObject(RECORD, AllRecordResponse.class);
+        record = FastSave.getInstance().getObject(RECORD, ContentItem.class);
     }
 
-    private void fillActivity(AllRecordResponse record) {
+    private void fillActivity(ContentItem record) {
+        getWorker();
         date.setText(Util.getStringDate(record.getBegin()));
         time.setText(Util.getStringTime(record.getBegin()));
         duration.setText(String.valueOf((record.getFinish() - record.getBegin()) / 60000) + " мин");
@@ -168,6 +178,22 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    private void getWorker() {
+        API.getWorkerById(FastSave.getInstance().getString(ACCESS_TOKEN, ""), record.getWorkerId())
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<WorkersItem>() {
+                    @Override
+                    public void onSuccessful(Call<WorkersItem> call, Response<WorkersItem> response) {
+                        master.setText(response.body().getUser().getFirstName());
+                    }
+
+                    @Override
+                    public void onEmpty(Call<WorkersItem> call, Response<WorkersItem> response) {
+
+                    }
+                }));
+
+    }
+
 
     private void initView() {
         goRoad = findViewById(R.id.goRoad);
@@ -186,6 +212,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         car = findViewById(R.id.car);
         servicePriceLabel = findViewById(R.id.servicePriceLabel);
         textView26 = findViewById(R.id.textView26);
+        master = findViewById(R.id.master);
     }
 
     private void getCar(String targetId) {
@@ -283,29 +310,6 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
                 }
                 cancelDialog.show();
                 break;
-
-//                alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_QUESTION)
-//                        .setTitle("Отменить заказ")
-//                        .setDescription("Вы действительно хотите отменить заказ?\n(Эту операцию нельзя отменить)")
-//                        .setPositiveText("Да")
-//                        .setNegativeText("Нет")
-//                        .setPositiveButtonColor(getResources().getColor(R.color.red))
-//                        .setPositiveListener(new ClickListener() {
-//                            @Override
-//                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
-//                                cancelRecord();
-//                            }
-//                        })
-//                        .setNegativeListener(new ClickListener() {
-//                            @Override
-//                            public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
-//                                alertDialog.dismiss();
-//                            }
-//                        })
-//                        .build();
-//                alertDialog.setCancelable(false);
-//                alertDialog.show();
-//                break;
         }
     }
 

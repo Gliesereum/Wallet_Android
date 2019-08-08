@@ -34,7 +34,7 @@ import com.gliesereum.coupler.data.network.json.filter.AttributesItem;
 import com.gliesereum.coupler.data.network.json.filter.ServiceClassItem;
 import com.gliesereum.coupler.data.network.json.order.OrderBody;
 import com.gliesereum.coupler.data.network.json.order.OrderResponse;
-import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
+import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -55,6 +55,7 @@ import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.CARWASH;
 import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
@@ -185,10 +186,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private void setServicePrices(AllCarWashResponse carWash) {
         servicePriceItem.removeAllViews();
         packageItems.removeAllViews();
-        List<AttributesItem> objectsList = FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class);
-        List<ServiceClassItem> objectsList1 = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
+//        List<AttributesItem> objectsList = FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class);
+//        List<ServiceClassItem> objectsList1 = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            if (FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes()) && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
+            if (!FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR") || FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes()) && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
                 if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);
@@ -474,9 +475,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onClick(View v) {
                                             API.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody)
-                                                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<AllRecordResponse>() {
+                                                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<ContentItem>() {
                                                         @Override
-                                                        public void onSuccessful(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+                                                        public void onSuccessful(Call<ContentItem> call, Response<ContentItem> response) {
                                                             nDialog.dismiss();
                                                             Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
 //                                                            startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
@@ -486,7 +487,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                                         }
 
                                                         @Override
-                                                        public void onEmpty(Call<AllRecordResponse> call, Response<AllRecordResponse> response) {
+                                                        public void onEmpty(Call<ContentItem> call, Response<ContentItem> response) {
 
                                                         }
                                                     }));

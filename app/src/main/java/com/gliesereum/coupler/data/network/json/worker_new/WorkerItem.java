@@ -1,6 +1,5 @@
-package com.gliesereum.coupler.data.network.json.record_new;
+package com.gliesereum.coupler.data.network.json.worker_new;
 
-import com.gliesereum.coupler.data.network.json.worker_new.User;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -8,7 +7,10 @@ import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("com.robohorse.robopojogenerator")
-public class WorkersItem {
+public class WorkerItem {
+
+    @SerializedName("comments")
+    private List<Object> comments;
 
     @SerializedName("workingSpaceId")
     private String workingSpaceId;
@@ -17,10 +19,13 @@ public class WorkersItem {
     private String corporationId;
 
     @SerializedName("workTimes")
-    private List<Object> workTimes;
+    private List<WorkTimesItem> workTimes;
 
     @SerializedName("businessId")
     private String businessId;
+
+    @SerializedName("rating")
+    private Rating rating;
 
     @SerializedName("id")
     private String id;
@@ -33,6 +38,14 @@ public class WorkersItem {
 
     @SerializedName("user")
     private User user;
+
+    public void setComments(List<Object> comments) {
+        this.comments = comments;
+    }
+
+    public List<Object> getComments() {
+        return comments;
+    }
 
     public void setWorkingSpaceId(String workingSpaceId) {
         this.workingSpaceId = workingSpaceId;
@@ -50,11 +63,11 @@ public class WorkersItem {
         return corporationId;
     }
 
-    public void setWorkTimes(List<Object> workTimes) {
+    public void setWorkTimes(List<WorkTimesItem> workTimes) {
         this.workTimes = workTimes;
     }
 
-    public List<Object> getWorkTimes() {
+    public List<WorkTimesItem> getWorkTimes() {
         return workTimes;
     }
 
@@ -64,6 +77,14 @@ public class WorkersItem {
 
     public String getBusinessId() {
         return businessId;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
+    }
+
+    public Rating getRating() {
+        return rating;
     }
 
     public void setId(String id) {
@@ -90,11 +111,11 @@ public class WorkersItem {
         return userId;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

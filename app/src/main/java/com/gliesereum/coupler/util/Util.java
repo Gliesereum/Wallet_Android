@@ -54,6 +54,7 @@ import retrofit2.Response;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_NAME;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
 import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
@@ -156,14 +157,22 @@ public class Util {
         drawerBuilder.withActivity(activity);
         drawerBuilder.withToolbar(toolbar);
         drawerBuilder.withSelectedItem(identifier);
-        drawerBuilder.addDrawerItems(
-                mapsItem,
-                serviceItem,
-                car_listItem,
-                record_listItem,
-                profileItem,
-                referralItem
-        );
+        drawerBuilder.addDrawerItems(mapsItem);
+        drawerBuilder.addDrawerItems(serviceItem);
+        if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
+            drawerBuilder.addDrawerItems(car_listItem);
+        }
+        drawerBuilder.addDrawerItems(record_listItem);
+        drawerBuilder.addDrawerItems(profileItem);
+        drawerBuilder.addDrawerItems(referralItem);
+//        drawerBuilder.addDrawerItems(
+//                mapsItem,
+//                serviceItem,
+//                car_listItem,
+//                record_listItem,
+//                profileItem,
+//                referralItem
+//        );
         result = drawerBuilder.build();
         drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
