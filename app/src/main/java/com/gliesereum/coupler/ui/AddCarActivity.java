@@ -1,7 +1,6 @@
 package com.gliesereum.coupler.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +41,7 @@ import static com.gliesereum.coupler.util.Constants.CAR_BODY;
 import static com.gliesereum.coupler.util.Constants.CAR_COLOR;
 import static com.gliesereum.coupler.util.Constants.CAR_INTERIOR;
 import static com.gliesereum.coupler.util.Constants.CAR_WHEEL_RADIUS;
+import static com.gliesereum.coupler.util.Constants.UPDATE_CAR_LIST;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -192,7 +192,8 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                         addCarFilter(response.body().getId(), carBodyHashMap.get(carBodySpinner.getSelectedItem().toString()));
                         addCarFilter(response.body().getId(), colorHashMap.get(colourSpinner.getSelectedItem().toString()));
                         addCarFilter(response.body().getId(), radiusHashMap.get(radiusSpinner.getSelectedItem().toString()));
-                        startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
+//                        startActivity(new Intent(AddCarActivity.this, CarListActivity.class));
+                        FastSave.getInstance().saveBoolean(UPDATE_CAR_LIST, true);
                         finish();
                         Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
                     }

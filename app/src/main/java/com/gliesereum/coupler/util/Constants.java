@@ -59,6 +59,10 @@ public class Constants {
     public static final String SERVICE_CAR_SERVICE_ID = "CAR_SERVICE_ID";
     public static final String SERVICE_BEAUTY_SALONS_ID = "SERVICE_BEAUTY_SALONS_ID";
 
+    public static final String NEED_SELECT_CAR = "NEED_SELECT_CAR";
+    public static final String NEED_LOGIN_USER = "NEED_LOGIN_USER";
+    public static final String UPDATE_CAR_LIST = "UPDATE_CAR_LIST";
+
     public static final String SERVICE_LIST = "SERVICE_LIST";
 
     public static final String OPEN_SERVICE_FLAG = "OPEN_SERVICE_FLAG";

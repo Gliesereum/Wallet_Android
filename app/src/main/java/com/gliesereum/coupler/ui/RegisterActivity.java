@@ -26,7 +26,6 @@ import retrofit2.Response;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.ANDROID_APP;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
-import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
 import static com.gliesereum.coupler.util.Constants.USER_ID;
 import static com.gliesereum.coupler.util.Constants.USER_INFO;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
@@ -144,13 +143,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
                                 finish();
                             } else {
-                                if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
-                                    startActivity(new Intent(RegisterActivity.this, CarWashActivity.class));
-                                    finish();
-                                } else {
-                                    startActivity(new Intent(RegisterActivity.this, MapsActivity.class));
-                                    finish();
-                                }
+                                finish();
+//                                if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
+//                                    startActivity(new Intent(RegisterActivity.this, CarWashActivity.class));
+//                                    finish();
+//                                } else {
+//                                    startActivity(new Intent(RegisterActivity.this, MapsActivity.class));
+//                                    finish();
+//                                }
                             }
                         }
 

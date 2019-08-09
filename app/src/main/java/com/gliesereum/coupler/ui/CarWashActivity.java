@@ -225,6 +225,13 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                 setWorkTime();
                                 setPackages();
                                 setPhotoSlider();
+
+                                commentListAdapter = new CommentListAdapter(false, CarWashActivity.this);
+                                commentsItemList.addAll(carWash.getComments());
+                                commentListAdapter.setItems(commentsItemList);
+                                commentList.setAdapter(commentListAdapter);
+                                commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+
                                 setCommentList();
 
                                 for (int i = 0; i < carWash.getServicePrices().size(); i++) {
@@ -244,31 +251,34 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void setCommentList() {
-        commentsItemList.clear();
-        API.getMyComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId)
-                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CommentsItem>() {
-                    @Override
-                    public void onSuccessful(Call<CommentsItem> call, Response<CommentsItem> response) {
-                        commentListAdapter = new CommentListAdapter(true, CarWashActivity.this);
-                        commentsItemList.add(response.body());
-                        carWash.getComments().remove(response.body());
-                        commentsItemList.addAll(carWash.getComments());
-                        commentListAdapter.setItems(commentsItemList);
-                        commentList.setAdapter(commentListAdapter);
-                        commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
-                        sendCommentBtn.setVisibility(View.GONE);
-                    }
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            commentsItemList.clear();
+            API.getMyComment(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carWashId)
+                    .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CommentsItem>() {
+                        @Override
+                        public void onSuccessful(Call<CommentsItem> call, Response<CommentsItem> response) {
+                            commentListAdapter = new CommentListAdapter(true, CarWashActivity.this);
+                            commentsItemList.add(response.body());
+                            carWash.getComments().remove(response.body());
+                            commentsItemList.addAll(carWash.getComments());
+                            commentListAdapter.setItems(commentsItemList);
+                            commentList.setAdapter(commentListAdapter);
+                            commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+                            sendCommentBtn.setVisibility(View.GONE);
+                        }
 
-                    @Override
-                    public void onEmpty(Call<CommentsItem> call, Response<CommentsItem> response) {
-                        commentListAdapter = new CommentListAdapter(false, CarWashActivity.this);
-                        commentsItemList.addAll(carWash.getComments());
-                        commentListAdapter.setItems(commentsItemList);
-                        commentList.setAdapter(commentListAdapter);
-                        commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
-                        sendCommentBtn.setVisibility(View.VISIBLE);
-                    }
-                }));
+                        @Override
+                        public void onEmpty(Call<CommentsItem> call, Response<CommentsItem> response) {
+                            commentListAdapter = new CommentListAdapter(false, CarWashActivity.this);
+                            commentsItemList.addAll(carWash.getComments());
+                            commentListAdapter.setItems(commentsItemList);
+                            commentList.setAdapter(commentListAdapter);
+                            commentList.setLayoutManager(new LinearLayoutManager(CarWashActivity.this));
+                            sendCommentBtn.setVisibility(View.VISIBLE);
+                        }
+                    }));
+        }
+
     }
 
     private void setPhotoSlider() {

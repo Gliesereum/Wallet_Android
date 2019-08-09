@@ -3,7 +3,6 @@ package com.gliesereum.coupler.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -48,7 +47,7 @@ import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.KARMA_USER_RECORD;
 import static com.gliesereum.coupler.util.Constants.KARMA_USER_REMIND_RECORD;
-import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
+import static com.gliesereum.coupler.util.Constants.NEED_SELECT_CAR;
 import static com.gliesereum.coupler.util.Constants.REFRESH_EXPIRATION_DATE;
 import static com.gliesereum.coupler.util.Constants.REFRESH_TOKEN;
 import static com.gliesereum.coupler.util.Constants.REF_CODE;
@@ -198,11 +197,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
                             saveUserInfo(response.body());
-                            if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
-                                startActivity(new Intent(LoginActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                            } else {
-                                startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            if (FastSave.getInstance().getBoolean(NEED_SELECT_CAR, false)) {
+                                startActivity(new Intent(LoginActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                             }
+//                            if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
+//                                startActivity(new Intent(LoginActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+//                            } else {
+//                                startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+//                            }
                         }
                         finish();
                     }
@@ -253,6 +255,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             };
 
     public void getPhoneCode(String phone) {
+        ////////////////////////////////////////////////////
+        showCodeBlock();
+        setPhoneCodeLabel(phone);
+        startTimer();
+        ////////////////////////////////////////////////////
         API.getPhoneCode(phone)
                 .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<CodeResponse>() {
                     @Override
@@ -303,25 +310,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         codeLabel2.setText("+" + phone);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            return;
-        }
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        if (doubleBackToExitPressedOnce) {
+//            super.onBackPressed();
+//            Intent intent = new Intent(Intent.ACTION_MAIN);
+//            intent.addCategory(Intent.CATEGORY_HOME);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//            return;
+//        }
+//        this.doubleBackToExitPressedOnce = true;
+//        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                doubleBackToExitPressedOnce = false;
+//            }
+//        }, 2000);
+//    }
 
     TextWatcher phoneTextViewChangedListener = new TextWatcher() {
         @Override

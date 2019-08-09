@@ -3,6 +3,7 @@ package com.gliesereum.coupler.ui;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +38,8 @@ import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
-import static com.gliesereum.coupler.util.Constants.OPEN_SERVICE_FLAG;
+import static com.gliesereum.coupler.util.Constants.NEED_LOGIN_USER;
+import static com.gliesereum.coupler.util.Constants.UPDATE_CAR_LIST;
 
 //import com.appizona.yehiahd.fastsave.FastSave;
 
@@ -64,6 +66,7 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initData() {
+        FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
 
@@ -104,11 +107,15 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
             chooseCarBtn.setText("Пересесть на " + carsList.get(selectPosition).getBrand().getName());
         }
         Toast.makeText(CarListActivity.this, "Вы выбрали " + carsList.get(selectPosition).getBrand().getName(), Toast.LENGTH_SHORT).show();
-        if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
-            startActivity(new Intent(CarListActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-        } else {
-            startActivity(new Intent(CarListActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        if (FastSave.getInstance().getBoolean(NEED_LOGIN_USER, false)) {
+            Log.d(NEED_LOGIN_USER, "NEED_LOGIN_USER: " + FastSave.getInstance().getBoolean(NEED_LOGIN_USER, false));
+            finish();
         }
+//        if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
+//            startActivity(new Intent(CarListActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+//        } else {
+//            startActivity(new Intent(CarListActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+//        }
     }
 
     private void getAllCars() {
@@ -130,6 +137,7 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
                                         chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
                                         chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.SRC_OVER);
                                         chooseCarBtn.setText("Еду на " + carsList.get(selectPosition).getBrand().getName());
+
                                     }
                                     if (FastSave.getInstance().getString(CAR_ID, "").equals(carsList.get(0).getId())) {
                                         chooseCarBtn.setTextColor(getResources().getColor(R.color.black));
@@ -140,6 +148,9 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
                                         chooseCarBtn.setBackgroundTintMode(PorterDuff.Mode.ADD);
                                         chooseCarBtn.setText("Пересесть на " + carsList.get(0).getBrand().getName());
                                     }
+                                    splashTextView.setVisibility(View.GONE);
+                                    addFirstCarBtn.setVisibility(View.GONE);
+                                    chooseCarBtn.setVisibility(View.VISIBLE);
                                 }
                             }
 
@@ -224,4 +235,13 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
         public void onPageScrollStateChanged(int state) {
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (FastSave.getInstance().getBoolean(UPDATE_CAR_LIST, false)) {
+            getAllCars();
+            FastSave.getInstance().saveBoolean(UPDATE_CAR_LIST, false);
+        }
+    }
 }

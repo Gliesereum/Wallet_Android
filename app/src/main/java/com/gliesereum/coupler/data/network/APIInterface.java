@@ -181,6 +181,9 @@ public interface APIInterface {
     @GET("karma/v1/business/{carwashId}/comment/current-user")
     Call<CommentsItem> getMyComment(@Header("Authorization") String accessToken, @Path("carwashId") String id);
 
+    @GET("karma/v1/business/{carwashId}/comment")
+    Call<CommentsItem> getComments(@Path("carwashId") String id);
+
     @PUT("karma/v1/business/comment")
     Call<CommentsItem> editComment(@Header("Authorization") String accessToken, @Body CommentsItem orderBody);
 

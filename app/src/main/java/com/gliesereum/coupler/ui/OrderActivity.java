@@ -61,7 +61,10 @@ import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.coupler.util.Constants.FRIDAY;
+import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.MONDAY;
+import static com.gliesereum.coupler.util.Constants.NEED_LOGIN_USER;
+import static com.gliesereum.coupler.util.Constants.NEED_SELECT_CAR;
 import static com.gliesereum.coupler.util.Constants.ORDER_ACTIVITY;
 import static com.gliesereum.coupler.util.Constants.RECORD;
 import static com.gliesereum.coupler.util.Constants.SATURDAY;
@@ -95,6 +98,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private LinearLayout servicePriceItem;
     private Button orderButton;
     private TextView packageLabel;
+    private Button loginButton;
 
 
     @Override
@@ -141,8 +145,17 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         textView19 = findViewById(R.id.servicePriceLabel);
         servicePriceItem = findViewById(R.id.servicePriceItem);
         orderButton = findViewById(R.id.orderButton);
+        loginButton = findViewById(R.id.loginButton);
         orderButton.setOnClickListener(this);
+        loginButton.setOnClickListener(this);
         packageLabel = findViewById(R.id.packageLabel);
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            orderButton.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+        } else {
+            orderButton.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showTutorial() {
@@ -189,7 +202,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 //        List<AttributesItem> objectsList = FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class);
 //        List<ServiceClassItem> objectsList1 = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            if (!FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR") || FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes()) && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
+            if (!FastSave.getInstance().getBoolean(IS_LOGIN, false) || !FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR") || FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes()) && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
                 if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);
@@ -305,7 +318,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     }
                     priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
                     packageBlock.setVisibility(View.VISIBLE);
-                    textView19.setText("Дополнительные услуги");
+                    if (servicePriceItem.getChildCount() != 0) {
+                        textView19.setText("Дополнительные услуги");
+                    } else {
+                        textView19.setText("");
+                    }
                 });
                 packageScroll.addView(layout2);
                 ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(0));
@@ -346,6 +363,15 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.orderButton:
                 openPreOrderDialog();
+                break;
+            case R.id.loginButton:
+                FastSave.getInstance().saveBoolean(NEED_LOGIN_USER, true);
+                if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
+                    FastSave.getInstance().saveBoolean(NEED_SELECT_CAR, true);
+                } else {
+                    FastSave.getInstance().saveBoolean(NEED_SELECT_CAR, false);
+                }
+                startActivity(new Intent(OrderActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                 break;
         }
     }
@@ -513,5 +539,17 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
                     }
                 }));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            orderButton.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+        } else {
+            orderButton.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+        }
     }
 }
