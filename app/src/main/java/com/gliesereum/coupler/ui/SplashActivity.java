@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -220,7 +219,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     FastSave.getInstance().saveBoolean(IS_LOGIN, true);
                     getUserCodeAndScore();
-                    Toast.makeText(SplashActivity.this, "Refresh!", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SplashActivity.this, "Refresh!", Toast.LENGTH_SHORT).show();
                     setTokenInfo(response.body().getTokenInfo());
                     if (FastSave.getInstance().getString(USER_NAME, "").equals("") || FastSave.getInstance().getString(USER_SECOND_NAME, "").equals("")) {
                         startActivity(new Intent(SplashActivity.this, RegisterActivity.class));

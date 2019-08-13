@@ -43,6 +43,7 @@ import retrofit2.Response;
 import static com.gliesereum.coupler.util.Constants.ACCESS_EXPIRATION_DATE;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.KARMA_USER_RECORD;
@@ -192,13 +193,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 response.body().getUser().getLastName() == null ||
                                 response.body().getUser().getMiddleName() == null) {
                             saveUserInfo(response.body());
-                            startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                         } else {
                             FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
                             saveUserInfo(response.body());
                             if (FastSave.getInstance().getBoolean(NEED_SELECT_CAR, false)) {
                                 startActivity(new Intent(LoginActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                            } else {
+                                if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("")) {
+                                    startActivity(new Intent(LoginActivity.this, ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                } else {
+                                    startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                                }
                             }
 //                            if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
 //                                startActivity(new Intent(LoginActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));

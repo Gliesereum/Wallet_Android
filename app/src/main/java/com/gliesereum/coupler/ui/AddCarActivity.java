@@ -38,8 +38,11 @@ import retrofit2.Response;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.CAR_BODY;
+import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
 import static com.gliesereum.coupler.util.Constants.CAR_COLOR;
+import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_INTERIOR;
+import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
 import static com.gliesereum.coupler.util.Constants.CAR_WHEEL_RADIUS;
 import static com.gliesereum.coupler.util.Constants.UPDATE_CAR_LIST;
 
@@ -183,6 +186,12 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                                 selectedChip.add(chip);
                             }
                         }
+                        setFavoriteCar(response.body().getId());
+
+                        FastSave.getInstance().saveString(CAR_ID, response.body().getId());
+                        FastSave.getInstance().saveString(CAR_BRAND, response.body().getBrand().getName());
+                        FastSave.getInstance().saveString(CAR_MODEL, response.body().getModel().getName());
+
 
                         for (int i = 0; i < selectedChip.size(); i++) {
                             addClassService(response.body().getId(), mapClassServise.get(selectedChip.get(i).getText().toString()));
@@ -196,6 +205,21 @@ public class AddCarActivity extends AppCompatActivity implements View.OnClickLis
                         FastSave.getInstance().saveBoolean(UPDATE_CAR_LIST, true);
                         finish();
                         Toast.makeText(AddCarActivity.this, "Машина успешно добавлена", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onEmpty(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+
+                    }
+                }));
+    }
+
+    private void setFavoriteCar(String carId) {
+        API.setFavoriteCar(FastSave.getInstance().getString(ACCESS_TOKEN, ""), carId)
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<AllCarResponse>() {
+                    @Override
+                    public void onSuccessful(Call<AllCarResponse> call, Response<AllCarResponse> response) {
+
                     }
 
                     @Override

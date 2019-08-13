@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.okdroid.checkablechipview.CheckableChipView;
 import com.gliesereum.coupler.R;
+import com.gliesereum.coupler.adapter.WorkerListAdapter;
 import com.gliesereum.coupler.data.network.APIClient;
 import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
@@ -35,6 +40,8 @@ import com.gliesereum.coupler.data.network.json.filter.ServiceClassItem;
 import com.gliesereum.coupler.data.network.json.order.OrderBody;
 import com.gliesereum.coupler.data.network.json.order.OrderResponse;
 import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
+import com.gliesereum.coupler.data.network.json.worker_new.WorkerItem;
+import com.gliesereum.coupler.data.network.json.worker_new.WorkerResponse;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
 import com.gohn.nativedialog.ButtonType;
@@ -57,6 +64,7 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.CARWASH;
+import static com.gliesereum.coupler.util.Constants.CARWASH_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
@@ -73,7 +81,7 @@ import static com.gliesereum.coupler.util.Constants.THURSDAY;
 import static com.gliesereum.coupler.util.Constants.TUESDAY;
 import static com.gliesereum.coupler.util.Constants.WEDNESDAY;
 
-public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
+public class OrderActivity extends AppCompatActivity implements View.OnClickListener, WorkerListAdapter.ItemClickListener {
 
     private static final String TAG = "TAG";
     private APIInterface API;
@@ -99,6 +107,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private Button orderButton;
     private TextView packageLabel;
     private Button loginButton;
+    private Button chooseMasterBtn;
+    private WorkerListAdapter workerListAdapter;
+    private NDialog chooseWorkerDialog;
+    private List<WorkerItem> workerResponse = new ArrayList<>();
 
 
     @Override
@@ -117,6 +129,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
         initData();
         initView();
+        getAllWorkers();
         setPackages(carWash);
         showTutorial();
     }
@@ -134,9 +147,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
+        workerListAdapter = new WorkerListAdapter(OrderActivity.this);
+        workerListAdapter.setClickListener(OrderActivity.this);
         cardView2 = findViewById(R.id.cardView2);
         durationLabel = findViewById(R.id.durationLabel);
         priceLabel = findViewById(R.id.priceLabel);
+
         discountTextView = findViewById(R.id.discountTextView);
         horizontalScrollView = findViewById(R.id.horizontalScrollView);
         packageScroll = findViewById(R.id.packageScroll);
@@ -156,6 +172,43 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             orderButton.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
         }
+        chooseMasterBtn = findViewById(R.id.chooseMasterBtn);
+        chooseMasterBtn.setOnClickListener(this);
+        priceLabel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().equals("0")) {
+                    orderButton.setEnabled(false);
+                } else {
+                    orderButton.setEnabled(true);
+                }
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        chooseWorkerDialog.dismiss();
+        if (position == 0) {
+            orderBody.setWorkerId(null);
+            chooseMasterBtn.setText("Исполнитель: Любой мастер");
+        } else {
+            orderBody.setWorkerId(workerListAdapter.getItem(position).getId());
+            chooseMasterBtn.setText("Исполнитель: " + workerListAdapter.getItem(position).getUser().getFirstName());
+        }
+
     }
 
     private void showTutorial() {
@@ -193,6 +246,29 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     .build()
                     .show();
         }
+
+    }
+
+    private void getAllWorkers() {
+        API.getAllWorkersByBusiness(FastSave.getInstance().getString(CARWASH_ID, ""))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<WorkerResponse>() {
+                    @Override
+                    public void onSuccessful(Call<WorkerResponse> call, Response<WorkerResponse> response) {
+                        WorkerItem workerItem = null;
+                        workerResponse.add(workerItem);
+                        for (int i = 0; i < response.body().getContent().size(); i++) {
+                            if (response.body().getContent().get(i).getWorkingSpaceId() != null) {
+                                workerResponse.add(response.body().getContent().get(i));
+                            }
+                        }
+                        chooseMasterBtn.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onEmpty(Call<WorkerResponse> call, Response<WorkerResponse> response) {
+
+                    }
+                }));
 
     }
 
@@ -361,6 +437,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.chooseMasterBtn:
+                openChooseMasterDialog();
+                break;
             case R.id.orderButton:
                 openPreOrderDialog();
                 break;
@@ -374,6 +453,25 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(new Intent(OrderActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                 break;
         }
+    }
+
+    private void openChooseMasterDialog() {
+        chooseWorkerDialog = new NDialog(OrderActivity.this, ButtonType.NO_BUTTON);
+        chooseWorkerDialog.isCancelable(true);
+        chooseWorkerDialog.setCustomView(R.layout.worker_dialog);
+        List<View> childViews = chooseWorkerDialog.getCustomViewChildren();
+        for (View childView : childViews) {
+            switch (childView.getId()) {
+                case R.id.recyclerView:
+                    RecyclerView recyclerView = childView.findViewById(R.id.recyclerView);
+                    workerListAdapter.clearItems();
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    recyclerView.setAdapter(workerListAdapter);
+                    workerListAdapter.setItems(workerResponse);
+                    break;
+            }
+        }
+        chooseWorkerDialog.show();
     }
 
     private boolean checkCarWashWorkTime() {
@@ -462,7 +560,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void getRecordFreeTime(boolean nowFlag) {
-        orderBody.setWorkingSpaceId(null);
+//        orderBody.setWorkingSpaceId(null);
         orderBody.setTargetId(FastSave.getInstance().getString(CAR_ID, ""));
         orderBody.setBusinessId(carWash.getId());
         if (nowFlag) {

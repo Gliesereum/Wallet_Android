@@ -57,7 +57,7 @@
     <string name="error_1426">Выберите пакет либо услугу</string>
     <string name="error_1427">Package not found </string>
 
-    <string name="error_1428">CarWash don\'t have this working space </string>
+    <string name="error_1428">Бизнес не имеет этого рабочего пространства</string>
     <string name="error_1429">Working space id is null </string>
     <string name="error_1430">Не достаточно свободного вермени для выполнения всех услуг в Вашем заказе. </string>
     <string name="error_1431">Record not found</string>
@@ -82,6 +82,8 @@
 
 
     <string name="error_1450">Media not found by id</string>
+
+    <string name="error_1492">Бизнес не имеет работников</string>
 
     <string name="error_1120">Value phone number is empty</string>
     <string name="error_1121">Value code by phone is empty</string>

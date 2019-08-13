@@ -143,7 +143,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 startActivity(new Intent(RegisterActivity.this, CarListActivity.class));
                                 finish();
                             } else {
-                                finish();
+                                if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("")) {
+                                    startActivity(new Intent(RegisterActivity.this, ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                    finish();
+                                } else {
+                                    finish();
+                                }
 //                                if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
 //                                    startActivity(new Intent(RegisterActivity.this, CarWashActivity.class));
 //                                    finish();

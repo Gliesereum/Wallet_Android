@@ -28,6 +28,7 @@ import com.gliesereum.coupler.data.network.json.service.ServiceResponse;
 import com.gliesereum.coupler.data.network.json.status.StatusResponse;
 import com.gliesereum.coupler.data.network.json.user.User;
 import com.gliesereum.coupler.data.network.json.user.UserResponse;
+import com.gliesereum.coupler.data.network.json.worker_new.WorkerResponse;
 
 import java.util.List;
 
@@ -49,6 +50,9 @@ public interface APIInterface {
 
     @GET("karma/v1/worker/by-id")
     Call<WorkersItem> getWorkerById(@Header("Authorization") String accessToken, @Query("id") String id);
+
+    @GET("karma/v1/worker/by-business")
+    Call<WorkerResponse> getAllWorkersByBusiness(@Query("businessId") String businessId);
 
     //STATUS
     @GET("status")

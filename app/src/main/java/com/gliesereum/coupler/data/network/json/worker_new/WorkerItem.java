@@ -39,6 +39,17 @@ public class WorkerItem {
     @SerializedName("user")
     private User user;
 
+    @SerializedName("workerId")
+    private String workerId;
+
+    public String getWorkerId() {
+        return workerId;
+    }
+
+    public void setWorkerId(String workerId) {
+        this.workerId = workerId;
+    }
+
     public void setComments(List<Object> comments) {
         this.comments = comments;
     }

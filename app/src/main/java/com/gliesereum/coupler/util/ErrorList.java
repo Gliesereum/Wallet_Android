@@ -113,6 +113,8 @@ public class ErrorList {
         errorMap.put(1513, context.getResources().getString(R.string.error_1513));
         errorMap.put(1514, context.getResources().getString(R.string.error_1514));
 
+        errorMap.put(1492, context.getResources().getString(R.string.error_1492));
+
     }
 
 

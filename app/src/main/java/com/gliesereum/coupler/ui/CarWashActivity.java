@@ -164,6 +164,9 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
 //        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
         carWashRating = findViewById(R.id.carWashRating);
         nowStatus = findViewById(R.id.nowStatus);
+        if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+            sendCommentBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override
