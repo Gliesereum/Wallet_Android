@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'org.glassfish:javax.annotation:10.0-b28'
 
+    implementation 'com.github.msayan:tutorial-view:v1.0.10'
+    implementation 'za.co.riggaroo:materialhelptutorial:1.6.0'
+
 //    implementation 'com.github.yehiahd:FastSave-Android:1.0.6'
     //https://android-arsenal.com/details/1/6875
     implementation 'com.github.joielechong:countrycodepicker:2.1.8'

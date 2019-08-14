@@ -1,5 +1,6 @@
 package com.gliesereum.coupler.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
 import com.gliesereum.coupler.data.network.json.businesscategory.BusinesCategoryResponse;
 import com.gliesereum.coupler.util.FastSave;
+import com.gliesereum.coupler.util.Tutorial;
 import com.gliesereum.coupler.util.Util;
 
 import java.util.List;
@@ -43,12 +45,15 @@ public class ChooseServiceNewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_service_new);
+        FastSave.init(getApplicationContext());
+//        if (FastSave.getInstance().getBoolean(SHOW_TUTORIAL, true)){
+        startActivity(new Intent(this, Tutorial.class));
+//        }
         initView();
         getBusinessCategory();
     }
 
     private void initView() {
-        FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         toolbar = findViewById(R.id.toolbar);

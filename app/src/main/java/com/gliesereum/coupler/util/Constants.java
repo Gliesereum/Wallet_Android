@@ -41,6 +41,8 @@ public class Constants {
     public static final String CAR_BODY = "CAR_BODY";
     public static final String CAR_COLOR = "CAR_COLOR";
 
+    public static final String SHOW_TUTORIAL = "SHOW_TUTORIAL";
+
     public static final String UPDATE_MAP = "UPDATE_MAP";
     public static final String FILTER_CARWASH_BODY = "FILTER_CARWASH_BODY";
     public static final String SERVICE_ID_LIST = "SERVICE_ID_LIST";

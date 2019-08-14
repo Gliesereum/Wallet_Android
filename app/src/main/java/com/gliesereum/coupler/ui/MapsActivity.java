@@ -1,6 +1,7 @@
 package com.gliesereum.coupler.ui;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -65,6 +66,7 @@ import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import za.co.riggaroo.materialhelptutorial.TutorialItem;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
@@ -114,6 +116,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         setupWindowAnimations();
         initData();
         initView();
@@ -127,6 +130,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getAllCars();
             }
         }
+    }
+
+    private ArrayList<TutorialItem> getTutorialItems(Context context) {
+        TutorialItem tutorialItem1 = new TutorialItem("slide_1_african_story_books", "slide_1_african_story_books_subtitle",
+                R.color.black, R.drawable.ic_icon_step_01, R.drawable.ic_icon_step_02);
+
+        // You can also add gifs, [IN BETA YET] (because Glide is awesome!)
+//        TutorialItem tutorialItem1 = new TutorialItem(context.getString(R.string.slide_1_african_story_books), context.getString(R.string.slide_1_african_story_books_subtitle),
+//                R.color.slide_1, R.drawable.gif_drawable, true);
+
+
+        ArrayList<TutorialItem> tutorialItems = new ArrayList<>();
+        tutorialItems.add(tutorialItem1);
+
+        return tutorialItems;
     }
 
     private void getBonusScore() {

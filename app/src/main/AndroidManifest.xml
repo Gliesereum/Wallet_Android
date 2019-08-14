@@ -49,6 +49,9 @@
             android:name=".ui.SingleRecordActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".util.Tutorial"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.CarListActivity"
             android:screenOrientation="portrait" />
 
@@ -99,13 +102,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".service.RecordService"
-            android:enabled="true"
-            android:exported="true" />
-
-        <receiver android:name=".service.RestartServiceReceiver" />
     </application>
 
 </manifest>
