@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.adapter.NewRecordListAdapter;
@@ -59,6 +60,8 @@ public class RecordListActivity extends AppCompatActivity {
     private String TAG = "activityTest";
     private boolean loadingFlag = true;
     private Integer page = 0;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
 
 
@@ -142,6 +145,23 @@ public class RecordListActivity extends AppCompatActivity {
 //        recyclerView.setLayoutManager(linearLayoutManager);
 //        recordListAdapter = new RecordListAdapter(RecordListActivity.this);
 //        recyclerView.setAdapter(recordListAdapter);
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+//                startActivity(new Intent(MainActivity.this, MainActivity.class));
+                newRecordListAdapter.removeAll();
+                page = 0;
+                getAllRecord();
+//                finish();
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         newRecordListAdapter = new NewRecordListAdapter(this);
