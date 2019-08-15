@@ -21,7 +21,7 @@ import com.gliesereum.coupler.data.network.json.notificatoin.RegistrationTokenDe
 import com.gliesereum.coupler.data.network.json.order.OrderBody;
 import com.gliesereum.coupler.data.network.json.order.OrderResponse;
 import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
-import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
+import com.gliesereum.coupler.data.network.json.record_new.RecordItem;
 import com.gliesereum.coupler.data.network.json.record_new.RecordNewResponse;
 import com.gliesereum.coupler.data.network.json.record_new.WorkersItem;
 import com.gliesereum.coupler.data.network.json.service.ServiceResponse;
@@ -167,13 +167,13 @@ public interface APIInterface {
     Call<OrderResponse> preOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @POST("karma/v1/record")
-    Call<ContentItem> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
+    Call<RecordItem> doOrder(@Header("Authorization") String accessToken, @Body OrderBody orderBody);
 
     @GET("karma/v1/record/by-current-user")
-    Call<RecordNewResponse> getAllRecord(@Header("Authorization") String accessToken);
+    Call<RecordNewResponse> getAllRecord(@Header("Authorization") String accessToken, @Query("page") Integer page, @Query("size") Integer size);
 
     @GET("karma/v1/record/{recordId}")
-    Call<ContentItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
+    Call<RecordItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
 
     @PUT("karma/v1/record/canceled-record")
     Call<AllRecordResponse> canceleRecord(@Header("Authorization") String accessToken, @Query("idRecord") String idRecord, @Query("message") String message);

@@ -53,6 +53,11 @@ public class ErrorHandler {
                 activity.startActivity(new Intent(context, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                 activity.finish();
                 break;
+            case 1102:
+                FastSave.getInstance().saveBoolean(IS_LOGIN, false);
+                activity.startActivity(new Intent(context, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                activity.finish();
+                break;
             default:
                 try {
                     new LottieAlertDialog.Builder(context, DialogTypes.TYPE_WARNING)

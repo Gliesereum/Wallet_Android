@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gliesereum.coupler.R;
-import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
+import com.gliesereum.coupler.data.network.json.record_new.RecordItem;
 import com.gliesereum.coupler.ui.SingleRecordActivity;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
@@ -32,7 +32,7 @@ import static com.gliesereum.coupler.util.Constants.WAITING;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.ViewHolder> {
 
-    private List<ContentItem> allRecordList = new ArrayList<>();
+    private List<RecordItem> allRecordList = new ArrayList<>();
     private Context context;
 
     @NonNull
@@ -41,7 +41,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_item, parent, false);
         view.setOnClickListener(v -> {
-            ContentItem allRecordResponse = new ContentItem();
+            RecordItem allRecordResponse = new RecordItem();
             allRecordResponse.setId(((TextView) v.findViewById(R.id.recordId)).getText().toString());
             FastSave.getInstance().saveObject(RECORD, allRecordList.get(allRecordList.indexOf(allRecordResponse)));
             Intent intent = new Intent(context, SingleRecordActivity.class);
@@ -81,7 +81,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
             statusLabel = itemView.findViewById(R.id.statusLabel);
         }
 
-        public void bind(ContentItem recordInfo) {
+        public void bind(RecordItem recordInfo) {
             dataTextView.setText(Util.getStringDate(recordInfo.getBegin()));
             timeTextView.setText(Util.getStringTime(recordInfo.getBegin()));
             if (recordInfo.getStatusRecord().equals(CANCELED)) {
@@ -115,7 +115,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.Vi
         }
     }
 
-    public void setItems(List<ContentItem> record) {
+    public void setItems(List<RecordItem> record) {
         allRecordList.addAll(record);
         notifyDataSetChanged();
     }

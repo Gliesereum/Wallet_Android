@@ -1,132 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+<layout>
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@color/white"
+        android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/dataTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
-                app:layout_constraintStart_toEndOf="@+id/carWashLogo"
-                app:layout_constraintTop_toBottomOf="@+id/carWashName"
-                tools:text="date" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/dataTextView"
-                app:layout_constraintEnd_toStartOf="@+id/priceTextView"
-                app:layout_constraintStart_toEndOf="@+id/dataTextView"
-                app:layout_constraintTop_toBottomOf="@+id/carWashName"
-                tools:text="time" />
+                <TextView
+                    android:id="@+id/dataTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/textView"
+                    app:layout_constraintStart_toEndOf="@+id/carWashLogo"
+                    app:layout_constraintTop_toBottomOf="@+id/carWashName"
+                    tools:text="date" />
 
-            <TextView
-                android:id="@+id/priceTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carWashName"
-                tools:text="price" />
+                <TextView
+                    android:id="@+id/timeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/dataTextView"
+                    app:layout_constraintEnd_toStartOf="@+id/priceTextView"
+                    app:layout_constraintStart_toEndOf="@+id/dataTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/carWashName"
+                    tools:text="time" />
 
-            <TextView
-                android:id="@+id/carWashName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintStart_toEndOf="@+id/carWashLogo"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="carWashName" />
+                <TextView
+                    android:id="@+id/priceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/carWashName"
+                    tools:text="price" />
 
-            <ImageView
-                android:id="@+id/carWashLogo"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_logo_coupler" />
+                <TextView
+                    android:id="@+id/carWashName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/carWashLogo"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="carWashName" />
 
-            <TextView
-                android:id="@+id/recordId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/carWashLogo"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_logo_coupler" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="Статус:"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/statusLabel"
-                app:layout_constraintStart_toEndOf="@+id/carWashLogo"
-                app:layout_constraintTop_toTopOf="@+id/statusLabel" />
+                <TextView
+                    android:id="@+id/recordId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/statusLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:textColor="@color/accent"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/timeTextView"
-                tools:text="Создан" />
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Статус:"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/statusLabel"
+                    app:layout_constraintStart_toEndOf="@+id/carWashLogo"
+                    app:layout_constraintTop_toTopOf="@+id/statusLabel" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/statusLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/accent"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView"
+                    app:layout_constraintTop_toBottomOf="@+id/timeTextView"
+                    tools:text="Создан" />
 
-    </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

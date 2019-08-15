@@ -8,7 +8,7 @@ import java.util.Objects;
 import javax.annotation.Generated;
 
 @Generated("com.robohorse.robopojogenerator")
-public class ContentItem {
+public class RecordItem {
 
     @SerializedName("lastName")
     private String lastName;
@@ -333,7 +333,7 @@ public class ContentItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ContentItem that = (ContentItem) o;
+        RecordItem that = (RecordItem) o;
         return id.equals(that.id);
     }
 

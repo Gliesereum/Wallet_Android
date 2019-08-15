@@ -23,7 +23,7 @@ import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
 import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.record.AllRecordResponse;
-import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
+import com.gliesereum.coupler.data.network.json.record_new.RecordItem;
 import com.gliesereum.coupler.data.network.json.record_new.WorkersItem;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
@@ -55,7 +55,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
     private CustomCallback customCallback;
     private Button goRoad;
     private String TAG = "TAG";
-    private ContentItem record;
+    private RecordItem record;
     private ConstraintLayout packageBlock;
     private LinearLayout packageItems;
     private ConstraintLayout servicePriceBlock;
@@ -105,9 +105,9 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
 
     private void getSingleRecord(String objectId) {
         API.getSingleRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), objectId)
-                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<ContentItem>() {
+                .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<RecordItem>() {
                     @Override
-                    public void onSuccessful(Call<ContentItem> call, Response<ContentItem> response) {
+                    public void onSuccessful(Call<RecordItem> call, Response<RecordItem> response) {
                         record = response.body();
                         getDeviceLocation();
                         getCar(record.getTargetId());
@@ -115,7 +115,7 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
                     }
 
                     @Override
-                    public void onEmpty(Call<ContentItem> call, Response<ContentItem> response) {
+                    public void onEmpty(Call<RecordItem> call, Response<RecordItem> response) {
 
                     }
                 }));
@@ -125,10 +125,10 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
         FastSave.init(getApplicationContext());
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
-        record = FastSave.getInstance().getObject(RECORD, ContentItem.class);
+        record = FastSave.getInstance().getObject(RECORD, RecordItem.class);
     }
 
-    private void fillActivity(ContentItem record) {
+    private void fillActivity(RecordItem record) {
         getWorker();
         date.setText(Util.getStringDate(record.getBegin()));
         time.setText(Util.getStringTime(record.getBegin()));

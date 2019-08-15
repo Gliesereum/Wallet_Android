@@ -39,7 +39,7 @@ import com.gliesereum.coupler.data.network.json.filter.AttributesItem;
 import com.gliesereum.coupler.data.network.json.filter.ServiceClassItem;
 import com.gliesereum.coupler.data.network.json.order.OrderBody;
 import com.gliesereum.coupler.data.network.json.order.OrderResponse;
-import com.gliesereum.coupler.data.network.json.record_new.ContentItem;
+import com.gliesereum.coupler.data.network.json.record_new.RecordItem;
 import com.gliesereum.coupler.data.network.json.worker_new.WorkerItem;
 import com.gliesereum.coupler.data.network.json.worker_new.WorkerResponse;
 import com.gliesereum.coupler.util.FastSave;
@@ -599,9 +599,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                         @Override
                                         public void onClick(View v) {
                                             API.doOrder(FastSave.getInstance().getString(ACCESS_TOKEN, ""), orderBody)
-                                                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<ContentItem>() {
+                                                    .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<RecordItem>() {
                                                         @Override
-                                                        public void onSuccessful(Call<ContentItem> call, Response<ContentItem> response) {
+                                                        public void onSuccessful(Call<RecordItem> call, Response<RecordItem> response) {
                                                             nDialog.dismiss();
                                                             Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
 //                                                            startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
@@ -611,7 +611,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                                         }
 
                                                         @Override
-                                                        public void onEmpty(Call<ContentItem> call, Response<ContentItem> response) {
+                                                        public void onEmpty(Call<RecordItem> call, Response<RecordItem> response) {
 
                                                         }
                                                     }));
