@@ -44,7 +44,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:spinnerMode="dialog"
                 app:ms_alignLabels="false"
-                app:ms_hint="Марка авто" />
+                app:ms_hint="Марка" />
 
             <!--app:ms_hintView="@layout/car_hint_item_layout"-->
             <!--app:ms_dropDownHintView="@layout/car_dropdown_hint_item_layout"-->
@@ -74,7 +74,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/brandSpinner"
                 app:ms_alignLabels="false"
-                app:ms_hint="Модель авто" />
+                app:ms_hint="Модель" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/yearSpinner"
@@ -88,7 +88,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/modelSpinner"
                 app:ms_alignLabels="false"
-                app:ms_hint="Год выпуска авто" />
+                app:ms_hint="Год выпуска" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/carBodySpinner"

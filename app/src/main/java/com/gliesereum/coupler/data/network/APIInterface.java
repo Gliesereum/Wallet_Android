@@ -71,7 +71,7 @@ public interface APIInterface {
 
     //ACCOUNT
     @GET("account/v1/phone/code")
-    Call<CodeResponse> getPhoneCode(@Query("phone") String phone);
+    Call<CodeResponse> getPhoneCode(@Query("phone") String phone, @Query("dev") Boolean dev);
 
     @POST("account/v1/auth/signin")
     Call<UserResponse> signIn(@Body SigninBody signinBody);
@@ -172,9 +172,6 @@ public interface APIInterface {
     @GET("karma/v1/record/by-current-user")
     Call<RecordNewResponse> getAllRecord(@Header("Authorization") String accessToken, @Query("page") Integer page, @Query("size") Integer size);
 
-    @GET("karma/v1/record/{recordId}")
-    Call<RecordItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
-
     @PUT("karma/v1/record/canceled-record")
     Call<AllRecordResponse> canceleRecord(@Header("Authorization") String accessToken, @Query("idRecord") String idRecord, @Query("message") String message);
 
@@ -187,6 +184,9 @@ public interface APIInterface {
 
     @GET("karma/v1/business/{carwashId}/comment")
     Call<CommentsItem> getComments(@Path("carwashId") String id);
+
+    @GET("karma/v1/record/{recordId}")
+    Call<RecordItem> getSingleRecord(@Header("Authorization") String accessToken, @Path("recordId") String recordId);
 
     @PUT("karma/v1/business/comment")
     Call<CommentsItem> editComment(@Header("Authorization") String accessToken, @Body CommentsItem orderBody);

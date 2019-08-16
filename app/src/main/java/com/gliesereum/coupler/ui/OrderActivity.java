@@ -215,20 +215,20 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         if (FastSave.getInstance().getBoolean(ORDER_ACTIVITY, true)) {
             new GuideView.Builder(OrderActivity.this)
                     .setTitle("Информация о заказе")
-                    .setContentText("Тут отображается время и цена выбранных вами услуг")
+                    .setContentText("Здесь будет отображаться  длительность и стоимость выбранных вами услуг")
                     .setTargetView(cardView2)
                     .setDismissType(DismissType.anywhere)
                     .setGuideListener(view -> new GuideView.Builder(OrderActivity.this)
                             .setTitle("Пакеты услуг")
-                            .setContentText("Ознакомтесь с пакетами услуг тут")
+                            .setContentText("Здесь вы можете ознакомиться с пакетами услуг")
                             .setTargetView(horizontalScrollView)
                             .setDismissType(DismissType.anywhere)
                             .setGuideListener(new GuideListener() {
                                 @Override
                                 public void onDismiss(View view) {
                                     new GuideView.Builder(OrderActivity.this)
-                                            .setTitle("Заказать мойку")
-                                            .setContentText("После того как Вы все выбрали, можете совершить заказ. У Вас будет возможность совершить заказ на ближайшее вермя или забронировать на удобное для Вас")
+                                            .setTitle("Сделать заказ")
+                                            .setContentText("Здесь вы можете создать заказ")
                                             .setTargetView(orderButton)
                                             .setDismissType(DismissType.anywhere)
                                             .setGuideListener(new GuideListener() {
@@ -524,7 +524,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     if (Util.checkCarWashWorkTime(carWash)) {
                         preOrderLabel1.setText("У Вас есть возможность заказать мойку на ближайшее или на выбраное время");
                     } else {
-                        preOrderLabel1.setText("Мойка сейчас не работает. у  Вас есть возможность заказать мойку только на выбранное время");
+                        preOrderLabel1.setText("Мойка сейчас не работает. Пожалуйста, выберите другое время для заказа услуги");
                     }
                     break;
                 case R.id.preOrderLabel2:

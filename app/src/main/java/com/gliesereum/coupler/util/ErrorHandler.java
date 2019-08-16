@@ -61,7 +61,7 @@ public class ErrorHandler {
             default:
                 try {
                     new LottieAlertDialog.Builder(context, DialogTypes.TYPE_WARNING)
-                            .setTitle("Предупреждение")
+                            .setTitle("Внимание")
                             .setDescription(ErrorList.init(context).getErrorMessage(errorCode))
                             .build()
                             .show();

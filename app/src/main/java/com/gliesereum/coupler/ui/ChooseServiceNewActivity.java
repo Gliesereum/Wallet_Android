@@ -30,6 +30,7 @@ import static com.gliesereum.coupler.util.Constants.SERVICE_BEAUTY_SALONS_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_SERVICE_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_WASH_ID;
 import static com.gliesereum.coupler.util.Constants.SERVICE_TIRE_FITTING_ID;
+import static com.gliesereum.coupler.util.Constants.SHOW_TUTORIAL;
 import static com.gliesereum.coupler.util.Constants.TIRE_FITTING;
 
 public class ChooseServiceNewActivity extends AppCompatActivity {
@@ -46,9 +47,9 @@ public class ChooseServiceNewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_service_new);
         FastSave.init(getApplicationContext());
-//        if (FastSave.getInstance().getBoolean(SHOW_TUTORIAL, true)){
+        if (FastSave.getInstance().getBoolean(SHOW_TUTORIAL, true)) {
         startActivity(new Intent(this, Tutorial.class));
-//        }
+        }
         initView();
         getBusinessCategory();
     }

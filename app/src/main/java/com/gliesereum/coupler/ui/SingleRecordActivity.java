@@ -194,7 +194,6 @@ public class SingleRecordActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-
     private void initView() {
         goRoad = findViewById(R.id.goRoad);
         cancelRecordBtn = findViewById(R.id.cancelRecord);

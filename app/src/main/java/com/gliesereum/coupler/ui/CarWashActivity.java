@@ -484,21 +484,21 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private void showTutorial() {
         if (FastSave.getInstance().getBoolean(CARWASHA_CTIVITY, true)) {
             new GuideView.Builder(CarWashActivity.this)
-                    .setTitle("Расписание")
-                    .setContentText("Тут Вы можете посмотреть расписание")
+                    .setTitle("Режим работы")
+                    .setContentText("Здесь вы можете узнать режим режим работы компании")
                     .setTargetView(workTimeImage)
                     .setDismissType(DismissType.anywhere)
                     .setGuideListener(view1 -> new GuideView.Builder(CarWashActivity.this)
-                            .setTitle("Фото")
-                            .setContentText("Тут можно посмотреть фотографии")
+                            .setTitle("Галерея")
+                            .setContentText("Здесь можно посмотреть фото компании")
                             .setTargetView(photoScrollView)
                             .setDismissType(DismissType.anywhere)
                             .setGuideListener(new GuideListener() {
                                 @Override
                                 public void onDismiss(View view1) {
                                     new GuideView.Builder(CarWashActivity.this)
-                                            .setTitle("Заказать")
-                                            .setContentText("Перейти к заказу")
+                                            .setTitle("Услуги")
+                                            .setContentText("Здесь вы можете посмотреть и выбрать услуги")
                                             .setTargetView(orderButton)
                                             .setDismissType(DismissType.anywhere)
                                             .setGuideListener(new GuideListener() {

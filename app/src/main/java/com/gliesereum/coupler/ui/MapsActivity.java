@@ -220,7 +220,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             alertDialog = new LottieAlertDialog.Builder(this, DialogTypes.TYPE_SUCCESS)
                     .setTitle("Тестовый режим")
                     .setDescription("В данный момент интерактивная карта запущена в тестовом режиме. Услуги указанных компаний недоступны. Мы работаем над тем, чтобы как можно скорее наполнить карту нужными вам сервисами.")
-                    .setPositiveText("Понятно")
+                    .setPositiveText("Спасибо, мне понятно ")
                     .setPositiveListener(lottieAlertDialog -> {
                         FastSave.getInstance().saveBoolean(FIRST_START, false);
                         alertDialog.dismiss();

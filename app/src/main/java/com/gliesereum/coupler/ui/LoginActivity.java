@@ -267,7 +267,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setPhoneCodeLabel(phone);
         startTimer();
         ////////////////////////////////////////////////////
-        API.getPhoneCode(phone)
+        API.getPhoneCode(phone, false)
                 .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<CodeResponse>() {
                     @Override
                     public void onSuccessful(Call<CodeResponse> call, Response<CodeResponse> response) {

@@ -120,7 +120,6 @@ public class RecordListActivity extends AppCompatActivity {
 
                         @Override
                         public void onEmpty(Call<RecordNewResponse> call, Response<RecordNewResponse> response) {
-                            splashTextView.setVisibility(View.VISIBLE);
                             newRecordListAdapter.hiddenLoading();
                             FastSave.getInstance().saveBoolean(RECORD_LIST_ACTIVITY, true);
                         }
@@ -135,7 +134,7 @@ public class RecordListActivity extends AppCompatActivity {
         customCallback = new CustomCallback(this, this);
         errorHandler = new ErrorHandler(this, this);
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Список записей");
+        toolbar.setTitle("Заказы");
         setSupportActionBar(toolbar);
         splashTextView = findViewById(R.id.splashTextView);
         recyclerView = findViewById(R.id.recyclerView);

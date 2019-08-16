@@ -89,11 +89,11 @@ public class Util {
     public void addNavigation() {
         new DrawerBuilder().withActivity(activity).build();
         PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта" + FastSave.getInstance().getString(BUSINESS_CATEGORY_NAME, "")).withIdentifier(1).withTag("maps").withIcon(R.drawable.ic_outline_explore_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem serviceItem = new SecondaryDrawerItem().withName("Список сервисов").withIdentifier(8).withSelectable(false).withTag("service").withSelectable(false).withIcon(R.drawable.ic_outline_store_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem serviceItem = new SecondaryDrawerItem().withName("Категории компаний").withIdentifier(8).withSelectable(false).withTag("service").withSelectable(false).withIcon(R.drawable.ic_outline_store_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withSelectable(false).withIcon(R.drawable.ic_outline_directions_car_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Список заказов").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.ic_outline_list_alt_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой Профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.ic_outline_account_circle_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem referralItem = new SecondaryDrawerItem().withName("Привлечь друга").withIdentifier(9).withTag("referral").withSelectable(false).withIcon(R.drawable.ic_outline_person_add_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Заказы").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.ic_outline_list_alt_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.ic_outline_account_circle_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem referralItem = new SecondaryDrawerItem().withName("Пригласить друга").withIdentifier(9).withTag("referral").withSelectable(false).withIcon(R.drawable.ic_outline_person_add_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О приложении").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_outline_info_24px).withIconTintingEnabled(true);
@@ -131,7 +131,7 @@ public class Util {
             profileDrawerItem.withIcon(FastSave.getInstance().getString(USER_AVATAR, ""));
         }
         if (FastSave.getInstance().getInt(REF_SCORE, 0) != 0) {
-            profileDrawerItem.withEmail("Балы: " + FastSave.getInstance().getInt(REF_SCORE, 0));
+            profileDrawerItem.withEmail("Баллы: " + FastSave.getInstance().getInt(REF_SCORE, 0));
         } else {
             profileDrawerItem.withEmail("Балы: 0");
         }
@@ -197,7 +197,7 @@ public class Util {
                         }
                         alertDialog = new LottieAlertDialog.Builder(activity, DialogTypes.TYPE_QUESTION)
                                 .setTitle("Выход")
-                                .setDescription("Вы действительно хотите выйти со своего профиля?")
+                                .setDescription("Вы действительно хотите выйти из Coupler?")
                                 .setPositiveText("Да")
                                 .setNegativeText("Нет")
                                 .setPositiveButtonColor(activity.getResources().getColor(R.color.md_red_A200))

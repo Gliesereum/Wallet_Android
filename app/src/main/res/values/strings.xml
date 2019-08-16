@@ -83,7 +83,7 @@
 
     <string name="error_1450">Media not found by id</string>
 
-    <string name="error_1492">Бизнес не имеет работников</string>
+    <string name="error_1492">В этой компании нет возможности записаться на услуги онлайн. Вы можете сделать заказ по телефону</string>
 
     <string name="error_1120">Value phone number is empty</string>
     <string name="error_1121">Value code by phone is empty</string>
@@ -120,6 +120,8 @@
 
     <string name="moneyUNICODE">&#128176;</string>
     <string name="timeUNICODE">&#8987;</string>
+    <string name="smileUNICODE">&#129300;</string>
+    <string name="checkUNICODE">&#10004;</string>
     <string name="tagKeyDuration">tagKeyDuration</string>
     <string name="tagKeyPrice">tagKeyPrice</string>
 
