@@ -30,9 +30,9 @@
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -109,8 +109,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="15dp"
                         android:layout_marginStart="8dp"
-                        app:gap="10dp"
                         android:layout_marginTop="8dp"
+                        app:gap="10dp"
                         app:layout_constraintStart_toEndOf="@+id/logoImageView"
                         app:layout_constraintTop_toBottomOf="@+id/name"
                         app:srb_clearRatingEnabled="false"
@@ -164,7 +164,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionDropdown"
+                app:layout_constraintTop_toBottomOf="@id/descriptionDropdown"
                 tools:visibility="gone">
 
                 <LinearLayout
@@ -185,7 +185,7 @@
                 app:content_text_color="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                app:layout_constraintTop_toBottomOf="@id/connectBtn"
                 app:title_text="Описание мойки"
                 app:title_text_color="@color/black" />
 
@@ -235,6 +235,19 @@
 
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <Button
+                android:id="@+id/connectBtn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Связаться"
+                android:textAllCaps="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

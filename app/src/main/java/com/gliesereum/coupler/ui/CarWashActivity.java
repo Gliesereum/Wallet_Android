@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,6 +116,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private SmartRatingBar carWashRating;
     private NDialog commentDialog;
     private TextView nowStatus;
+    private Button connectBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +169,15 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             sendCommentBtn.setVisibility(View.GONE);
         }
+        connectBtn = findViewById(R.id.connectBtn);
+        connectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:+" + carWash.getPhone()));//change the number
+                startActivity(callIntent);
+            }
+        });
     }
 
     @Override

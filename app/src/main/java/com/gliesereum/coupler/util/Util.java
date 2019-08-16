@@ -89,7 +89,7 @@ public class Util {
     public void addNavigation() {
         new DrawerBuilder().withActivity(activity).build();
         PrimaryDrawerItem mapsItem = new PrimaryDrawerItem().withName("Карта" + FastSave.getInstance().getString(BUSINESS_CATEGORY_NAME, "")).withIdentifier(1).withTag("maps").withIcon(R.drawable.ic_outline_explore_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem serviceItem = new SecondaryDrawerItem().withName("Категории компаний").withIdentifier(8).withSelectable(false).withTag("service").withSelectable(false).withIcon(R.drawable.ic_outline_store_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem serviceItem = new SecondaryDrawerItem().withName("Категории").withIdentifier(8).withSelectable(false).withTag("service").withSelectable(false).withIcon(R.drawable.ic_outline_store_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem car_listItem = new SecondaryDrawerItem().withName("Список авто").withIdentifier(2).withTag("car_list").withSelectable(false).withIcon(R.drawable.ic_outline_directions_car_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Заказы").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.ic_outline_list_alt_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.ic_outline_account_circle_24px).withIconTintingEnabled(true);

@@ -3,6 +3,7 @@ package com.gliesereum.coupler.ui;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,6 +48,8 @@ import com.gliesereum.coupler.util.Util;
 import com.gohn.nativedialog.ButtonType;
 import com.gohn.nativedialog.NDialog;
 import com.google.android.material.button.MaterialButton;
+import com.labters.lottiealertdialoglibrary.DialogTypes;
+import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -111,6 +114,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private WorkerListAdapter workerListAdapter;
     private NDialog chooseWorkerDialog;
     private List<WorkerItem> workerResponse = new ArrayList<>();
+    private Button connectBtn2;
+    private LottieAlertDialog alertDialog;
+    private boolean isWorkerFlag;
+
 
 
     @Override
@@ -196,6 +203,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
+        connectBtn2 = findViewById(R.id.connectBtn2);
+        connectBtn2.setOnClickListener(this);
     }
 
     @Override
@@ -254,6 +263,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<WorkerResponse>() {
                     @Override
                     public void onSuccessful(Call<WorkerResponse> call, Response<WorkerResponse> response) {
+                        chooseMasterBtn.setVisibility(View.VISIBLE);
+                        connectBtn2.setVisibility(View.GONE);
+                        isWorkerFlag = true;
                         WorkerItem workerItem = null;
                         workerResponse.add(workerItem);
                         for (int i = 0; i < response.body().getContent().size(); i++) {
@@ -266,7 +278,22 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void onEmpty(Call<WorkerResponse> call, Response<WorkerResponse> response) {
-
+                        isWorkerFlag = false;
+                        alertDialog = new LottieAlertDialog.Builder(OrderActivity.this, DialogTypes.TYPE_WARNING)
+                                .setTitle("Внимание")
+                                .setDescription("В этой компании нет возможности записаться на услуги онлайн. Вы можете сделать заказ по телефону")
+                                .build();
+                        alertDialog.show();
+                        chooseMasterBtn.setVisibility(View.GONE);
+                        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+                            orderButton.setVisibility(View.GONE);
+                            loginButton.setVisibility(View.GONE);
+                            connectBtn2.setVisibility(View.VISIBLE);
+                        } else {
+                            orderButton.setVisibility(View.GONE);
+                            loginButton.setVisibility(View.VISIBLE);
+                            connectBtn2.setVisibility(View.GONE);
+                        }
                     }
                 }));
 
@@ -437,6 +464,11 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.connectBtn2:
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:+" + carWash.getPhone()));//change the number
+                startActivity(callIntent);
+                break;
             case R.id.chooseMasterBtn:
                 openChooseMasterDialog();
                 break;
@@ -643,11 +675,19 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-            orderButton.setVisibility(View.VISIBLE);
-            loginButton.setVisibility(View.GONE);
+            if (isWorkerFlag) {
+                orderButton.setVisibility(View.VISIBLE);
+                loginButton.setVisibility(View.GONE);
+                connectBtn2.setVisibility(View.GONE);
+            } else {
+                orderButton.setVisibility(View.GONE);
+                loginButton.setVisibility(View.GONE);
+                connectBtn2.setVisibility(View.VISIBLE);
+            }
         } else {
             orderButton.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
+            connectBtn2.setVisibility(View.GONE);
         }
     }
 }

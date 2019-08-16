@@ -38,19 +38,19 @@ public class Tutorial extends TutorialActivity {
 
         addFragment(new Step.Builder()
                 .setTitle("Добро пожаловать в Coupler!")
-                .setContent("Все услуги у вас в кармане где бы вы ни находились")
+                .setContent("Все услуги у вас в кармане\nгде бы вы ни находились")
                 .setDrawable(R.drawable.ic_icon_step_01) // int top drawable
                 .build());
 //
         addFragment(new Step.Builder()
-                .setTitle("Добро пожаловать в Coupler!")
-                .setContent("Умная карта услуг покажет подходящие варианты")
+                .setTitle("Умная карта услуг")
+                .setContent("Покажет подходящие варианты")
                 .setDrawable(R.drawable.ic_icon_step_02) // int top drawable
                 .build());
 //
         addFragment(new Step.Builder()
-                .setTitle("Добро пожаловать в Coupler!")
-                .setContent("Запишет на услугу и приведет к месту назначения Даст скидку за накопленные бонусные баллы")
+                .setTitle("Запишет на услугу и приведет к месту назначения")
+                .setContent("Даст скидку за накопленные бонусные баллы")
                 .setDrawable(R.drawable.ic_icon_step_03) // int top drawable
                 .build());
     }
