@@ -120,7 +120,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setupWindowAnimations();
         initData();
         initView();
-        firstStartNotify();
+//        firstStartNotify();
         initMap(savedInstanceState);
         getLocationPermission();
         getAllService();

@@ -27,6 +27,17 @@ public class PackagesItem {
     @SerializedName("services")
     private List<ServicesItem> services;
 
+    @SerializedName("objectState")
+    private String objectState;
+
+    public String getObjectState() {
+        return objectState;
+    }
+
+    public void setObjectState(String objectState) {
+        this.objectState = objectState;
+    }
+
     public void setDuration(int duration) {
         this.duration = duration;
     }

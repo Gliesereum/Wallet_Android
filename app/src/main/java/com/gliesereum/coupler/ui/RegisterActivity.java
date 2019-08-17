@@ -147,6 +147,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                     startActivity(new Intent(RegisterActivity.this, ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                     finish();
                                 } else {
+                                    startActivity(new Intent(RegisterActivity.this, ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                     finish();
                                 }
 //                                if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {

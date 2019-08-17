@@ -235,19 +235,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                             .setGuideListener(new GuideListener() {
                                 @Override
                                 public void onDismiss(View view) {
-                                    new GuideView.Builder(OrderActivity.this)
-                                            .setTitle("Сделать заказ")
-                                            .setContentText("Здесь вы можете создать заказ")
-                                            .setTargetView(orderButton)
-                                            .setDismissType(DismissType.anywhere)
-                                            .setGuideListener(new GuideListener() {
-                                                @Override
-                                                public void onDismiss(View view) {
-                                                    FastSave.getInstance().saveBoolean(ORDER_ACTIVITY, false);
-                                                }
-                                            })
-                                            .build()
-                                            .show();
+                                    FastSave.getInstance().saveBoolean(ORDER_ACTIVITY, false);
                                 }
                             })
                             .build()
@@ -263,9 +251,23 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<WorkerResponse>() {
                     @Override
                     public void onSuccessful(Call<WorkerResponse> call, Response<WorkerResponse> response) {
-                        chooseMasterBtn.setVisibility(View.VISIBLE);
-                        connectBtn2.setVisibility(View.GONE);
                         isWorkerFlag = true;
+                        chooseMasterBtn.setVisibility(View.VISIBLE);
+                        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+                            if (isWorkerFlag) {
+                                orderButton.setVisibility(View.VISIBLE);
+                                loginButton.setVisibility(View.GONE);
+                                connectBtn2.setVisibility(View.GONE);
+                            } else {
+                                orderButton.setVisibility(View.GONE);
+                                loginButton.setVisibility(View.GONE);
+                                connectBtn2.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            orderButton.setVisibility(View.GONE);
+                            loginButton.setVisibility(View.VISIBLE);
+                            connectBtn2.setVisibility(View.GONE);
+                        }
                         WorkerItem workerItem = null;
                         workerResponse.add(workerItem);
                         for (int i = 0; i < response.body().getContent().size(); i++) {
@@ -388,48 +390,50 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             });
             packageScroll.addView(layout2);
             for (int i = 0; i < carWash.getPackages().size(); i++) {
-                layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
-                packageBtn = layout2.findViewById(R.id.packageBtn);
-                packageBtn.setText(carWash.getPackages().get(i).getName());
-                packageBtn.setTag(carWash.getPackages().get(i).getId());
-                packageBtn.setOnClickListener(v -> {
-                    serviceMap.clear();
-                    nameOfServiceList.clear();
-                    orderBody.setPackageId((String) v.getTag());
-                    for (int j = 0; j < packageScroll.getChildCount(); j++) {
-                        ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
-                        if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
+                if (carWash.getPackages().get(i).getObjectState().equals("ACTIVE")) {
+                    layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
+                    packageBtn = layout2.findViewById(R.id.packageBtn);
+                    packageBtn.setText(carWash.getPackages().get(i).getName());
+                    packageBtn.setTag(carWash.getPackages().get(i).getId());
+                    packageBtn.setOnClickListener(v -> {
+                        serviceMap.clear();
+                        nameOfServiceList.clear();
+                        orderBody.setPackageId((String) v.getTag());
+                        for (int j = 0; j < packageScroll.getChildCount(); j++) {
+                            ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(j));
+                            if (constraintLayout.getChildAt(0).getTag().equals(v.getTag())) {
+                                ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.accent));
 
 
-                        } else {
-                            ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
+                            } else {
+                                ((MaterialButton) constraintLayout.getChildAt(0)).setBackgroundTintList(ContextCompat.getColorStateList(OrderActivity.this, R.color.white));
 
+                            }
                         }
-                    }
-                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                        nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
-                        serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
-                    }
-                    discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
-                    setServicePrices(carWash);
-                    String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
-                    durationLabel.setText(duration);
-                    double price = 0;
-                    for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
-                        price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
-                    }
-                    priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
-                    packageBlock.setVisibility(View.VISIBLE);
-                    if (servicePriceItem.getChildCount() != 0) {
-                        textView19.setText("Дополнительные услуги");
-                    } else {
-                        textView19.setText("");
-                    }
-                });
-                packageScroll.addView(layout2);
-                ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(0));
-                ((MaterialButton) constraintLayout.getChildAt(0)).performClick();
+                        for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                            nameOfServiceList.add(packageMap.get(v.getTag()).getServices().get(j).getName());
+                            serviceMap.put(packageMap.get(v.getTag()).getServices().get(j).getId(), packageMap.get(v.getTag()).getServices().get(j));
+                        }
+                        discountTextView.setText(String.valueOf(packageMap.get(v.getTag()).getDiscount()) + "%");
+                        setServicePrices(carWash);
+                        String duration = String.valueOf(packageMap.get(v.getTag()).getDuration());
+                        durationLabel.setText(duration);
+                        double price = 0;
+                        for (int j = 0; j < packageMap.get(v.getTag()).getServices().size(); j++) {
+                            price += packageMap.get(v.getTag()).getServices().get(j).getPrice();
+                        }
+                        priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
+                        packageBlock.setVisibility(View.VISIBLE);
+                        if (servicePriceItem.getChildCount() != 0) {
+                            textView19.setText("Дополнительные услуги");
+                        } else {
+                            textView19.setText("");
+                        }
+                    });
+                    packageScroll.addView(layout2);
+                    ConstraintLayout constraintLayout = ((ConstraintLayout) packageScroll.getChildAt(0));
+                    ((MaterialButton) constraintLayout.getChildAt(0)).performClick();
+                }
             }
 
             setServicePrices(carWash);
