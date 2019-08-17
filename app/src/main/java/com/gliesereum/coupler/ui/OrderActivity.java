@@ -307,7 +307,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 //        List<AttributesItem> objectsList = FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class);
 //        List<ServiceClassItem> objectsList1 = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
-            if (!FastSave.getInstance().getBoolean(IS_LOGIN, false) || !FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR") || FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes()) && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
+            if (carWash.getServicePrices().get(i).getObjectState().equals("ACTIVE") && !FastSave.getInstance().getBoolean(IS_LOGIN, false) || !FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR") || FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes()) && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
                 if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);

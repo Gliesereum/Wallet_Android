@@ -39,6 +39,7 @@ public class ServicesItem {
     @SerializedName("interiorTypes")
     private List<Object> interiorTypes;
 
+
     public void setDuration(int duration) {
         this.duration = duration;
     }

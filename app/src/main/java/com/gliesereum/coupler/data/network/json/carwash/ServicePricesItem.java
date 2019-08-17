@@ -50,6 +50,17 @@ public class ServicePricesItem {
     @SerializedName("interiorTypes")
     private List<String> interiorTypes;
 
+    @SerializedName("objectState")
+    private String objectState;
+
+    public String getObjectState() {
+        return objectState;
+    }
+
+    public void setObjectState(String objectState) {
+        this.objectState = objectState;
+    }
+
     public List<AttributesItem> getAttributes() {
         return attributes;
     }
