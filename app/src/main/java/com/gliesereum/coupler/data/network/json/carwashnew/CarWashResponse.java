@@ -38,7 +38,7 @@ public class CarWashResponse {
     private Object countBox;
 
     @SerializedName("logoUrl")
-    private Object logoUrl;
+    private String logoUrl;
 
     @SerializedName("score")
     private double score;
@@ -136,12 +136,12 @@ public class CarWashResponse {
         return countBox;
     }
 
-    public void setLogoUrl(Object logoUrl) {
-        this.logoUrl = logoUrl;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public Object getLogoUrl() {
-        return logoUrl;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public void setScore(double score) {

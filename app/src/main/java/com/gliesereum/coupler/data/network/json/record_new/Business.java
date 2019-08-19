@@ -31,7 +31,7 @@ public class Business {
     private Object descriptions;
 
     @SerializedName("logoUrl")
-    private Object logoUrl;
+    private String logoUrl;
 
     @SerializedName("addPhone")
     private Object addPhone;
@@ -116,12 +116,12 @@ public class Business {
         return descriptions;
     }
 
-    public void setLogoUrl(Object logoUrl) {
-        this.logoUrl = logoUrl;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public Object getLogoUrl() {
-        return logoUrl;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public void setAddPhone(Object addPhone) {

@@ -2,7 +2,6 @@ package com.gliesereum.coupler.adapter;
 
 import android.app.Activity;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,28 +16,34 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
 
     public CustomInfoWindowAdapter(Activity activity) {
-        Log.d("test_log", "CustomInfoWindowAdapter: ");
         mWindow = activity.getLayoutInflater().inflate(R.layout.custom_info_window, null);
         mContents = activity.getLayoutInflater().inflate(R.layout.custom_info_contents, null);
     }
 
     @Override
     public View getInfoWindow(Marker marker) {
-        Log.d("MAPWINDOF", "getInfoWindow: ");
         render(marker, mWindow);
         return mWindow;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
-        Log.d("MAPWINDOF", "getInfoContents: ");
         render(marker, mContents);
         return mContents;
     }
 
     private void render(Marker marker, View view) {
-        ((ImageView) view.findViewById(R.id.badge)).setImageResource(R.mipmap.ic_launcher_round);
         TextView titleUi = ((TextView) view.findViewById(R.id.title));
+        ImageView logoImg = view.findViewById(R.id.badge);
+//        Map<String, String>markerLogo = new HashMap<>();
+//        markerLogo = FastSave.getInstance().getObject(MARKER_LOGO, Map.class);
+//        if (markerLogo!=null && markerLogo.get(marker.getSnippet())!=null){
+//            Picasso.get().load(markerLogo.get(marker.getSnippet())).into(logoImg);
+//        }else {
+//            logoImg.setImageResource(R.mipmap.ic_launcher_round);
+//        }
+        logoImg.setImageResource(R.mipmap.ic_launcher_round);
+
         String title = marker.getTitle();
         if (title != null) {
             titleUi.setText(title);

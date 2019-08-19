@@ -87,8 +87,8 @@ public class CustomCallback {
     private void showProgressDialog() {
         if (alertDialog == null || !alertDialog.isShowing()) {
             alertDialog = new LottieAlertDialog.Builder(context, DialogTypes.TYPE_LOADING)
-                    .setTitle("Загрузка")
-                    .setDescription("Загружается контент, подождите")
+                    .setTitle("Подождите")
+                    .setDescription("Идет загрузка")
                     .build();
             alertDialog.setCancelable(false);
             alertDialog.show();

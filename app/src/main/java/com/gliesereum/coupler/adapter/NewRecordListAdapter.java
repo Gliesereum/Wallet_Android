@@ -10,6 +10,7 @@ import com.gliesereum.coupler.adapter.customadapterrecycleview.viewHolder.ItemVi
 import com.gliesereum.coupler.data.network.json.record_new.RecordItem;
 import com.gliesereum.coupler.databinding.RecordItemBinding;
 import com.gliesereum.coupler.util.Util;
+import com.squareup.picasso.Picasso;
 
 import static com.gliesereum.coupler.util.Constants.CANCELED;
 import static com.gliesereum.coupler.util.Constants.COMPLETED;
@@ -64,7 +65,9 @@ public class NewRecordListAdapter extends AdapterRecyclerView<RecordItem> {
             itemBinding.carWashName.setText(element.getBusiness().getName());
         }
         itemBinding.recordId.setText(element.getId());
-//            Picasso.get().load(R.mipmap.ic_launcher_round).into(carWashLogo);
+        if (element.getBusiness().getLogoUrl() != null) {
+            Picasso.get().load(element.getBusiness().getLogoUrl()).into(itemBinding.carWashLogo);
+        }
 
     }
 

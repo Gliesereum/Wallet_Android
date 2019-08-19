@@ -64,4 +64,5 @@ public class SampleClusterItem implements ClusterItem {
     public void setWork(boolean work) {
         isWork = work;
     }
+
 }

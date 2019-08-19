@@ -29,10 +29,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ReferralActivity"></activity>
-        <activity android:name=".ui.TestActivity" />
-        <activity android:name=".ui.AboutActivity" />
-        <activity android:name=".ui.ChooseServiceNewActivity" />
+        <activity
+            android:name=".ui.ReferralActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.TestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.ChooseServiceNewActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".service.MyFirebaseMessagingService"

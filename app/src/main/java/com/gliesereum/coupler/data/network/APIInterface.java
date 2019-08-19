@@ -152,8 +152,6 @@ public interface APIInterface {
     @GET("karma/v1/business/full-model-by-id")
     Call<AllCarWashResponse> getCarWashFull(@Header("Authorization") String accessToken, @Query("id") String id);
 
-//    @GET("karma/v1/business/{carwashId}")
-//    Call<AllCarWashResponse> getCarWash(@Path("carwashId") String id);
 
     @GET("karma/v1/service/by-business-category")
     Call<List<ServiceResponse>> getAllService(@Query("businessCategoryId") String businessCategoryId);

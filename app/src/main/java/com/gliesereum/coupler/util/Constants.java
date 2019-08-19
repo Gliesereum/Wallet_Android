@@ -17,6 +17,7 @@ public class Constants {
     public static final String RECORD = "RECORD";
 
     public static final String OBJECT_ID = "objectId";
+    public static final String MARKER_LOGO = "MARKER_LOGO";
 
     public static final String COMPLETED = "COMPLETED";
     public static final String IN_PROCESS = "IN_PROCESS";

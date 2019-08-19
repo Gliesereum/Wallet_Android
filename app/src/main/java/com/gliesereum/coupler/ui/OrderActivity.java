@@ -212,7 +212,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         chooseWorkerDialog.dismiss();
         if (position == 0) {
             orderBody.setWorkerId(null);
-            chooseMasterBtn.setText("Исполнитель: Любой мастер");
+            chooseMasterBtn.setText("Исполнитель: Назначен автоматически");
         } else {
             orderBody.setWorkerId(workerListAdapter.getItem(position).getId());
             chooseMasterBtn.setText("Исполнитель: " + workerListAdapter.getItem(position).getUser().getFirstName());
@@ -639,7 +639,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                                         @Override
                                                         public void onSuccessful(Call<RecordItem> call, Response<RecordItem> response) {
                                                             nDialog.dismiss();
-                                                            Toast.makeText(OrderActivity.this, "Запись добавленна в список", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(OrderActivity.this, "Заказ добавлен", Toast.LENGTH_SHORT).show();
 //                                                            startActivity(new Intent(OrderActivity.this, RecordListActivity.class));
                                                             FastSave.getInstance().saveObject(RECORD, response.body());
                                                             startActivity(new Intent(OrderActivity.this, SingleRecordActivity.class));
