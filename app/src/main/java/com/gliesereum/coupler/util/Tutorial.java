@@ -38,7 +38,7 @@ public class Tutorial extends TutorialActivity {
 
         addFragment(new Step.Builder()
                 .setTitle("Добро пожаловать в Coupler!")
-                .setContent("Все услуги у вас в кармане\nгде бы вы ни находились")
+                .setContent("Все услуги у вас в кармане,\nгде бы вы ни находились")
                 .setDrawable(R.drawable.ic_icon_step_01) // int top drawable
                 .build());
 //

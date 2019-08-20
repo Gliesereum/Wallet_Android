@@ -64,6 +64,28 @@ public class CarWashResponse {
     @SerializedName("longitude")
     private double longitude;
 
+    @SerializedName("rating")
+    private float rating;
+
+    @SerializedName("ratingCount")
+    private int ratingCount;
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public int getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(int ratingCount) {
+        this.ratingCount = ratingCount;
+    }
+
     public void setAddress(String address) {
         this.address = address;
     }

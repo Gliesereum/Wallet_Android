@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/toggle_left"
+        android:icon="@drawable/ic_outline_layers_24px" />
+
+    <item
+        android:id="@+id/toggle_right"
+        android:icon="@drawable/ic_outline_list_24px" />
+</menu>

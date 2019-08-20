@@ -113,12 +113,21 @@ dependencies {
     //https://android-arsenal.com/details/1/7510
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-core:17.0.1'
-    implementation 'com.google.firebase:firebase-messaging:19.0.1'
-    implementation 'com.google.firebase:firebase-analytics:17.0.1'
+    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.firebase:firebase-analytics:17.1.0'
 
     implementation  'com.github.kenglxn.QRGen:android:2.5.0'
     //https://github.com/kenglxn/QRGen
+    implementation 'com.github.savvyapps:ToggleButtonLayout:1.3.0'
+
+    implementation 'com.github.Ferfalk:SimpleSearchView:0.1.4'
+
+
+
+
+
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

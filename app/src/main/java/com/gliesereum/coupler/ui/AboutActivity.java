@@ -27,7 +27,7 @@ public class AboutActivity extends AppCompatActivity {
                 .isRTL(false)
                 .setImage(R.drawable.ic_logo_group)
                 .addItem(versionElement)
-                .setDescription("Coupler - интерактивная карта услуг")
+                .setDescription("Кнопка услуг")
 //                .addGroup("Connect with us")
                 .addEmail("support@gliesereum.com", "Связаться с нами")
                 .addWebsite("https://coupler.app/", "Посетите наш сайт")

@@ -1,6 +1,7 @@
 package com.gliesereum.coupler.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -21,16 +23,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.ferfalk.simplesearchview.SimpleSearchView;
 import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.SampleClusterItem;
 import com.gliesereum.coupler.adapter.CustomInfoWindowAdapter;
+import com.gliesereum.coupler.adapter.PointListAdapter;
+import com.gliesereum.coupler.adapter.customadapterrecycleview.listener.OnClickItemListener;
 import com.gliesereum.coupler.data.network.APIClient;
 import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
 import com.gliesereum.coupler.data.network.json.bonus.BonusScoreResponse;
 import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
-import com.gliesereum.coupler.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.coupler.data.network.json.carwash.FilterCarWashBody;
 import com.gliesereum.coupler.data.network.json.carwashnew.CarWashResponse;
 import com.gliesereum.coupler.data.network.json.service.ServiceResponse;
@@ -51,6 +57,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.labters.lottiealertdialoglibrary.DialogTypes;
 import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
+import com.savvyapps.togglebuttonlayout.Toggle;
+import com.savvyapps.togglebuttonlayout.ToggleButtonLayout;
 
 import net.sharewire.googlemapsclustering.Cluster;
 import net.sharewire.googlemapsclustering.ClusterManager;
@@ -64,6 +72,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function3;
 import retrofit2.Call;
 import retrofit2.Response;
 import za.co.riggaroo.materialhelptutorial.TutorialItem;
@@ -80,6 +90,7 @@ import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.coupler.util.Constants.FILTER_CARWASH_BODY;
 import static com.gliesereum.coupler.util.Constants.FIRST_START;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
+import static com.gliesereum.coupler.util.Constants.MAP_LIST;
 import static com.gliesereum.coupler.util.Constants.MARKER_LIST;
 import static com.gliesereum.coupler.util.Constants.MARKER_LOGO;
 import static com.gliesereum.coupler.util.Constants.NEED_LOGIN_USER;
@@ -101,7 +112,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationClient;
     private Toolbar toolbar;
     private MapView mapView;
-    private List<AllCarWashResponse> carWashList;
     private List<CarWashResponse> carWashListNew;
     private List<CarWashResponse> carWashListCache;
     private APIInterface API;
@@ -112,6 +122,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean doubleBack = false;
     private LottieAlertDialog alertDialog;
     private ImageView couplerLogoImg;
+    private ToggleButtonLayout toggleButtonLayout;
+    private RecyclerView recyclerView;
+    PointListAdapter pointListAdapter;
+    private SimpleSearchView searchView;
+    private ImageView searchImg;
+    private FilterCarWashBody searchBody;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,35 +202,170 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initView() {
+
+//        ((ViewGroup) findViewById(R.id.rootConstraintLayout)).getLayoutTransition()
+//                .enableTransitionType(LayoutTransition.CHANGING);
+
         couplerLogoImg = findViewById(R.id.couplerLogoImg);
         mapView = findViewById(R.id.mapView);
         toolbar = findViewById(R.id.toolbar);
-        if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
-            if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
-                if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
-                    FastSave.getInstance().deleteValue(CAR_ID);
-                    couplerLogoImg.setVisibility(View.VISIBLE);
-                    toolbar.setTitle("");
-                    toolbar.setSubtitle("");
-                } else {
-                    couplerLogoImg.setVisibility(View.GONE);
-                    toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
-                    toolbar.setSubtitle("Выбранный автомобиль");
-                }
-            } else {
-                FastSave.getInstance().deleteValue(CAR_ID);
-                couplerLogoImg.setVisibility(View.VISIBLE);
-                toolbar.setTitle("");
-                toolbar.setSubtitle("");
-            }
-        } else {
-            couplerLogoImg.setVisibility(View.VISIBLE);
-            toolbar.setTitle("");
-            toolbar.setSubtitle("");
-        }
+        couplerLogoImg.setVisibility(View.VISIBLE);
+        toolbar.setTitle("");
+        toolbar.setSubtitle("");
+
+//        if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
+//            if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
+//                if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
+//                    FastSave.getInstance().deleteValue(CAR_ID);
+//                    couplerLogoImg.setVisibility(View.VISIBLE);
+//                    toolbar.setTitle("");
+//                    toolbar.setSubtitle("");
+//                } else {
+//                    couplerLogoImg.setVisibility(View.GONE);
+//                    toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
+//                    toolbar.setSubtitle("Выбранный автомобиль");
+//                }
+//            } else {
+//                FastSave.getInstance().deleteValue(CAR_ID);
+//                couplerLogoImg.setVisibility(View.VISIBLE);
+//                toolbar.setTitle("");
+//                toolbar.setSubtitle("");
+//            }
+//        } else {
+//            couplerLogoImg.setVisibility(View.VISIBLE);
+//            toolbar.setTitle("");
+//            toolbar.setSubtitle("");
+//        }
 
         setSupportActionBar(toolbar);
         new Util(this, toolbar, 1).addNavigation();
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        pointListAdapter = new PointListAdapter(this);
+        pointListAdapter.endLessScrolled(recyclerView);
+        recyclerView.setAdapter(pointListAdapter);
+
+        pointListAdapter.setOnClickItemListener(recyclerView, new OnClickItemListener<CarWashResponse>() {
+            @Override
+            public void onClickItem(int position, CarWashResponse element) {
+                if (element != null) {
+                    FastSave.getInstance().saveString(CARWASH_ID, element.getId());
+                    startActivity(new Intent(MapsActivity.this, CarWashActivity.class));
+                }
+            }
+
+            @Override
+            public void onLongClickItem(int position, CarWashResponse element) {
+
+            }
+        });
+
+        searchView = findViewById(R.id.searchView);
+        searchImg = findViewById(R.id.searchImg);
+        searchImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchView.showSearch();
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("SimpleSearchView", "Submit:" + query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("SimpleSearchView", "Text changed:" + newText);
+                if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
+                    searchBody = FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class);
+                } else {
+                    searchBody = new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""));
+                }
+                if (newText != null) {
+                    searchBody.setFullTextQuery(newText);
+                }
+                getAllCarWash(searchBody, true);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextCleared() {
+                Log.d("SimpleSearchView", "Text cleared");
+                return true;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new SimpleSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                Log.d("SimpleSearchView", "onSearchViewShown");
+                toggleButtonLayout.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                Log.d("SimpleSearchView", "onSearchViewClosed");
+                searchBody.setFullTextQuery(null);
+                toggleButtonLayout.setVisibility(View.VISIBLE);
+                searchView.setVisibility(View.INVISIBLE);
+                hideKeyboard(MapsActivity.this);
+            }
+
+            @Override
+            public void onSearchViewShownAnimation() {
+                Log.d("SimpleSearchView", "onSearchViewShownAnimation");
+            }
+
+            @Override
+            public void onSearchViewClosedAnimation() {
+                Log.d("SimpleSearchView", "onSearchViewClosedAnimation");
+            }
+        });
+
+        toggleButtonLayout = findViewById(R.id.toggle_button_layout);
+        toggleButtonLayout.setToggled(R.id.toggle_left, true);
+        toggleButtonLayout.setOnToggledListener(new Function3<ToggleButtonLayout, Toggle, Boolean, Unit>() {
+            @Override
+            public Unit invoke(ToggleButtonLayout toggleButtonLayout, Toggle toggle, Boolean aBoolean) {
+                if (toggle.getId() == R.id.toggle_left) {
+                    FastSave.getInstance().saveBoolean(MAP_LIST, false);
+                    toggleButtonLayout.setToggled(R.id.toggle_left, true);
+                    updateLocationUI();
+                    mapView.onResume();
+                    mapView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    searchImg.setVisibility(View.GONE);
+                }
+                if (toggle.getId() == R.id.toggle_right) {
+                    FastSave.getInstance().saveBoolean(MAP_LIST, true);
+                    toggleButtonLayout.setToggled(R.id.toggle_right, true);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    searchImg.setVisibility(View.VISIBLE);
+                    mapView.setVisibility(View.GONE);
+                }
+                return null;
+            }
+        });
+//        if (FastSave.getInstance().getBoolean(MAP_LIST, false)) {
+//            toggleButtonLayout.setToggled(R.id.toggle_right, true);
+//        } else {
+//            toggleButtonLayout.setToggled(R.id.toggle_left, true);
+//        }
+
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void firstStartNotify() {
@@ -259,7 +411,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
-
         mMap.clear();
         List<SampleClusterItem> clusterItems = new ArrayList<>();
         ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
@@ -284,7 +435,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         for (CarWashResponse coordinate : carWashListCache) {
-
             clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
         }
         clusterManager.setItems(clusterItems);
@@ -302,9 +452,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
-            getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class));
+            getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class), false);
         } else {
-            getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
+            getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")), false);
         }
     }
 
@@ -325,24 +475,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             FastSave.getInstance().saveObjectsList(CAR_FILTER_LIST, response.body().get(i).getAttributes());
                                         }
                                     }
-                                    if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
-                                        if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
-                                            FastSave.getInstance().deleteValue(CAR_ID);
-                                            couplerLogoImg.setVisibility(View.VISIBLE);
-                                            toolbar.setTitle("");
-                                            toolbar.setSubtitle("");
-                                        } else {
-                                            couplerLogoImg.setVisibility(View.GONE);
-                                            toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
-                                            toolbar.setSubtitle("Выбранный автомобиль");
-                                        }
-                                    } else {
-                                        FastSave.getInstance().deleteValue(CAR_ID);
-                                        couplerLogoImg.setVisibility(View.VISIBLE);
-                                        toolbar.setTitle("");
-                                        toolbar.setSubtitle("");
-                                    }
-
                                 }
 
                                 @Override
@@ -354,58 +486,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void getAllCarWash(FilterCarWashBody filterCarWashBody) {
+    public void getAllCarWash(FilterCarWashBody filterCarWashBody, boolean searchFlag) {
         API.getAllCarWashNew(filterCarWashBody)
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<CarWashResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
-//                        Collection<CarWashResponse> different = compareCarWashList(response);
-                        carWashListNew = response.body();
-                        Log.d(TAG, "onSuccessful: " + carWashListCache.equals(response.body()));
-                        if (!carWashListCache.equals(carWashListNew)) {
-                            Map<String, String> markersLogo = new HashMap<>();
-                            for (int i = 0; i < carWashListNew.size(); i++) {
-                                if (carWashListNew.get(i).getId() != null && carWashListNew.get(i).getLogoUrl() != null) {
-                                    markersLogo.put(carWashListNew.get(i).getId(), carWashListNew.get(i).getLogoUrl());
+                        pointListAdapter.removeAll();
+                        pointListAdapter.addItems(response.body());
+                        if (!searchFlag) {
+                            carWashListNew = response.body();
+                            Log.d(TAG, "onSuccessful: " + carWashListCache.equals(response.body()));
+                            if (!carWashListCache.equals(carWashListNew)) {
+                                Map<String, String> markersLogo = new HashMap<>();
+                                for (int i = 0; i < carWashListNew.size(); i++) {
+                                    if (carWashListNew.get(i).getId() != null && carWashListNew.get(i).getLogoUrl() != null) {
+                                        markersLogo.put(carWashListNew.get(i).getId(), carWashListNew.get(i).getLogoUrl());
+                                    }
                                 }
-                            }
-                            FastSave.getInstance().saveObject(MARKER_LOGO, markersLogo);
-                            FastSave.getInstance().saveObjectsList(MARKER_LIST, carWashListNew);
-                            carWashListCache = carWashListNew;
-                            mMap.clear();
-                            List<SampleClusterItem> clusterItems = new ArrayList<>();
-                            ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
-                            IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
-                            stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
-                            stilo.setClusterTextColor(getResources().getColor(R.color.white));
-                            IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
-                            iconGenerator.setIconStyle(stilo.build());
-                            clusterManager.setIconGenerator(iconGenerator);
-                            clusterManager.setMinClusterSize(4);
-                            mMap.setOnCameraIdleListener(clusterManager);
-                            clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
-                                @Override
-                                public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
-                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
-                                    return true;
-                                }
+                                FastSave.getInstance().saveObject(MARKER_LOGO, markersLogo);
+                                FastSave.getInstance().saveObjectsList(MARKER_LIST, carWashListNew);
+                                carWashListCache = carWashListNew;
+                                mMap.clear();
+                                List<SampleClusterItem> clusterItems = new ArrayList<>();
+                                ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+                                IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
+                                stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
+                                stilo.setClusterTextColor(getResources().getColor(R.color.white));
+                                IconGenerator iconGenerator = new IconGenerator(MapsActivity.this);
+                                iconGenerator.setIconStyle(stilo.build());
+                                clusterManager.setIconGenerator(iconGenerator);
+                                clusterManager.setMinClusterSize(4);
+                                mMap.setOnCameraIdleListener(clusterManager);
+                                clusterManager.setCallbacks(new ClusterManager.Callbacks<SampleClusterItem>() {
+                                    @Override
+                                    public boolean onClusterClick(@NonNull Cluster<SampleClusterItem> cluster) {
+                                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cluster.getLatitude(), cluster.getLongitude()), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), null);
+                                        return true;
+                                    }
 
-                                @Override
-                                public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
-                                    return false;
+                                    @Override
+                                    public boolean onClusterItemClick(@NonNull SampleClusterItem clusterItem) {
+                                        return false;
+                                    }
+                                });
+                                for (CarWashResponse coordinate : carWashListNew) {
+                                    clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
                                 }
-                            });
-                            for (CarWashResponse coordinate : carWashListNew) {
-                                clusterItems.add(new SampleClusterItem(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), coordinate.getName(), coordinate.getId()));
+                                clusterManager.setItems(clusterItems);
+                                mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+                                mMap.getUiSettings().setMapToolbarEnabled(true);
+                                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                                mMap.getUiSettings().setAllGesturesEnabled(true);
+                                updateLocationUI();
+                                getDeviceLocation();
                             }
-                            clusterManager.setItems(clusterItems);
-
-                            mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
-                            mMap.getUiSettings().setMapToolbarEnabled(true);
-                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                            mMap.getUiSettings().setAllGesturesEnabled(true);
-                            updateLocationUI();
-                            getDeviceLocation();
                         }
 
                     }
@@ -526,6 +660,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPause() {
         mapView.onPause();
+        hideKeyboard(MapsActivity.this);
         super.onPause();
     }
 
@@ -589,6 +724,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onBackPressed() {
+        if (searchView.onBackPressed()) {
+            return;
+        }
         if (doubleBack) {
             super.onBackPressed();
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -613,11 +751,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d("serviceIdList", "onPostResume: ");
         if (FastSave.getInstance().getBoolean(UPDATE_MAP, false)) {
             if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
-                getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class));
+                getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class), false);
             } else {
-                getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")));
+                getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")), false);
             }
             FastSave.getInstance().deleteValue(UPDATE_MAP);
         }
     }
+
+
 }
