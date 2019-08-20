@@ -281,7 +281,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("SimpleSearchView", "Text changed:" + newText);
+                if (timer != null) {
+                    timer.cancel();
+                }
                 timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
@@ -294,9 +296,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (newText != null) {
                             searchBody.setFullTextQuery(newText);
                         }
+                        Log.d("SimpleSearchView", "Text changed:" + newText);
                         getAllCarWash(searchBody, true);
                     }
-                }, 500);
+                }, 250);
                 return false;
             }
 
