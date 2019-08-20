@@ -71,6 +71,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function3;
@@ -128,6 +130,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SimpleSearchView searchView;
     private ImageView searchImg;
     private FilterCarWashBody searchBody;
+    private Timer timer;
 
 
     @Override
@@ -273,28 +276,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("SimpleSearchView", "Submit:" + query);
-                return true;
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("SimpleSearchView", "Text changed:" + newText);
-                if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
-                    searchBody = FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class);
-                } else {
-                    searchBody = new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""));
-                }
-                if (newText != null) {
-                    searchBody.setFullTextQuery(newText);
-                }
-                getAllCarWash(searchBody, true);
-                return true;
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
+                            searchBody = FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class);
+                        } else {
+                            searchBody = new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, ""));
+                        }
+                        if (newText != null) {
+                            searchBody.setFullTextQuery(newText);
+                        }
+                        getAllCarWash(searchBody, true);
+                    }
+                }, 500);
+                return false;
             }
 
             @Override
             public boolean onQueryTextCleared() {
                 Log.d("SimpleSearchView", "Text cleared");
-                return true;
+                return false;
             }
         });
 
