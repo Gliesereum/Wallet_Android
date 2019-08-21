@@ -1,7 +1,6 @@
 package com.gliesereum.coupler.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -20,9 +19,6 @@ import com.gliesereum.coupler.data.network.CustomCallback;
 import com.gliesereum.coupler.data.network.json.code.ReferralCodeResponse;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.Util;
-import com.google.zxing.EncodeHintType;
-
-import net.glxn.qrgen.android.QRCode;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -57,8 +53,9 @@ public class ReferralActivity extends AppCompatActivity {
                     @Override
                     public void onSuccessful(Call<ReferralCodeResponse> call, Response<ReferralCodeResponse> response) {
                         referralCode = response.body().getCode();
-                        Bitmap myBitmap = QRCode.from("https://coupler.app/r/" + referralCode).withHint(EncodeHintType.MARGIN, "1").withSize(500, 500).bitmap();
-                        qrCode.setImageBitmap(myBitmap);
+                        button2.setEnabled(true);
+//                        Bitmap myBitmap = QRCode.from("https://coupler.app/r/" + referralCode).withHint(EncodeHintType.MARGIN, "1").withSize(500, 500).bitmap();
+//                        qrCode.setImageBitmap(myBitmap);
                     }
 
                     @Override
@@ -88,7 +85,7 @@ public class ReferralActivity extends AppCompatActivity {
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, "Все услуги города в приложении Coupler! Онлайн-запись, контроль выполнения заказа, растущие скидки. Скачай и получи первые 50 баллов на бонусный счет! " + getResources().getString(R.string.smileUNICODE) + "\n" + "https://coupler.app/r/" + referralCode);
                 sendIntent.setType("text/plain");
-                ReferralActivity.this.startActivity(Intent.createChooser(sendIntent, "Пригласи друга"));
+                ReferralActivity.this.startActivity(Intent.createChooser(sendIntent, "Пригласить друга"));
             }
         });
     }

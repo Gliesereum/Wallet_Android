@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -131,6 +132,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageView searchImg;
     private FilterCarWashBody searchBody;
     private Timer timer;
+    private TextView emptyLabelSearch;
 
 
     @Override
@@ -350,6 +352,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapView.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     searchImg.setVisibility(View.GONE);
+                    emptyLabelSearch.setVisibility(View.GONE);
                 }
                 if (toggle.getId() == R.id.toggle_right) {
                     FastSave.getInstance().saveBoolean(MAP_LIST, true);
@@ -367,6 +370,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //            toggleButtonLayout.setToggled(R.id.toggle_left, true);
 //        }
 
+        emptyLabelSearch = findViewById(R.id.emptyLabelSearch);
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -552,22 +556,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 updateLocationUI();
                                 getDeviceLocation();
                             }
+                        } else {
+                            emptyLabelSearch.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
                         }
-
                     }
 
                     @Override
                     public void onEmpty(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
-                        mMap.clear();
-                        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
-                        List<SampleClusterItem> clusterItems = new ArrayList<>();
-                        clusterManager.setItems(clusterItems);
-                        mMap.setBuildingsEnabled(true);
-                        mMap.getUiSettings().setMapToolbarEnabled(true);
-                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                        mMap.getUiSettings().setAllGesturesEnabled(true);
-                        updateLocationUI();
-                        getDeviceLocation();
+                        if (!searchFlag) {
+                            mMap.clear();
+                            ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+                            List<SampleClusterItem> clusterItems = new ArrayList<>();
+                            clusterManager.setItems(clusterItems);
+                            mMap.setBuildingsEnabled(true);
+                            mMap.getUiSettings().setMapToolbarEnabled(true);
+                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                            mMap.getUiSettings().setAllGesturesEnabled(true);
+                            updateLocationUI();
+                            getDeviceLocation();
+                        } else {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyLabelSearch.setVisibility(View.VISIBLE);
+                        }
                     }
                 }));
     }

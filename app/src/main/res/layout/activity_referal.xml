@@ -44,6 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:text="Coupler - это выгодно &#129300;"
                 android:textAlignment="center"
@@ -59,10 +60,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Поделитесь ссылкой на приложение, встроенной в QR-код"
+                android:text="Поделитесь ссылкой на приложение"
                 android:textAlignment="center"
                 android:textColor="@color/colorAccent"
                 android:textSize="18sp"
@@ -72,25 +72,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/qrCode" />
 
-            <ProgressBar
-                android:id="@+id/progressBar3"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/qrCode"
-                app:layout_constraintEnd_toEndOf="@+id/qrCode"
-                app:layout_constraintStart_toStartOf="@+id/qrCode"
-                app:layout_constraintTop_toTopOf="@+id/qrCode" />
-
             <ImageView
                 android:id="@+id/qrCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_client_logo_simple"
+                android:src="@drawable/ic_icon_prize"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -148,7 +136,7 @@
         android:layout_height="75dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:enabled="false"
         android:text="Поделиться ссылкой"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
