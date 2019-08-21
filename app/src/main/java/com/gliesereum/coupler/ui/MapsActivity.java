@@ -360,6 +360,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     recyclerView.setVisibility(View.VISIBLE);
                     searchImg.setVisibility(View.VISIBLE);
                     mapView.setVisibility(View.GONE);
+                    if (carWashListNew == null || carWashListCache.isEmpty()) {
+                        emptyLabelSearch.setVisibility(View.VISIBLE);
+                    }
                 }
                 return null;
             }
