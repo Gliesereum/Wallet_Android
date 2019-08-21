@@ -3,6 +3,7 @@ package com.gliesereum.coupler.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,7 +44,7 @@ import retrofit2.Response;
 import static com.gliesereum.coupler.util.Constants.ACCESS_EXPIRATION_DATE;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
-import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.KARMA_USER_RECORD;
@@ -78,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ImageView mapImageBtn;
     boolean doubleBackToExitPressedOnce;
     private InstallReferrerClient referrerClient;
-
+    private boolean doubleBack = false;
 
 
     @Override
@@ -201,10 +202,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (FastSave.getInstance().getBoolean(NEED_SELECT_CAR, false)) {
                                 startActivity(new Intent(LoginActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                             } else {
-                                if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("")) {
+                                if (FastSave.getInstance().getString(BUSINESS_CODE, "").equals("")) {
                                     startActivity(new Intent(LoginActivity.this, ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                 } else {
-                                    startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                    finish();
+//                                    startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                 }
                             }
 //                            if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
@@ -273,7 +275,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onSuccessful(Call<CodeResponse> call, Response<CodeResponse> response) {
                         showCodeBlock();
                         setPhoneCodeLabel(phone);
-                        startTimer();
+//                        startTimer();
                     }
 
                     @Override
@@ -378,4 +380,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             code = String.valueOf(s);
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBack) {
+            super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return;
+        }
+        this.doubleBack = true;
+        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBack = false;
+            }
+        }, 2000);
+    }
 }

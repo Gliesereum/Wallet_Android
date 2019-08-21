@@ -104,4 +104,9 @@ public class ChooseServiceNewActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Util(this, toolbar, 8).addNavigation();
+    }
 }

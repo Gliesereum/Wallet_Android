@@ -83,6 +83,7 @@ import za.co.riggaroo.materialhelptutorial.TutorialItem;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 import static com.gliesereum.coupler.util.Constants.CARWASH_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_BRAND;
@@ -143,6 +144,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setupWindowAnimations();
         initData();
         initView();
+
+        if (FastSave.getInstance().getString(BUSINESS_CODE, "").equals("")) {
+            startActivity(new Intent(MapsActivity.this, ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+            finish();
+        }
+
 //        firstStartNotify();
         initMap(savedInstanceState);
         getLocationPermission();
@@ -207,41 +214,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initView() {
-
-//        ((ViewGroup) findViewById(R.id.rootConstraintLayout)).getLayoutTransition()
-//                .enableTransitionType(LayoutTransition.CHANGING);
-
         couplerLogoImg = findViewById(R.id.couplerLogoImg);
         mapView = findViewById(R.id.mapView);
         toolbar = findViewById(R.id.toolbar);
         couplerLogoImg.setVisibility(View.VISIBLE);
         toolbar.setTitle("");
         toolbar.setSubtitle("");
-
-//        if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
-//            if (!FastSave.getInstance().getString(CAR_ID, "").equals("")) {
-//                if (FastSave.getInstance().getString(CAR_BRAND, "").equals("") || FastSave.getInstance().getString(CAR_MODEL, "").equals("")) {
-//                    FastSave.getInstance().deleteValue(CAR_ID);
-//                    couplerLogoImg.setVisibility(View.VISIBLE);
-//                    toolbar.setTitle("");
-//                    toolbar.setSubtitle("");
-//                } else {
-//                    couplerLogoImg.setVisibility(View.GONE);
-//                    toolbar.setTitle(FastSave.getInstance().getString(CAR_BRAND, "") + " " + FastSave.getInstance().getString(CAR_MODEL, ""));
-//                    toolbar.setSubtitle("Выбранный автомобиль");
-//                }
-//            } else {
-//                FastSave.getInstance().deleteValue(CAR_ID);
-//                couplerLogoImg.setVisibility(View.VISIBLE);
-//                toolbar.setTitle("");
-//                toolbar.setSubtitle("");
-//            }
-//        } else {
-//            couplerLogoImg.setVisibility(View.VISIBLE);
-//            toolbar.setTitle("");
-//            toolbar.setSubtitle("");
-//        }
-
         setSupportActionBar(toolbar);
         new Util(this, toolbar, 1).addNavigation();
         recyclerView = findViewById(R.id.recyclerView);
@@ -666,12 +644,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         mapView.onStart();
@@ -771,10 +743,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }, 2000);
     }
 
+//    @Override
+//    protected void onPostResume() {
+//        super.onPostResume();
+//        Log.d("serviceIdList", "onPostResume: ");
+//        if (FastSave.getInstance().getBoolean(UPDATE_MAP, false)) {
+//            if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
+//                getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class), false);
+//            } else {
+//                getAllCarWash(new FilterCarWashBody(FastSave.getInstance().getString(BUSINESS_CATEGORY_ID, "")), false);
+//            }
+//            FastSave.getInstance().deleteValue(UPDATE_MAP);
+//        }
+//    }
+
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        Log.d("serviceIdList", "onPostResume: ");
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+        new Util(this, toolbar, 1).addNavigation();
         if (FastSave.getInstance().getBoolean(UPDATE_MAP, false)) {
             if (FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class) != null) {
                 getAllCarWash(FastSave.getInstance().getObject(FILTER_CARWASH_BODY, FilterCarWashBody.class), false);

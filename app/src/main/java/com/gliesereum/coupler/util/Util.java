@@ -51,6 +51,7 @@ import java.util.TimeZone;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_NAME;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
@@ -64,6 +65,8 @@ import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.REF_SCORE;
 import static com.gliesereum.coupler.util.Constants.USER_AVATAR;
+import static com.gliesereum.coupler.util.Constants.USER_ID;
+import static com.gliesereum.coupler.util.Constants.USER_INFO;
 import static com.gliesereum.coupler.util.Constants.USER_NAME;
 import static com.gliesereum.coupler.util.Constants.USER_SECOND_NAME;
 
@@ -214,7 +217,15 @@ public class Util {
                                         FastSave.getInstance().deleteValue(CAR_MODEL);
                                         FastSave.getInstance().deleteValue(CAR_FILTER_LIST);
                                         FastSave.getInstance().deleteValue(ACCESS_TOKEN);
-                                        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                        FastSave.getInstance().deleteValue(BUSINESS_TYPE);
+                                        FastSave.getInstance().deleteValue(BUSINESS_CODE);
+                                        FastSave.getInstance().deleteValue(BUSINESS_CATEGORY_NAME);
+
+                                        FastSave.getInstance().deleteValue(USER_AVATAR);
+                                        FastSave.getInstance().deleteValue(USER_ID);
+                                        FastSave.getInstance().deleteValue(USER_INFO);
+
+                                        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_SINGLE_TOP));
                                         activity.finish();
                                     }
                                 })
@@ -241,7 +252,8 @@ public class Util {
                     case "login":
 //                        activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         activity.startActivity(new Intent(activity.getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
-                        activity.finish();
+//                        activity.finish();
+                        result.closeDrawer();
                         break;
                     case "service":
                         activity.startActivity(new Intent(activity.getApplicationContext(), ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
