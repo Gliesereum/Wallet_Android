@@ -34,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:focusableInTouchMode="true"
                 android:hint="Укажите причину отмены заказа"
-                android:inputType="textLongMessage|textMultiLine"
+                android:inputType="textLongMessage|textMultiLine|textCapSentences"
                 android:singleLine="false"
                 android:textColor="@color/black"
                 android:textColorHint="#959CBB" />

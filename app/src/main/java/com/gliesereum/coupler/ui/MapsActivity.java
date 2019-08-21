@@ -134,6 +134,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FilterCarWashBody searchBody;
     private Timer timer;
     private TextView emptyLabelSearch;
+    ClusterManager<SampleClusterItem> clusterManager;
 
 
     @Override
@@ -165,15 +166,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<TutorialItem> getTutorialItems(Context context) {
         TutorialItem tutorialItem1 = new TutorialItem("slide_1_african_story_books", "slide_1_african_story_books_subtitle",
                 R.color.black, R.drawable.ic_icon_step_01, R.drawable.ic_icon_step_02);
-
         // You can also add gifs, [IN BETA YET] (because Glide is awesome!)
 //        TutorialItem tutorialItem1 = new TutorialItem(context.getString(R.string.slide_1_african_story_books), context.getString(R.string.slide_1_african_story_books_subtitle),
 //                R.color.slide_1, R.drawable.gif_drawable, true);
-
-
         ArrayList<TutorialItem> tutorialItems = new ArrayList<>();
         tutorialItems.add(tutorialItem1);
-
         return tutorialItems;
     }
 
@@ -410,7 +407,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         mMap.clear();
         List<SampleClusterItem> clusterItems = new ArrayList<>();
-        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+        clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+//        ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
         IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
         stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
         stilo.setClusterTextColor(getResources().getColor(R.color.white));
@@ -505,7 +503,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 carWashListCache = carWashListNew;
                                 mMap.clear();
                                 List<SampleClusterItem> clusterItems = new ArrayList<>();
-                                ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+                                clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+//                                ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
                                 IconStyle.Builder stilo = new IconStyle.Builder(MapsActivity.this);
                                 stilo.setClusterBackgroundColor(getResources().getColor(R.color.primary));
                                 stilo.setClusterTextColor(getResources().getColor(R.color.white));
@@ -546,8 +545,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onEmpty(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
                         if (!searchFlag) {
+                            Log.d(TAG, "onEmpty: map clear");
                             mMap.clear();
-                            ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
+//                            ClusterManager<SampleClusterItem> clusterManager = new ClusterManager<>(MapsActivity.this, mMap);
                             List<SampleClusterItem> clusterItems = new ArrayList<>();
                             clusterManager.setItems(clusterItems);
                             mMap.setBuildingsEnabled(true);
