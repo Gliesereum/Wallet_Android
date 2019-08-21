@@ -204,7 +204,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("")) {
                                     startActivity(new Intent(LoginActivity.this, ChooseServiceNewActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                 } else {
-                                    startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
+                                    startActivity(new Intent(LoginActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                 }
                             }
 //                            if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {

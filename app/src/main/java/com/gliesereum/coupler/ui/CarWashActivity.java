@@ -32,6 +32,7 @@ import com.gliesereum.coupler.data.network.json.carwash.PackagesItem;
 import com.gliesereum.coupler.data.network.json.carwash.Rating;
 import com.gliesereum.coupler.data.network.json.carwash.ServicePricesItem;
 import com.gliesereum.coupler.data.network.json.carwash.WorkTimesItem;
+import com.gliesereum.coupler.util.CircleTransform;
 import com.gliesereum.coupler.util.FastSave;
 import com.gliesereum.coupler.util.SmartRatingBar;
 import com.gliesereum.coupler.util.Util;
@@ -162,8 +163,6 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         orderButton.setOnClickListener(this);
         workTimeImage.setOnClickListener(this);
         sendCommentBtn.setOnClickListener(this);
-//        Picasso.get().load(R.mipmap.ic_launcher_round).transform(new CircleTransform()).into(logoImageView);
-//        GlideApp.with(this).load(R.mipmap.ic_launcher_round).circleCrop().into(logoImageView);
         carWashRating = findViewById(R.id.carWashRating);
         nowStatus = findViewById(R.id.nowStatus);
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
@@ -204,6 +203,9 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                             public void onSuccessful(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
                                 carWash = response.body();
                                 if (carWash != null) {
+                                    if (carWash.getLogoUrl() != null) {
+                                        Picasso.get().load(carWash.getLogoUrl()).transform(new CircleTransform()).into(logoImageView);
+                                    }
                                     for (int i = 0; i < carWash.getPackages().size(); i++) {
                                         packageMap.put(carWash.getPackages().get(i).getId(), carWash.getPackages().get(i));
                                     }
@@ -496,13 +498,13 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         if (FastSave.getInstance().getBoolean(CARWASHA_CTIVITY, true)) {
             new GuideView.Builder(CarWashActivity.this)
                     .setTitle("Режим работы")
-                    .setContentText("Здесь вы можете узнать режим режим работы компании")
+                    .setContentText("Здесь вы можете узнать режим работы компании")
                     .setTargetView(workTimeImage)
                     .setDismissType(DismissType.anywhere)
                     .setGuideListener(view1 -> new GuideView.Builder(CarWashActivity.this)
-                            .setTitle("Галерея")
-                            .setContentText("Здесь можно посмотреть фото компании")
-                            .setTargetView(photoScrollView)
+                            .setTitle("Связь")
+                            .setContentText("Нажав на эту кнопку, вы сможете связаться с администратором компании по телефону \n")
+                            .setTargetView(connectBtn)
                             .setDismissType(DismissType.anywhere)
                             .setGuideListener(new GuideListener() {
                                 @Override

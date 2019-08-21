@@ -43,7 +43,7 @@ public class AllCarWashResponse {
     private List<PackagesItem> packages;
 
     @SerializedName("logoUrl")
-    private Object logoUrl;
+    private String logoUrl;
 
     @SerializedName("addPhone")
     private Object addPhone;
@@ -165,12 +165,12 @@ public class AllCarWashResponse {
         return packages;
     }
 
-    public void setLogoUrl(Object logoUrl) {
-        this.logoUrl = logoUrl;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public Object getLogoUrl() {
-        return logoUrl;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public void setAddPhone(Object addPhone) {

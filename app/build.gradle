@@ -14,8 +14,8 @@ android {
         applicationId "com.gliesereum.coupler"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 50
-        versionName "1.0.0"
+        versionCode 51
+        versionName "0.1.0"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -48,87 +48,42 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'org.glassfish:javax.annotation:10.0-b28'
-
     implementation 'com.github.msayan:tutorial-view:v1.0.10'
     implementation 'za.co.riggaroo:materialhelptutorial:1.6.0'
-
-//    implementation 'com.github.yehiahd:FastSave-Android:1.0.6'
-    //https://android-arsenal.com/details/1/6875
     implementation 'com.github.joielechong:countrycodepicker:2.1.8'
-    //https://github.com/joielechong/CountryCodePicker
     implementation 'com.chaos.view:pinview:1.4.2'
-    //https://github.com/ChaosLeong/PinView
-//    implementation 'com.github.ganfra:material-spinner:2.0.0'
     implementation('com.github.ganfra:material-spinner:2.0.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    // https://github.com/ganfra/MaterialSpinner
     implementation 'com.mikepenz:materialdrawer:6.1.2'
-
-    // https://github.com/mikepenz/MaterialDrawer
     implementation 'com.andrognito.flashbar:flashbar:1.0.3'
-    //https://android-arsenal.com/details/1/6933
     implementation 'com.github.hakobast:dropdown-textview:0.2'
-    //https://android-arsenal.com/details/1/6765
     implementation 'com.github.Haegon:EasyNativeDialog-for-Android:0.4.0'
-    //https://android-arsenal.com/details/1/6525
-
     implementation 'com.github.skydoves:powermenu:2.1.0'
-    //https://github.com/skydoves/PowerMenu
     implementation 'net.sharewire:google-maps-clustering:0.1.3'
-    //https://android-arsenal.com/details/1/6552
-
     implementation 'com.github.vivchar:ViewPagerIndicator:1.1.0'
-
     implementation 'com.github.ome450901:SimpleRatingBar:1.4.2'
-    //https://android-arsenal.com/details/1/5836
-
     implementation 'com.github.okdroid:checkablechipview:1.0.3'
-    //https://android-arsenal.com/details/1/7087
-    implementation 'androidx.core:core-ktx:1.2.0-alpha02'
-
+    implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'com.github.mreram:showcaseview:1.1'
-    //https://android-arsenal.com/details/1/6713 !!!!!!!!!!!!!!!!!!!!!
-
     implementation 'com.github.smhdk:KM-Popup-Image-Slider:v1.2.1'
-    //https://android-arsenal.com/details/1/7336
     implementation 'com.squareup.picasso:picasso:2.71828'
-
     implementation 'com.airbnb.android:lottie:2.7.0'
     implementation 'com.github.mayuce:LottieAlertDialog:1.1'
-    //https://android-arsenal.com/details/1/7557
-
     implementation 'com.github.james602152002:FloatingLabelSpinner:1.4.2'
-    //https://github.com/james602152002/FloatingLabelSpinner?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=6635
-
     implementation 'com.github.medyo:android-about-page:1.2.5'
-    //https://github.com/medyo/android-about-page
-
     implementation 'com.github.dhaval2404:imagepicker-support:1.1'
-    //https://android-arsenal.com/details/1/7510
-
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-core:17.1.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.firebase:firebase-analytics:17.1.0'
-
     implementation  'com.github.kenglxn.QRGen:android:2.5.0'
-    //https://github.com/kenglxn/QRGen
     implementation 'com.github.savvyapps:ToggleButtonLayout:1.3.0'
-
     implementation 'com.github.Ferfalk:SimpleSearchView:0.1.4'
-
-
-
-
-
-
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

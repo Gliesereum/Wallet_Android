@@ -16,10 +16,12 @@ import net.sharewire.googlemapsclustering.ClusterItem;
 import net.sharewire.googlemapsclustering.DefaultIconGenerator;
 
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
-import static com.gliesereum.coupler.util.Constants.SERVICE_BEAUTY_SALONS;
-import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_SERVICE;
-import static com.gliesereum.coupler.util.Constants.SERVICE_CAR_WASH;
-import static com.gliesereum.coupler.util.Constants.SERVICE_TIRE_FITTING;
+import static com.gliesereum.coupler.util.Constants.CODE_BEAUTY_SALONS;
+import static com.gliesereum.coupler.util.Constants.CODE_CAR_SERVICE;
+import static com.gliesereum.coupler.util.Constants.CODE_CAR_WASH;
+import static com.gliesereum.coupler.util.Constants.CODE_DEVELOPMENT;
+import static com.gliesereum.coupler.util.Constants.CODE_MARKETING;
+import static com.gliesereum.coupler.util.Constants.CODE_TIRE_FITTING;
 
 public class IconGenerator extends DefaultIconGenerator implements net.sharewire.googlemapsclustering.IconGenerator {
 
@@ -36,20 +38,26 @@ public class IconGenerator extends DefaultIconGenerator implements net.sharewire
     public BitmapDescriptor getClusterItemIcon(@NonNull ClusterItem clusterItem) {
         Drawable background;
         switch (FastSave.getInstance().getString(BUSINESS_CODE, "")) {
-            case SERVICE_BEAUTY_SALONS:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_beauty_salons);
+            case CODE_BEAUTY_SALONS:
+                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_beauty);
                 break;
-            case SERVICE_CAR_WASH:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_car_wash);
+            case CODE_CAR_WASH:
+                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_carwash);
                 break;
-            case SERVICE_TIRE_FITTING:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_tire_fitting);
+            case CODE_TIRE_FITTING:
+                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_tires);
                 break;
-            case SERVICE_CAR_SERVICE:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_car_service);
+            case CODE_CAR_SERVICE:
+                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_sto);
+                break;
+            case CODE_MARKETING:
+                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_consulting);
+                break;
+            case CODE_DEVELOPMENT:
+                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_freelance);
                 break;
             default:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_car_wash);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_others);
                 break;
         }
         background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());

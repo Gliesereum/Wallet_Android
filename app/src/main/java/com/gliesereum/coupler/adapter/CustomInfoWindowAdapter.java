@@ -35,7 +35,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private void render(Marker marker, View view) {
         TextView titleUi = ((TextView) view.findViewById(R.id.title));
         ImageView logoImg = view.findViewById(R.id.badge);
-//        Map<String, String>markerLogo = new HashMap<>();
+//        Map<String, String> markerLogo = new HashMap<>();
 //        markerLogo = FastSave.getInstance().getObject(MARKER_LOGO, Map.class);
 //        if (markerLogo!=null && markerLogo.get(marker.getSnippet())!=null){
 //            Picasso.get().load(markerLogo.get(marker.getSnippet())).into(logoImg);

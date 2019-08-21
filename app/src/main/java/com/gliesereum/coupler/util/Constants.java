@@ -54,10 +54,14 @@ public class Constants {
     public static final String USER_AVATAR = "USER_AVATAR";
     public static final String USER_INFO = "USER_INFO";
 
-    public static final String SERVICE_CAR_WASH = "CAR_WASH";
-    public static final String SERVICE_TIRE_FITTING = "TIRE_FITTING";
-    public static final String SERVICE_CAR_SERVICE = "CAR_SERVICE";
-    public static final String SERVICE_BEAUTY_SALONS = "BEAUTY_SALONS";
+    public static final String CODE_CAR_WASH = "CAR_WASH";
+    public static final String CODE_TIRE_FITTING = "TIRE_FITTING";
+    public static final String CODE_CAR_SERVICE = "CAR_SERVICE";
+    public static final String CODE_BEAUTY_SALONS = "BEAUTY_SALONS";
+    public static final String CODE_MARKETING = "MARKETING";
+    public static final String CODE_CLINICS = "CLINICS";
+    public static final String CODE_DEVELOPMENT = "DEVELOPMENT";
+    public static final String CODE_CLEANING = "CLEANING";
 
     public static final String SERVICE_CAR_WASH_ID = "CAR_WASH_ID";
     public static final String SERVICE_TIRE_FITTING_ID = "TIRE_FITTING_ID";
