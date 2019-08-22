@@ -251,23 +251,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<WorkerResponse>() {
                     @Override
                     public void onSuccessful(Call<WorkerResponse> call, Response<WorkerResponse> response) {
-                        isWorkerFlag = true;
-                        chooseMasterBtn.setVisibility(View.VISIBLE);
-                        if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
-                            if (isWorkerFlag) {
-                                orderButton.setVisibility(View.VISIBLE);
-                                loginButton.setVisibility(View.GONE);
-                                connectBtn2.setVisibility(View.GONE);
-                            } else {
-                                orderButton.setVisibility(View.GONE);
-                                loginButton.setVisibility(View.GONE);
-                                connectBtn2.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            orderButton.setVisibility(View.GONE);
-                            loginButton.setVisibility(View.VISIBLE);
-                            connectBtn2.setVisibility(View.GONE);
-                        }
                         WorkerItem workerItem = null;
                         workerResponse.add(workerItem);
                         for (int i = 0; i < response.body().getContent().size(); i++) {
@@ -275,7 +258,43 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                                 workerResponse.add(response.body().getContent().get(i));
                             }
                         }
-                        chooseMasterBtn.setEnabled(true);
+                        if (workerResponse.size() > 1) {
+                            isWorkerFlag = true;
+                            chooseMasterBtn.setVisibility(View.VISIBLE);
+                            if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+                                if (isWorkerFlag) {
+                                    orderButton.setVisibility(View.VISIBLE);
+                                    loginButton.setVisibility(View.GONE);
+                                    connectBtn2.setVisibility(View.GONE);
+                                } else {
+                                    orderButton.setVisibility(View.GONE);
+                                    loginButton.setVisibility(View.GONE);
+                                    connectBtn2.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                orderButton.setVisibility(View.GONE);
+                                loginButton.setVisibility(View.VISIBLE);
+                                connectBtn2.setVisibility(View.GONE);
+                            }
+                            chooseMasterBtn.setEnabled(true);
+                        } else {
+                            isWorkerFlag = false;
+                            alertDialog = new LottieAlertDialog.Builder(OrderActivity.this, DialogTypes.TYPE_WARNING)
+                                    .setTitle("Внимание")
+                                    .setDescription("В этой компании нет возможности записаться на услуги онлайн. Вы можете сделать заказ по телефону")
+                                    .build();
+                            alertDialog.show();
+                            chooseMasterBtn.setVisibility(View.GONE);
+                            if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
+                                orderButton.setVisibility(View.GONE);
+                                loginButton.setVisibility(View.GONE);
+                                connectBtn2.setVisibility(View.VISIBLE);
+                            } else {
+                                orderButton.setVisibility(View.GONE);
+                                loginButton.setVisibility(View.VISIBLE);
+                                connectBtn2.setVisibility(View.GONE);
+                            }
+                        }
                     }
 
                     @Override
