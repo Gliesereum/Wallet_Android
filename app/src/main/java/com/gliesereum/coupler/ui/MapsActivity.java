@@ -194,6 +194,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initData() {
         FastSave.init(getApplicationContext());
         FastSave.getInstance().saveBoolean(NEED_LOGIN_USER, false);
+        FastSave.getInstance().saveBoolean(MAP_LIST, false);
         API = APIClient.getClient().create(APIInterface.class);
         customCallback = new CustomCallback(this, this);
         serviceIdList = new HashSet<>();
@@ -488,6 +489,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccessful(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
                         pointListAdapter.removeAll();
                         pointListAdapter.addItems(response.body());
+                        if (FastSave.getInstance().getBoolean(MAP_LIST, false)) {
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+                        emptyLabelSearch.setVisibility(View.GONE);
                         if (!searchFlag) {
                             carWashListNew = response.body();
                             Log.d(TAG, "onSuccessful: " + carWashListCache.equals(response.body()));
@@ -544,6 +549,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onEmpty(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
+                        carWashListCache.clear();
                         if (!searchFlag) {
                             Log.d(TAG, "onEmpty: map clear");
                             mMap.clear();
@@ -557,6 +563,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             updateLocationUI();
                             getDeviceLocation();
                         } else {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyLabelSearch.setVisibility(View.VISIBLE);
+                        }
+                        if (FastSave.getInstance().getBoolean(MAP_LIST, false)) {
+                            pointListAdapter.removeAll();
                             recyclerView.setVisibility(View.GONE);
                             emptyLabelSearch.setVisibility(View.VISIBLE);
                         }
