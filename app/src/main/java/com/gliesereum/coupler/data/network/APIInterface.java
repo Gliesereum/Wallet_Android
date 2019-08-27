@@ -6,6 +6,7 @@ import com.gliesereum.coupler.data.network.json.businesscategory.BusinesCategory
 import com.gliesereum.coupler.data.network.json.car.AllCarResponse;
 import com.gliesereum.coupler.data.network.json.car.BrandResponse;
 import com.gliesereum.coupler.data.network.json.car.CarDeleteResponse;
+import com.gliesereum.coupler.data.network.json.carwash.AddPointBody;
 import com.gliesereum.coupler.data.network.json.carwash.AllCarWashResponse;
 import com.gliesereum.coupler.data.network.json.carwash.CommentsItem;
 import com.gliesereum.coupler.data.network.json.carwash.FilterCarWashBody;
@@ -47,6 +48,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIInterface {
+
+    @POST("karma/v1/business/create-empty")
+    Call<CarWashResponse> addPointToMap(@Header("Authorization") String accessToken, @Body AddPointBody addPointBody);
 
     @GET("karma/v1/worker/by-id")
     Call<WorkersItem> getWorkerById(@Header("Authorization") String accessToken, @Query("id") String id);

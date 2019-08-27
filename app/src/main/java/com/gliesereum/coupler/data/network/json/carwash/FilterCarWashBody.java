@@ -24,6 +24,17 @@ public class FilterCarWashBody {
     @SerializedName("fullTextQuery")
     private String fullTextQuery;
 
+    @SerializedName("businessVerify")
+    private Boolean businessVerify;
+
+    public Boolean getBusinessVerify() {
+        return businessVerify;
+    }
+
+    public void setBusinessVerify(Boolean businessVerify) {
+        this.businessVerify = businessVerify;
+    }
+
     public GeoDistanceDto getGeoDistance() {
         return geoDistance;
     }
@@ -81,4 +92,14 @@ public class FilterCarWashBody {
 
     public FilterCarWashBody() {
     }
+
+    public FilterCarWashBody(FilterCarWashBody filterCarWashBody, boolean isActive) {
+        this.serviceIds = filterCarWashBody.getServiceIds();
+        this.targetId = filterCarWashBody.getTargetId();
+        this.businessCategoryId = filterCarWashBody.getBusinessCategoryId();
+        this.geoDistance = filterCarWashBody.getGeoDistance();
+        this.fullTextQuery = filterCarWashBody.getFullTextQuery();
+        this.businessVerify = isActive;
+    }
+
 }

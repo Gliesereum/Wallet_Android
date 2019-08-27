@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,9 +55,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.labters.lottiealertdialoglibrary.DialogTypes;
@@ -483,7 +489,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void getAllCarWash(FilterCarWashBody filterCarWashBody, boolean searchFlag) {
-        API.getAllCarWashNew(filterCarWashBody)
+        FilterCarWashBody verifyFilterCarWashBody = new FilterCarWashBody(filterCarWashBody, true);
+        FilterCarWashBody notVerifyFilterCarWashBody = new FilterCarWashBody(filterCarWashBody, false);
+        verifyFilterCarWashBody.setBusinessVerify(true);
+        notVerifyFilterCarWashBody.setBusinessVerify(false);
+        API.getAllCarWashNew(verifyFilterCarWashBody)
                 .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<CarWashResponse>>() {
                     @Override
                     public void onSuccessful(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
@@ -545,6 +555,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             emptyLabelSearch.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
+
+
+                        API.getAllCarWashNew(notVerifyFilterCarWashBody)
+                                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<List<CarWashResponse>>() {
+                                    @Override
+                                    public void onSuccessful(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
+//                                        mMap.clear();
+                                        Drawable background;
+                                        background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_new_pin_others);
+                                        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+                                        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                                        Canvas canvas = new Canvas(bitmap);
+                                        background.draw(canvas);
+
+                                        for (int i = 0; i < response.body().size(); i++) {
+                                            MarkerOptions markerOptions = new MarkerOptions();
+                                            markerOptions.position(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()));
+                                            markerOptions.title(response.body().get(i).getName());
+                                            markerOptions.snippet(response.body().get(i).getId());
+                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                                            mMap.addMarker(markerOptions);
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onEmpty(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
+
+                                    }
+                                }));
+
+
                     }
 
                     @Override

@@ -14,8 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-    //    private static final String ROOT_URL = "https://dev.gliesereum.com/api/";
-    private static final String ROOT_URL = "https://api.coupler.app/api/";
+    private static final String ROOT_URL = "https://dev.gliesereum.com/api/";
+//    private static final String ROOT_URL = "https://api.coupler.app/api/";
 //    private static final String ROOT_URL = "http://192.168.0.100:8200/api/";
 
     public static Retrofit getClient() {
