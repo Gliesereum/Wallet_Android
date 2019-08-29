@@ -83,7 +83,7 @@ public class ReferralActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Все услуги города в приложении Coupler! Онлайн-запись, контроль выполнения заказа, растущие скидки. Скачай и получи первые 50 баллов на бонусный счет! " + getResources().getString(R.string.smileUNICODE) + "\n" + "https://coupler.app/r/" + referralCode);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "Все услуги города в приложении Coupler! Онлайн-запись, контроль выполнения заказа, растущие скидки. Скачай и получи первые 50 баллов на бонусный счет! " + getResources().getString(R.string.smileUNICODE) + "\n" + "https://coupler.app/r/?ref=" + referralCode);
                 sendIntent.setType("text/plain");
                 ReferralActivity.this.startActivity(Intent.createChooser(sendIntent, "Пригласить друга"));
             }

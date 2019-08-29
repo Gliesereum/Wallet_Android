@@ -63,6 +63,7 @@ import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
+import static com.gliesereum.coupler.util.Constants.IS_AGENT;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.REF_SCORE;
 import static com.gliesereum.coupler.util.Constants.USER_AVATAR;
@@ -98,7 +99,7 @@ public class Util {
         SecondaryDrawerItem record_listItem = new SecondaryDrawerItem().withName("Заказы").withIdentifier(3).withTag("record_list").withSelectable(false).withIcon(R.drawable.ic_outline_list_alt_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem profileItem = new SecondaryDrawerItem().withName("Мой профиль").withIdentifier(4).withTag("profile").withSelectable(false).withIcon(R.drawable.ic_outline_account_circle_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem referralItem = new SecondaryDrawerItem().withName("Пригласить друга").withIdentifier(9).withTag("referral").withSelectable(false).withIcon(R.drawable.ic_outline_person_add_24px).withIconTintingEnabled(true);
-        SecondaryDrawerItem pointlItem = new SecondaryDrawerItem().withName("Добавить точку").withIdentifier(11).withTag("add_point").withSelectable(false).withIcon(R.drawable.ic_outline_person_add_24px).withIconTintingEnabled(true);
+        SecondaryDrawerItem pointItem = new SecondaryDrawerItem().withName("Добавить точку").withIdentifier(11).withTag("add_point").withSelectable(false).withIcon(R.drawable.ic_outline_person_add_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem logoutItem = new SecondaryDrawerItem().withName("Выйти").withIdentifier(5).withSelectable(false).withTag("logout").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem loginItem = new SecondaryDrawerItem().withName("Вход").withIdentifier(6).withSelectable(false).withTag("login").withSelectable(false).withIcon(R.drawable.ic_outline_exit_to_app_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О приложении").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_outline_info_24px).withIconTintingEnabled(true);
@@ -109,7 +110,7 @@ public class Util {
             record_listItem.withEnabled(false);
             profileItem.withEnabled(false);
             referralItem.withEnabled(false);
-            pointlItem.withEnabled(false);
+            pointItem.withEnabled(false);
         }
 //        referralItem.withEnabled(false);
 
@@ -171,7 +172,9 @@ public class Util {
         drawerBuilder.addDrawerItems(record_listItem);
         drawerBuilder.addDrawerItems(profileItem);
         drawerBuilder.addDrawerItems(referralItem);
-        drawerBuilder.addDrawerItems(pointlItem);
+        if (FastSave.getInstance().getBoolean(IS_AGENT, false)) {
+            drawerBuilder.addDrawerItems(pointItem);
+        }
 //        drawerBuilder.addDrawerItems(
 //                mapsItem,
 //                serviceItem,

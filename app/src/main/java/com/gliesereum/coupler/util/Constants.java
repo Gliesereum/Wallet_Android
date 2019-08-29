@@ -82,6 +82,7 @@ public class Constants {
     public static final String USER_NAME = "userName";
     public static final String USER_SECOND_NAME = "userSecondName";
     public static final String IS_LOGIN = "isLogin";
+    public static final String IS_AGENT = "isAgent";
     public static final String BUSINESS_CATEGORY_ID = "businessCategoryId";
     public static final String BUSINESS_CATEGORY_NAME = "businessCategoryName";
     public static final String CARWASHA_CTIVITY = "CarWashActivity";

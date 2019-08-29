@@ -118,6 +118,8 @@
     <string name="error_1513">Multipart file type not compatible</string>
     <string name="error_1514">Maximum upload size exceeded</string>
 
+    <string name="error_1497">Current user not a agent</string>
+
     <string name="moneyUNICODE">&#128176;</string>
     <string name="timeUNICODE">&#8987;</string>
     <string name="smileUNICODE">&#128522;</string>

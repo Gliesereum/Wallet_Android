@@ -97,6 +97,12 @@ import static com.gliesereum.coupler.util.Constants.CAR_FILTER_LIST;
 import static com.gliesereum.coupler.util.Constants.CAR_ID;
 import static com.gliesereum.coupler.util.Constants.CAR_MODEL;
 import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
+import static com.gliesereum.coupler.util.Constants.CODE_BEAUTY_SALONS;
+import static com.gliesereum.coupler.util.Constants.CODE_CAR_SERVICE;
+import static com.gliesereum.coupler.util.Constants.CODE_CAR_WASH;
+import static com.gliesereum.coupler.util.Constants.CODE_DEVELOPMENT;
+import static com.gliesereum.coupler.util.Constants.CODE_MARKETING;
+import static com.gliesereum.coupler.util.Constants.CODE_TIRE_FITTING;
 import static com.gliesereum.coupler.util.Constants.FILTER_CARWASH_BODY;
 import static com.gliesereum.coupler.util.Constants.FIRST_START;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
@@ -563,7 +569,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     public void onSuccessful(Call<List<CarWashResponse>> call, Response<List<CarWashResponse>> response) {
 //                                        mMap.clear();
                                         Drawable background;
-                                        background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_new_pin_others);
+//                                        background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_new_pin_others);
+                                        switch (FastSave.getInstance().getString(BUSINESS_CODE, "")) {
+                                            case CODE_BEAUTY_SALONS:
+                                                background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_pin_beauty_disable);
+                                                break;
+                                            case CODE_CAR_WASH:
+                                                background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_pin_carwash_disable);
+                                                break;
+                                            case CODE_TIRE_FITTING:
+                                                background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_pin_tires_disable);
+                                                break;
+                                            case CODE_CAR_SERVICE:
+                                                background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_pin_sto_disable);
+                                                break;
+                                            case CODE_MARKETING:
+                                                background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_pin_consulting_disable);
+                                                break;
+                                            case CODE_DEVELOPMENT:
+                                                background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_pin_freelance_disable);
+                                                break;
+                                            default:
+                                                background = ContextCompat.getDrawable(MapsActivity.this, R.drawable.ic_pin_others_disable);
+                                                break;
+                                        }
+
                                         background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
                                         Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
                                         Canvas canvas = new Canvas(bitmap);

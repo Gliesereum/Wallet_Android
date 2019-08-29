@@ -39,25 +39,25 @@ public class IconGenerator extends DefaultIconGenerator implements net.sharewire
         Drawable background;
         switch (FastSave.getInstance().getString(BUSINESS_CODE, "")) {
             case CODE_BEAUTY_SALONS:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_beauty);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_beauty);
                 break;
             case CODE_CAR_WASH:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_carwash);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_carwash);
                 break;
             case CODE_TIRE_FITTING:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_tires);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_tires);
                 break;
             case CODE_CAR_SERVICE:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_sto);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_sto);
                 break;
             case CODE_MARKETING:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_consulting);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_consulting);
                 break;
             case CODE_DEVELOPMENT:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_freelance);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_freelance);
                 break;
             default:
-                background = ContextCompat.getDrawable(context, R.drawable.ic_new_pin_others);
+                background = ContextCompat.getDrawable(context, R.drawable.ic_pin_others);
                 break;
         }
         background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());

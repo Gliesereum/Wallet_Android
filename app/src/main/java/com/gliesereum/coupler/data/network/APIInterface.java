@@ -49,6 +49,9 @@ import retrofit2.http.Query;
 
 public interface APIInterface {
 
+    @GET("karma/v1/agent/current-user-agent")
+    Call<CarDeleteResponse> checkIsAgent(@Header("Authorization") String accessToken);
+
     @POST("karma/v1/business/create-empty")
     Call<CarWashResponse> addPointToMap(@Header("Authorization") String accessToken, @Body AddPointBody addPointBody);
 

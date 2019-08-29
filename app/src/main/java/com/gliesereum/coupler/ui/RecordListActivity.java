@@ -76,7 +76,7 @@ public class RecordListActivity extends AppCompatActivity {
 
     private void getAllRecord() {
         if (page == 0) {
-            API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), page, 10)
+            API.getAllRecord(FastSave.getInstance().getString(ACCESS_TOKEN, ""), page, 20)
                     .enqueue(customCallback.getResponseWithProgress(new CustomCallback.ResponseCallback<RecordNewResponse>() {
                         @Override
                         public void onSuccessful(Call<RecordNewResponse> call, Response<RecordNewResponse> response) {

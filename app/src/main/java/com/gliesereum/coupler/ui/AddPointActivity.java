@@ -6,12 +6,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,6 +47,10 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_ID;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_CATEGORY_NAME;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
+import static com.gliesereum.coupler.util.Constants.BUSINESS_TYPE;
 
 public class AddPointActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -68,6 +70,7 @@ public class AddPointActivity extends AppCompatActivity implements OnMapReadyCal
     private APIInterface API;
     private CustomCallback customCallback;
     private HashMap<String, String> categoryHashMap;
+    private HashMap<String, BusinesCategoryResponse> categoryObjectMap;
     private ArrayAdapter<String> spinnerAdapter;
 
     private TextInputEditText pointNameTextView;
@@ -138,6 +141,12 @@ public class AddPointActivity extends AppCompatActivity implements OnMapReadyCal
                                         @Override
                                         public void onSuccessful(Call<CarWashResponse> call, Response<CarWashResponse> response) {
                                             addPointDialog.dismiss();
+                                            FastSave.getInstance().saveString(BUSINESS_CODE, categoryObjectMap.get(categoryHashMap.get(categorySpinner.getSelectedItem().toString())).getCode());
+                                            FastSave.getInstance().saveString(BUSINESS_TYPE, categoryObjectMap.get(categoryHashMap.get(categorySpinner.getSelectedItem().toString())).getBusinessType());
+                                            FastSave.getInstance().saveString(BUSINESS_CATEGORY_ID, categoryHashMap.get(categorySpinner.getSelectedItem().toString()));
+                                            FastSave.getInstance().saveString(BUSINESS_CATEGORY_NAME, " (" + categoryObjectMap.get(categoryHashMap.get(categorySpinner.getSelectedItem().toString())).getName() + ")");
+                                            startActivity(new Intent(AddPointActivity.this, MapsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                            finish();
                                         }
 
                                         @Override
@@ -160,9 +169,13 @@ public class AddPointActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onSuccessful(Call<List<BusinesCategoryResponse>> call, Response<List<BusinesCategoryResponse>> response) {
                         ArrayList<String> categoryItems = new ArrayList<>();
+                        categoryObjectMap = new HashMap<>();
                         for (int i = 0; i < response.body().size(); i++) {
-                            categoryItems.add(response.body().get(i).getName());
-                            categoryHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+                            if (response.body().get(i).getActive()) {
+                                categoryObjectMap.put(response.body().get(i).getId(), response.body().get(i));
+                                categoryItems.add(response.body().get(i).getName());
+                                categoryHashMap.put(response.body().get(i).getName(), response.body().get(i).getId());
+                            }
                         }
                         spinnerAdapter = new ArrayAdapter<>(AddPointActivity.this, R.layout.car_hint_item_layout, categoryItems);
                         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -224,10 +237,10 @@ public class AddPointActivity extends AppCompatActivity implements OnMapReadyCal
                         if (task.isSuccessful()) {
                             mLastKnownLocation = (Location) task.getResult();
                             if (mLastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 12));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 20));
                             }
                         } else {
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 12));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 20));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
@@ -318,22 +331,22 @@ public class AddPointActivity extends AppCompatActivity implements OnMapReadyCal
 
     @Override
     public void onBackPressed() {
-        if (doubleBack) {
-            super.onBackPressed();
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            return;
-        }
-        this.doubleBack = true;
-        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doubleBack = false;
-            }
-        }, 2000);
+//        if (doubleBack) {
+//            super.onBackPressed();
+//            Intent intent = new Intent(Intent.ACTION_MAIN);
+//            intent.addCategory(Intent.CATEGORY_HOME);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//            return;
+//        }
+//        this.doubleBack = true;
+//        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                doubleBack = false;
+//            }
+//        }, 2000);
     }
 
     @Override

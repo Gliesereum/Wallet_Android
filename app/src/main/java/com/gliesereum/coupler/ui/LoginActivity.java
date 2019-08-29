@@ -24,6 +24,7 @@ import com.gliesereum.coupler.R;
 import com.gliesereum.coupler.data.network.APIClient;
 import com.gliesereum.coupler.data.network.APIInterface;
 import com.gliesereum.coupler.data.network.CustomCallback;
+import com.gliesereum.coupler.data.network.json.car.CarDeleteResponse;
 import com.gliesereum.coupler.data.network.json.code.CodeResponse;
 import com.gliesereum.coupler.data.network.json.code.SigninBody;
 import com.gliesereum.coupler.data.network.json.notificatoin.NotificatoinBody;
@@ -46,6 +47,7 @@ import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN;
 import static com.gliesereum.coupler.util.Constants.ACCESS_TOKEN_WITHOUT_BEARER;
 import static com.gliesereum.coupler.util.Constants.BUSINESS_CODE;
 import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
+import static com.gliesereum.coupler.util.Constants.IS_AGENT;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
 import static com.gliesereum.coupler.util.Constants.KARMA_USER_RECORD;
 import static com.gliesereum.coupler.util.Constants.KARMA_USER_REMIND_RECORD;
@@ -190,15 +192,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onSuccessful(Call<UserResponse> call, Response<UserResponse> response) {
                         countDownTimer.cancel();
+                        saveUserInfo(response.body());
+                        checkIsAgent();
                         if (response.body().getUser().getFirstName() == null ||
                                 response.body().getUser().getLastName() == null ||
                                 response.body().getUser().getMiddleName() == null) {
-                            saveUserInfo(response.body());
+//                            saveUserInfo(response.body());
                             startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                         } else {
                             FastSave.getInstance().saveString(USER_NAME, response.body().getUser().getFirstName());
                             FastSave.getInstance().saveString(USER_SECOND_NAME, response.body().getUser().getLastName());
-                            saveUserInfo(response.body());
+//                            saveUserInfo(response.body());
                             if (FastSave.getInstance().getBoolean(NEED_SELECT_CAR, false)) {
                                 startActivity(new Intent(LoginActivity.this, CarListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                             } else {
@@ -220,6 +224,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void onEmpty(Call<UserResponse> call, Response<UserResponse> response) {
+
+                    }
+                }));
+    }
+
+    private void checkIsAgent() {
+        API.checkIsAgent(FastSave.getInstance().getString(ACCESS_TOKEN, ""))
+                .enqueue(customCallback.getResponse(new CustomCallback.ResponseCallback<CarDeleteResponse>() {
+                    @Override
+                    public void onSuccessful(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
+                        FastSave.getInstance().saveBoolean(IS_AGENT, response.body().getResult());
+                    }
+
+                    @Override
+                    public void onEmpty(Call<CarDeleteResponse> call, Response<CarDeleteResponse> response) {
 
                     }
                 }));
