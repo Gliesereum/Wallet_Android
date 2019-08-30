@@ -110,6 +110,7 @@ public class CarListActivity extends AppCompatActivity implements View.OnClickLi
             Log.d(NEED_LOGIN_USER, "NEED_LOGIN_USER: " + FastSave.getInstance().getBoolean(NEED_LOGIN_USER, false));
             finish();
         }
+        finish();
 //        if (FastSave.getInstance().getBoolean(OPEN_SERVICE_FLAG, false)) {
 //            startActivity(new Intent(CarListActivity.this, CarWashActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
 //        } else {

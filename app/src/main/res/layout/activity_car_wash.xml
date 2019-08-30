@@ -266,5 +266,19 @@
         app:strokeColor="@color/black"
         app:strokeWidth="1dp" />
 
+    <Button
+        android:id="@+id/connectBtn2"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Связаться"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

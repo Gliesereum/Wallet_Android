@@ -329,25 +329,25 @@ public class AddPointActivity extends AppCompatActivity implements OnMapReadyCal
         mapView.onLowMemory();
     }
 
-    @Override
-    public void onBackPressed() {
-//        if (doubleBack) {
-//            super.onBackPressed();
-//            Intent intent = new Intent(Intent.ACTION_MAIN);
-//            intent.addCategory(Intent.CATEGORY_HOME);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-//            return;
-//        }
-//        this.doubleBack = true;
-//        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                doubleBack = false;
-//            }
-//        }, 2000);
-    }
+//    @Override
+//    public void onBackPressed() {
+////        if (doubleBack) {
+////            super.onBackPressed();
+////            Intent intent = new Intent(Intent.ACTION_MAIN);
+////            intent.addCategory(Intent.CATEGORY_HOME);
+////            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////            startActivity(intent);
+////            return;
+////        }
+////        this.doubleBack = true;
+////        Toast.makeText(this, "Пожалуйста, нажмите НАЗАД еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+////        new Handler().postDelayed(new Runnable() {
+////            @Override
+////            public void run() {
+////                doubleBack = false;
+////            }
+////        }, 2000);
+//    }
 
     @Override
     protected void onResume() {

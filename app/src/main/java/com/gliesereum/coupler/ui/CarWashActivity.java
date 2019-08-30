@@ -41,11 +41,16 @@ import com.gohn.nativedialog.NDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.kodmap.app.library.PopopDialogBuilder;
+import com.labters.lottiealertdialoglibrary.ClickListener;
+import com.labters.lottiealertdialoglibrary.DialogTypes;
+import com.labters.lottiealertdialoglibrary.LottieAlertDialog;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 import com.squareup.picasso.Picasso;
 import com.willy.ratingbar.ScaleRatingBar;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,6 +123,11 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private NDialog commentDialog;
     private TextView nowStatus;
     private Button connectBtn;
+    private TextView textView15;
+    private TextView textView6;
+    private Button connectBtn2;
+    private LottieAlertDialog alertDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,11 +187,21 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(callIntent);
             }
         });
+        textView15 = findViewById(R.id.textView15);
+        textView6 = findViewById(R.id.textView6);
+        connectBtn2 = findViewById(R.id.connectBtn2);
+        connectBtn2.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.connectBtn2:
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:+" + carWash.getPhone()));//change the number
+                startActivity(callIntent);
+                break;
             case R.id.orderButton:
                 carWash.setId(carWashId);
                 FastSave.getInstance().saveObject(CARWASH, carWash);
@@ -202,6 +222,29 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                             @Override
                             public void onSuccessful(Call<AllCarWashResponse> call, Response<AllCarWashResponse> response) {
                                 carWash = response.body();
+                                if (!carWash.getBusinessVerify()) {
+                                    orderButton.setVisibility(View.GONE);
+                                    connectBtn.setVisibility(View.GONE);
+                                    address.setVisibility(View.GONE);
+                                    textView15.setVisibility(View.GONE);
+                                    workTimeImage.setVisibility(View.GONE);
+                                    textView6.setVisibility(View.GONE);
+                                    nowStatus.setVisibility(View.GONE);
+                                    connectBtn2.setVisibility(View.VISIBLE);
+                                    alertDialog = new LottieAlertDialog.Builder(CarWashActivity.this, DialogTypes.TYPE_QUESTION)
+                                            .setTitle("Внимание")
+                                            .setDescription("В этой компании нет возможности записаться на услуги онлайн. Вы можете сделать заказ по телефону")
+                                            .setPositiveText("Хорошо")
+                                            .setPositiveListener(new ClickListener() {
+                                                @Override
+                                                public void onClick(@NotNull LottieAlertDialog lottieAlertDialog) {
+                                                    alertDialog.dismiss();
+                                                }
+                                            })
+                                            .build();
+                                    alertDialog.show();
+
+                                }
                                 if (carWash != null) {
                                     if (carWash.getLogoUrl() != null) {
                                         Picasso.get().load(carWash.getLogoUrl()).transform(new CircleTransform()).into(logoImageView);

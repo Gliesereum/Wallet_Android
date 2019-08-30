@@ -65,6 +65,7 @@ import static com.gliesereum.coupler.util.Constants.CAR_SERVICE_CLASS;
 import static com.gliesereum.coupler.util.Constants.FIREBASE_TOKEN;
 import static com.gliesereum.coupler.util.Constants.IS_AGENT;
 import static com.gliesereum.coupler.util.Constants.IS_LOGIN;
+import static com.gliesereum.coupler.util.Constants.NEED_SELECT_CAR;
 import static com.gliesereum.coupler.util.Constants.REF_SCORE;
 import static com.gliesereum.coupler.util.Constants.USER_AVATAR;
 import static com.gliesereum.coupler.util.Constants.USER_ID;
@@ -227,6 +228,8 @@ public class Util {
                                         FastSave.getInstance().deleteValue(BUSINESS_TYPE);
                                         FastSave.getInstance().deleteValue(BUSINESS_CODE);
                                         FastSave.getInstance().deleteValue(BUSINESS_CATEGORY_NAME);
+                                        FastSave.getInstance().deleteValue(NEED_SELECT_CAR);
+                                        FastSave.getInstance().deleteValue(IS_AGENT);
 
                                         FastSave.getInstance().deleteValue(USER_AVATAR);
                                         FastSave.getInstance().deleteValue(USER_ID);

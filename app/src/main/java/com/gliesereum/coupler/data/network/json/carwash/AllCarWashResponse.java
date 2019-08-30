@@ -12,6 +12,9 @@ public class AllCarWashResponse {
     @SerializedName("id")
     private String id;
 
+    @SerializedName("businessVerify")
+    private Boolean businessVerify;
+
     @SerializedName("businessCategoryId")
     private String businessCategoryId;
 
@@ -68,6 +71,14 @@ public class AllCarWashResponse {
 
     @SerializedName("timeZone")
     private Integer timeZone;
+
+    public Boolean getBusinessVerify() {
+        return businessVerify;
+    }
+
+    public void setBusinessVerify(Boolean businessVerify) {
+        this.businessVerify = businessVerify;
+    }
 
     public String getBusinessCategoryId() {
         return businessCategoryId;
