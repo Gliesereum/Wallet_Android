@@ -127,6 +127,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
     private TextView textView6;
     private Button connectBtn2;
     private LottieAlertDialog alertDialog;
+    private ImageView businessCover;
+    private TextView commentCount;
 
 
     @Override
@@ -192,6 +194,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
         connectBtn2 = findViewById(R.id.connectBtn2);
         connectBtn2.setOnClickListener(this);
 
+        businessCover = findViewById(R.id.businessCover);
+        commentCount = findViewById(R.id.commentCount);
     }
 
     @Override
@@ -249,6 +253,9 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                     if (carWash.getLogoUrl() != null) {
                                         Picasso.get().load(carWash.getLogoUrl()).transform(new CircleTransform()).into(logoImageView);
                                     }
+                                    if (carWash.getCoverUrl() != null) {
+                                        Picasso.get().load(carWash.getCoverUrl()).centerCrop().fit().into(businessCover);
+                                    }
                                     for (int i = 0; i < carWash.getPackages().size(); i++) {
                                         packageMap.put(carWash.getPackages().get(i).getId(), carWash.getPackages().get(i));
                                     }
@@ -271,9 +278,10 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                 } else {
                                     descriptionDropdown.setVisibility(View.GONE);
                                 }
-//                                if (carWash.getRating()!=null){
+                                if (carWash.getRating() != null) {
                                 carWashRating.setRatingNum(carWash.getRating().getRating());
-//                                }
+                                    commentCount.setText("(" + carWash.getRating().getCount() + ")");
+                                }
                                 if (Util.checkCarWashWorkTime(carWash)) {
                                     nowStatus.setText("работает");
                                     nowStatus.setTextColor(getResources().getColor(R.color.md_green_300));
@@ -298,7 +306,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                                         customServiceMap.put(carWash.getServicePrices().get(i).getName(), carWash.getServicePrices().get(i).getServiceId());
                                     }
                                 }
-                                showTutorial();
+//                                showTutorial();
                             }
 
                             @Override
@@ -347,7 +355,7 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
             View view = LayoutInflater.from(this).inflate(R.layout.image_view_for_slider, photoScrollView, false);
             ImageView imageView = view.findViewById(R.id.imageView6);
             imageView.setTag(i);
-            Picasso.get().load(mediumList.get(i).getUrl()).fit().into(imageView);
+            Picasso.get().load(mediumList.get(i).getUrl()).centerCrop().fit().into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -491,6 +499,8 @@ public class CarWashActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onSuccessful(Call<Rating> call, Response<Rating> response) {
                         carWashRating.setRatingNum(response.body().getRating());
+                        commentCount.setText("(" + response.body().getCount() + ")");
+
                     }
 
                     @Override

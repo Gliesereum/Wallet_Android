@@ -48,11 +48,11 @@ public class Tutorial extends TutorialActivity {
                 .setDrawable(R.drawable.ic_icon_step_02) // int top drawable
                 .build());
 //
-        addFragment(new Step.Builder()
-                .setTitle("Запишет на услугу и приведет к месту назначения")
-                .setContent("Даст скидку за накопленные бонусные баллы")
-                .setDrawable(R.drawable.ic_icon_step_03) // int top drawable
-                .build());
+//        addFragment(new Step.Builder()
+//                .setTitle("Запишет на услугу и приведет к месту назначения")
+//                .setContent("Даст скидку за накопленные бонусные баллы")
+//                .setDrawable(R.drawable.ic_icon_step_03) // int top drawable
+//                .build());
     }
 
     @Override

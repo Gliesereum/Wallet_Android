@@ -106,6 +106,7 @@ public class Util {
         SecondaryDrawerItem aboutItem = new SecondaryDrawerItem().withName("О приложении").withIdentifier(9).withSelectable(false).withTag("about").withSelectable(false).withIcon(R.drawable.ic_outline_info_24px).withIconTintingEnabled(true);
         SecondaryDrawerItem versionItem = new SecondaryDrawerItem().withName("v" + BuildConfig.VERSION_NAME + " beta").withIdentifier(7).withSelectable(false).withTag("version").withSelectable(false);
 
+
         if (!FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             car_listItem.withEnabled(false);
             record_listItem.withEnabled(false);
@@ -170,7 +171,7 @@ public class Util {
         if (FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
             drawerBuilder.addDrawerItems(car_listItem);
         }
-        drawerBuilder.addDrawerItems(record_listItem);
+//        drawerBuilder.addDrawerItems(record_listItem);
         drawerBuilder.addDrawerItems(profileItem);
         drawerBuilder.addDrawerItems(referralItem);
         if (FastSave.getInstance().getBoolean(IS_AGENT, false)) {

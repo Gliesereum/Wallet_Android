@@ -29,10 +29,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_height="210dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -41,47 +38,43 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <ImageView
+                        android:id="@+id/businessCover"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/logoImageView"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/name"
+                        app:layout_constraintEnd_toEndOf="@+id/businessCover"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_logo_coupler" />
+
                     <TextView
                         android:id="@+id/name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/businessCover"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/logoImageView"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="CarWashName" />
-
-                    <TextView
-                        android:id="@+id/address"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:textColor="@color/black"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/logoImageView"
-                        app:layout_constraintTop_toBottomOf="@+id/carWashRating"
-                        tools:text="Address" />
-
-                    <ImageView
-                        android:id="@+id/logoImageView"
-                        android:layout_width="75dp"
-                        android:layout_height="75dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_bias="0.497"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_logo_coupler" />
+                        tools:text="CarWashName" />
 
                     <TextView
                         android:id="@+id/textView15"
@@ -91,39 +84,22 @@
                         android:layout_marginTop="8dp"
                         android:text="Время работы"
                         android:textColor="@color/black"
+                        android:visibility="gone"
                         app:layout_constraintStart_toEndOf="@+id/logoImageView"
-                        app:layout_constraintTop_toBottomOf="@+id/address" />
+                        app:layout_constraintTop_toBottomOf="@+id/address"
+                        tools:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/workTimeImage"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginStart="8dp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/textView15"
                         app:layout_constraintStart_toEndOf="@+id/textView15"
                         app:layout_constraintTop_toTopOf="@+id/textView15"
-                        app:srcCompat="@drawable/ic_watch_later_black_24dp" />
-
-                    <com.gliesereum.coupler.util.SmartRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/carWashRating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="15dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        app:gap="10dp"
-                        app:layout_constraintStart_toEndOf="@+id/logoImageView"
-                        app:layout_constraintTop_toBottomOf="@+id/name"
-                        app:srb_clearRatingEnabled="false"
-                        app:srb_clickable="false"
-                        app:srb_isIndicator="false"
-                        app:srb_minimumStars="0"
-                        app:srb_numStars="5"
-                        app:srb_rating="0"
-                        app:srb_scrollable="true"
-                        app:srb_starHeight="30dp"
-                        app:srb_starPadding="15dp"
-                        app:srb_starWidth="30dp"
-                        app:srb_stepSize="0.1" />
+                        app:srcCompat="@drawable/ic_watch_later_black_24dp"
+                        tools:visibility="gone" />
 
                     <TextView
                         android:id="@+id/textView6"
@@ -134,9 +110,11 @@
                         android:layout_marginBottom="8dp"
                         android:text="Сейчас"
                         android:textColor="@color/black"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/logoImageView"
-                        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView15"
+                        tools:visibility="gone" />
 
                     <TextView
                         android:id="@+id/nowStatus"
@@ -144,10 +122,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:textColor="@color/black"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/textView6"
                         app:layout_constraintStart_toEndOf="@+id/textView6"
                         app:layout_constraintTop_toTopOf="@+id/textView6"
-                        tools:text="TextView" />
+                        tools:text="TextView"
+                        tools:visibility="gone" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -185,7 +165,7 @@
                 app:content_text_color="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connectBtn"
+                app:layout_constraintTop_toBottomOf="@id/constraintLayout3"
                 app:title_text="Описание"
                 app:title_text_color="@color/black" />
 
@@ -215,7 +195,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="Оставить комментарий"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/photoScrollView" />
@@ -245,9 +225,73 @@
                 android:layout_marginEnd="8dp"
                 android:text="Связаться"
                 android:textAllCaps="false"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+                <com.gliesereum.coupler.util.SmartRatingBar
+                    android:id="@+id/carWashRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:gap="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srb_clearRatingEnabled="false"
+                    app:srb_clickable="false"
+                    app:srb_isIndicator="false"
+                    app:srb_minimumStars="0"
+                    app:srb_numStars="5"
+                    app:srb_rating="0"
+                    app:srb_scrollable="true"
+                    app:srb_starHeight="30dp"
+                    app:srb_starPadding="15dp"
+                    app:srb_starWidth="30dp"
+                    app:srb_stepSize="0.1" />
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/carWashRating"
+                    tools:text="Address" />
+
+                <View
+                    android:id="@+id/divider4"
+                    android:layout_width="407dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/commentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="(0)"
+                    app:layout_constraintBottom_toBottomOf="@+id/carWashRating"
+                    app:layout_constraintStart_toEndOf="@+id/carWashRating"
+                    app:layout_constraintTop_toTopOf="@+id/carWashRating" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -259,12 +303,14 @@
         android:layout_height="75dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Выбрать услуги"
+        android:text="Посмотреть услуги"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@color/black"
-        app:strokeWidth="1dp" />
+        app:strokeWidth="1dp"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/connectBtn2"
@@ -279,6 +325,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@color/black"
         app:strokeWidth="1dp" />
+
+    <!--    <com.sanojpunchihewa.glowbutton.GlowButton-->
+    <!--        android:id="@+id/connectBtn2"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="75dp"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:text="Связаться"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:buttonColor="@color/green"-->
+    <!--    app:unpressedGlowSize="20dp"-->
+    <!--    app:pressedGlowSize="25dp"-->
+    <!--    app:glowColor="@color/red"-->
+    <!--    app:cornerRadius="50dp"-->
+    <!--    />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

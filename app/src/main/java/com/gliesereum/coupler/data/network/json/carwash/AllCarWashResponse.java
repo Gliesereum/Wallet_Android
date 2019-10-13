@@ -72,6 +72,17 @@ public class AllCarWashResponse {
     @SerializedName("timeZone")
     private Integer timeZone;
 
+    @SerializedName("coverUrl")
+    private String coverUrl;
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
     public Boolean getBusinessVerify() {
         return businessVerify;
     }

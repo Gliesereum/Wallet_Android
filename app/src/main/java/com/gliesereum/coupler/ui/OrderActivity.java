@@ -136,9 +136,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false) && FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR")) {
             getAllCars();
         }
-        getAllWorkers();
+//        getAllWorkers();
         setPackages(carWash);
-        showTutorial();
+//        showTutorial();
     }
 
     private void initData() {
@@ -327,11 +327,21 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 //        List<ServiceClassItem> objectsList1 = FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class);
         for (int i = 0; i < carWash.getServicePrices().size(); i++) {
             if (carWash.getServicePrices().get(i).getObjectState().equals("ACTIVE") && !FastSave.getInstance().getBoolean(IS_LOGIN, false) || !FastSave.getInstance().getString(BUSINESS_TYPE, "").equals("CAR") || FastSave.getInstance().getObjectsList(CAR_FILTER_LIST, AttributesItem.class).containsAll(carWash.getServicePrices().get(i).getAttributes()) && FastSave.getInstance().getObjectsList(CAR_SERVICE_CLASS, ServiceClassItem.class).containsAll(carWash.getServicePrices().get(i).getServiceClass())) {
-                if (!serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
+                if (serviceMap.containsKey(carWash.getServicePrices().get(i).getId())) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);
                     CheckableChipView checkableChipView = new CheckableChipView(OrderActivity.this);
-                    checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+//                    checkableChipView.setClickable(false);
+                    checkableChipView.setEnabled(false);
+
+                    if (carWash.getServicePrices().get(i).getDuration() != 0 && carWash.getServicePrices().get(i).getPrice() != 0) {
+                        checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+                    } else if (carWash.getServicePrices().get(i).getDuration() != 0) {
+                        checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин");
+                    } else if (carWash.getServicePrices().get(i).getPrice() != 0) {
+                        checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+                    }
+
                     checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
                     checkableChipView.setTag(R.string.tagKeyDuration, carWash.getServicePrices().get(i).getDuration());
                     checkableChipView.setTag(R.string.tagKeyPrice, carWash.getServicePrices().get(i).getPrice());
@@ -352,19 +362,55 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
                     servicePriceItem.addView(checkableChipView, layoutParams);
-                } else {
+                } else if (serviceMap.isEmpty()) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, 4, 0, 4);
                     CheckableChipView checkableChipView = new CheckableChipView(OrderActivity.this);
-                    checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+//                    checkableChipView.setClickable(false);
+                    checkableChipView.setEnabled(false);
+                    if (carWash.getServicePrices().get(i).getDuration() == 0 && carWash.getServicePrices().get(i).getPrice() == 0) {
+                        checkableChipView.setText(carWash.getServicePrices().get(i).getName());
+                    } else if (carWash.getServicePrices().get(i).getDuration() != 0 && carWash.getServicePrices().get(i).getPrice() != 0) {
+                        checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+                    } else if (carWash.getServicePrices().get(i).getDuration() != 0) {
+                        checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин");
+                    } else if (carWash.getServicePrices().get(i).getPrice() != 0) {
+                        checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+                    }
                     checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
+                    checkableChipView.setTag(R.string.tagKeyDuration, carWash.getServicePrices().get(i).getDuration());
+                    checkableChipView.setTag(R.string.tagKeyPrice, carWash.getServicePrices().get(i).getPrice());
                     checkableChipView.setOutlineCornerRadius(10f);
                     checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
                     checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
-                    checkableChipView.setCheckedColor(getResources().getColor(R.color.material_drawer_selected));
-                    checkableChipView.setChecked(true);
-                    checkableChipView.setEnabled(false);
-                    packageItems.addView(checkableChipView, 0, layoutParams);
+                    checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+                    checkableChipView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (((CheckableChipView) v).isChecked()) {
+                                durationLabel.setText(String.valueOf(Integer.parseInt(durationLabel.getText().toString()) + ((int) v.getTag(R.string.tagKeyDuration))));
+                                priceLabel.setText(String.valueOf(Integer.parseInt(priceLabel.getText().toString()) + ((int) v.getTag(R.string.tagKeyPrice))));
+                            } else {
+                                durationLabel.setText(String.valueOf(Integer.parseInt(durationLabel.getText().toString()) - ((int) v.getTag(R.string.tagKeyDuration))));
+                                priceLabel.setText(String.valueOf(Integer.parseInt(priceLabel.getText().toString()) - ((int) v.getTag(R.string.tagKeyPrice))));
+                            }
+                        }
+                    });
+                    servicePriceItem.addView(checkableChipView, layoutParams);
+//                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    layoutParams.setMargins(0, 4, 0, 4);
+//                    CheckableChipView checkableChipView = new CheckableChipView(OrderActivity.this);
+////                    checkableChipView.setClickable(false);
+//                    checkableChipView.setEnabled(false);
+//                    checkableChipView.setText(carWash.getServicePrices().get(i).getName() + "\n" + getString(R.string.timeUNICODE) + carWash.getServicePrices().get(i).getDuration() + " мин        " + getString(R.string.moneyUNICODE) + carWash.getServicePrices().get(i).getPrice() + " грн");
+//                    checkableChipView.setTag(carWash.getServicePrices().get(i).getId());
+//                    checkableChipView.setOutlineCornerRadius(10f);
+//                    checkableChipView.setBackgroundColor(getResources().getColor(R.color.white));
+//                    checkableChipView.setOutlineColor(getResources().getColor(R.color.black));
+//                    checkableChipView.setCheckedColor(getResources().getColor(R.color.accent));
+////                    checkableChipView.setChecked(true);
+////                    checkableChipView.setEnabled(false);
+//                    packageItems.addView(checkableChipView, 0, layoutParams);
                 }
             } else {
                 Log.d(TAG, "false: " + carWash.getServicePrices().get(i).getName());
@@ -386,7 +432,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         if (carWash.getPackages().size() != 0) {
             View layout2 = LayoutInflater.from(this).inflate(R.layout.package_btn2, packageScroll, false);
             MaterialButton packageBtn = layout2.findViewById(R.id.packageBtn);
-            packageBtn.setText("Не выбран");
+            packageBtn.setText("Все услуги");
             packageBtn.setTag("default");
             packageBtn.setOnClickListener(v -> {
                 for (int j = 0; j < packageScroll.getChildCount(); j++) {
@@ -403,7 +449,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 priceLabel.setText("0");
                 durationLabel.setText("0");
                 discountTextView.setText("0%");
-                textView19.setText("Выберите услуги");
+                textView19.setText("Список услуг");
                 packageBlock.setVisibility(View.GONE);
                 setServicePrices(carWash);
             });
@@ -444,7 +490,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                         priceLabel.setText(String.valueOf((int) (price - ((price / 100) * packageMap.get(v.getTag()).getDiscount()))));
                         packageBlock.setVisibility(View.VISIBLE);
                         if (servicePriceItem.getChildCount() != 0) {
-                            textView19.setText("Дополнительные услуги");
+                            textView19.setText("Список услуг");
                         } else {
                             textView19.setText("");
                         }
@@ -699,18 +745,24 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         super.onResume();
         if (FastSave.getInstance().getBoolean(IS_LOGIN, false)) {
             if (isWorkerFlag) {
-                orderButton.setVisibility(View.VISIBLE);
+//                orderButton.setVisibility(View.VISIBLE);
+//                loginButton.setVisibility(View.GONE);
+//                connectBtn2.setVisibility(View.GONE);
+                orderButton.setVisibility(View.GONE);
                 loginButton.setVisibility(View.GONE);
-                connectBtn2.setVisibility(View.GONE);
+                connectBtn2.setVisibility(View.VISIBLE);
+                connectBtn2.setEnabled(true);
             } else {
                 orderButton.setVisibility(View.GONE);
                 loginButton.setVisibility(View.GONE);
                 connectBtn2.setVisibility(View.VISIBLE);
+                connectBtn2.setEnabled(true);
             }
         } else {
             orderButton.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
-            connectBtn2.setVisibility(View.GONE);
+            connectBtn2.setVisibility(View.VISIBLE);
+            connectBtn2.setEnabled(true);
         }
     }
 
